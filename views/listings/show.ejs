@@ -1,0 +1,25 @@
+<% layout("/layouts/boilerplate") %>
+<div class="row mt-4 mb-4">
+    <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1">
+        <div class="card shadow show-card border-0" style="border-radius:22px;overflow:hidden;">
+            <img src="<%=listing.image%>" class="card-img-top show-img" alt="Listing image" style="height:340px;object-fit:cover;">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="badge bg-light text-dark border px-2 py-1" style="font-size:1rem;"><i class="fa-solid fa-location-dot me-1"></i> <%=listing.location%></span>
+                    <span class="badge bg-danger text-white px-2 py-1" style="font-size:1.1rem;">₹<%= listing.price ? listing.price.toLocaleString("en-in") : "N/A" %></span>
+                </div>
+                <h2 class="card-title mb-2" style="font-weight:700;font-size:2rem;"><%=listing.title%></h2>
+                <div class="mb-3">
+                    <span class="badge bg-secondary px-2 py-1" style="font-size:1rem;"><i class="fa-solid fa-flag me-1"></i> <%=listing.country%></span>
+                </div>
+                <p class="card-text mb-3" style="font-size:1.1rem;line-height:1.6;"><%=listing.description%></p>
+                <div class="d-flex gap-3">
+                    <a href="/listings/<%=listing._id %>/edit" class="btn btn-dark edit-btn px-4">Edit</a>
+                    <form method="POST" action="/listings/<%=listing._id%>?_method=delete" class="d-inline">
+                        <button class="btn btn-outline-danger px-4">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

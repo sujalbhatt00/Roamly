@@ -1,0 +1,219 @@
+.uniform-img {
+    width: 100% !important;
+    height: 260px !important;
+    object-fit: cover !important;
+    background: #eee;
+    border-radius: 0 !important;
+}
+
+body {
+    font-family: 'Inter', 'Plus Jakarta Sans', Arial, sans-serif !important;
+    background: #f7f7f7;
+    color: #222;
+    min-height: 100vh;
+}
+
+.container {
+    flex: 1;
+    max-width: 1200px;
+}
+
+.navbar {
+    height: 5rem;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.navbar a {
+    font-size: 1.1rem;
+    letter-spacing: 0.02em;
+    transition: background 0.2s, color 0.2s, transform 0.2s;
+}
+.navbar a:hover {
+    cursor: pointer;
+    background: #f7f7f7;
+    color: #fe424d !important;
+    transform: scale(1.08);
+    border-radius: 8px;
+}
+.fa-compass {
+    color: #fe424d;
+    font-size: 2.2rem;
+}
+.nav-link {
+    color: #222 !important;
+    font-weight: 500;
+}
+
+/* Footer */
+.f-info-links a {
+    text-decoration: none;
+    color: #222 !important;
+    font-size: 1.05rem;
+    margin: 0 0.5rem;
+}
+.f-info-links a:hover {
+    text-decoration: underline;
+    color: #fe424d !important;
+}
+.f-info-links, .f-info-socials, .f-info-brand {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.f-info-socials i {
+    margin-right: 1.2rem;
+    font-size: 1.3rem;
+    color: #fe424d;
+    transition: color 0.2s;
+}
+.f-info-socials i:hover {
+    color: #222;
+}
+.f-info {
+    height: 7rem;
+    text-align: center;
+    background: #f8f8f8;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.1rem;
+}
+
+/* Card grid and cards */
+.listing-card {
+    border-radius: 22px !important;
+    box-shadow: 0 4px 24px rgba(34,34,34,0.10);
+    transition: box-shadow 0.2s, transform 0.2s;
+    background: #fff;
+    margin-bottom: 2.5rem;
+    width: 100% !important;
+}
+.listing-card:hover {
+    box-shadow: 0 8px 32px rgba(34,34,34,0.18);
+    transform: translateY(-4px) scale(1.03);
+    border: 1.5px solid #fe424d22;
+}
+.card-img-top {
+        border-radius: 0 !important;
+        width: 100% !important;
+        object-fit: cover !important;
+        background: #eee;
+        display: block;
+}
+.img-ratio-box {
+    width: 100%;
+    height: 260px;
+    background: #eee;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+}
+.img-ratio-box img.uniform-img,
+.img-ratio-box img.card-img-top {
+/* Ensure .col in card grid always fills available width */
+.row .col {
+    width: 100% !important;
+    flex: 1 0 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    min-width: 0 !important;
+}
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    border-radius: 0 !important;
+    display: block;
+}
+}
+.card-body {
+    padding: 1.1rem 1.2rem 1.2rem 1.2rem;
+}
+.card-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+.badge {
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+}
+.listing-link {
+    text-decoration: none !important;
+    color: inherit;
+}
+.listing-link:hover {
+    color: #fe424d;
+}
+
+/* Show page */
+.show-img {
+    height: 340px;
+    object-fit: cover;
+    border-radius: 0 !important;
+}
+.show-card {
+    border-radius: 22px !important;
+    box-shadow: 0 4px 24px rgba(34,34,34,0.10);
+    background: #fff;
+}
+.show-card .card-title {
+    font-size: 2rem;
+    font-weight: 700;
+}
+.show-card .badge {
+    font-size: 1.1rem;
+}
+.show-card .card-text {
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+/* Buttons */
+.add-btn, .edit-btn {
+    background: #fe424d !important;
+    border: none !important;
+    color: #fff !important;
+    font-size: 1.1rem;
+    font-weight: 500;
+    border-radius: 8px;
+    padding: 0.5rem 1.5rem;
+    transition: background 0.2s, color 0.2s;
+}
+.add-btn:hover, .edit-btn:hover {
+    background: #ff5a5f !important;
+    color: #fff !important;
+}
+.btn-outline-danger {
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    padding: 0.5rem 1.5rem;
+}
+
+/* Responsive tweaks */
+@media (max-width: 991px) {
+    .card-img-top, .show-img {
+        min-height: 180px;
+        max-height: 200px;
+    }
+    .show-card .card-title {
+        font-size: 1.4rem;
+    }
+}
+@media (max-width: 767px) {
+    .container {
+        padding: 0 0.5rem;
+    }
+    .card-body {
+        padding: 0.8rem 0.7rem 1rem 0.7rem;
+    }
+    .show-card .card-title {
+        font-size: 1.1rem;
+    }
+}
