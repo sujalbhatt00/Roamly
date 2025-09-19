@@ -3,30 +3,37 @@
    <div class="row mt-3">
       <div class="col-8 offset-2">
    <h3> Edit your Listing</h3>
-    <form method="POST" action="/listings/<%=listing._id%>/?_method=PUT">
+    <form method="POST" action="/listings/<%=listing._id%>/?_method=PUT" novalidate class="needs-validation">
       <div class="mb-3">
           <label for="title" class="form-label">Title</label>
          <input name="listing[title]" value="<%=listing.title%>"type="text" class="form-control" >
+       <div class="valid-feedback">title looks good</div>
+        <div class="invalid-feedback">Please enter a valid title</div>
       </div>
         
           
      <div class="mb-3">
       <label for="Description" class="form-label">Description</label>
          <textarea name="listing[description]" class="form-control" type="text"> <%=listing.description%></textarea>
-     </div>
+      <div class="invalid-feedback">Please enter a short description</div>
+      </div>
          
         <div  class="mb-3">
            <label for="Image" class="form-label">Image</label>
          <input name="listing[image]" type="text" value="<%=listing.image%>" class="form-control">
-        </div>
+       <div class="invalid-feedback">Please enter a valid image</div>  
+      </div>
         
             <div class="row"> <div class="mb-3 col-md-4">
             <label for="Price" class="form-label">Price</label>
-         <input name="listing[price]" value="<%=listing.price%>" type="number"  class="form-control"></div>
+         <input name="listing[price]" value="<%=listing.price%>" type="number" required  class="form-control">
+       <div class="invalid-feedback">The price should be valid</div>
+      </div>
         
     <div class="mb-3 col-md-8">    
        <label for="country" class="form-label">Country</label>
       <input name="listing[country]" value="<%=listing.country%>" type="text"  class="form-control">
+       <div class="invalid-feedback">Country should be valid</div>
    </div>
   </div>
                    
@@ -40,5 +47,6 @@
     </form>
        </div> 
    </div>
+   <script src="/js/script.js"></script>
 </body>
 </html> 

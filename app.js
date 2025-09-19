@@ -12,7 +12,7 @@ const methodOverride = require("method-override");
 app.use(methodOverride("_method"));
 const ejsMate=require("ejs-mate")
 app.engine("ejs",ejsMate)
-
+const wrapAsync=require("./utils/wrapAsync")
 
 
 const MONGO_URL="mongodb://127.0.0.1:27017/wanderlust";
@@ -44,10 +44,16 @@ app.get("/listing",async(req,res)=>{
     const listing=await Listing.findById(id);
     res.render("listings/show.ejs",{listing}) 
 })
- app.post("/listings",async(req,res)=>{
+//route handler middleware 
+ app.post("/listings",async(req,res,next)=>{
+try{
     const newlisting=new Listing(req.body.listing); 
     await newlisting.save();
     res.redirect("/listing")
+}
+catch(err){
+    next(err);
+}
  })
  app.get("/listings/:id/edit",async(req,res)=>{
      let {id}=req.params;
@@ -67,7 +73,11 @@ app.delete("/listings/:id",async(req,res)=>{
     let{id}=req.params;
     await Listing.findByIdAndDelete(id);
     res.redirect("/listing")
+});
+app.use((err,req,res,next)=>{
+res.send("something went wrong")
 })
+
 app.listen(8080,()=>{
     console.log("server is running");
 }) 
