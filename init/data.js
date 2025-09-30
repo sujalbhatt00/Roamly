@@ -17,7 +17,7 @@ const sampleListings = [
   },
   {
     title: "City Center Apartment",
-    description: "Modern apartment located in the heart of Mumbai",
+    description: "Modern apartment located in the heart of Mumbai", 
     image: "https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=800&q=80",
     price: 2200,
     location: "Mumbai",

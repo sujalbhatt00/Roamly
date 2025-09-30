@@ -8,20 +8,17 @@ const reviewSchema=new Schema({
         min:1,
         max:5
     },
-    createdAt:{
-        type:Date,
-        default:Date.now()
-    },
-    author:{
+    author: {
         name: {
             type: String,
             required: true
         },
-        profilePic: {
-            type: String,
-            default: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
-        }
+      
+    },
+    createdAt:{
+        type:Date,
+        default:Date.now
     }
 });
- 
+
 module.exports=mongoose.model("Review",reviewSchema);
