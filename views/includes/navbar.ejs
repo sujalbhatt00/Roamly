@@ -1,101 +1,28 @@
+
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
-  <div class="container-fluid">
-    <!-- Brand / Logo -->
-    <span class="navbar-brand fw-bold text-primary d-flex align-items-center me-4">
-      <i class="fa-regular fa-compass me-2"></i> Roamly
+  <div class="container-fluid d-flex align-items-center">
+    <span class="navbar-brand d-flex align-items-center me-3" style="pointer-events:none;user-select:none;">
+      <img src="/images/ROAMLY.png" alt="ROAMLY" style="height:36px;object-fit:contain;">
     </span>
 
-    <!-- Toggle button for mobile -->
-    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" 
-            data-bs-target="#navbarNav" aria-controls="navbarNav" 
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarNav" aria-controls="navbarNav"
             aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <!-- Nav Links -->
     <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav me-auto">
+      <ul class="navbar-nav me-auto align-items-center">
         <li class="nav-item">
           <a class="nav-link active" href="/">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/listing">All Listings</a>
+          <a class="nav-link" href="/listings">All Listings</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="/listings/new">Add New Listing</a>
         </li>
-      </ul>
+      </ul
     </div>
   </div>
 </nav>
-
-<style>
-  .navbar {
-    font-size: 1rem;
-    font-weight: 500;
-    z-index: 1030; /* High z-index to stay above content */
-  }
-
-  .navbar .nav-link {
-    margin-right: 1rem;
-    transition: color 0.3s ease, transform 0.2s ease;
-    padding: 0.75rem 1rem; /* Better touch targets for mobile */
-  }
-
-  .navbar .nav-link:hover {
-    color: #0d6efd;
-    transform: translateY(-2px);
-  }
-
-  .navbar .nav-link.active {
-    color: #0d6efd;
-    font-weight: 600;
-  }
-
-  /* NON-CLICKABLE BRAND STYLING */
-  .navbar-brand {
-    cursor: default;
-    user-select: none;
-  }
-
-  /* MOBILE SPECIFIC FIXES */
-  @media (max-width: 991.98px) {
-    .navbar-collapse {
-      background-color: white;
-      border-radius: 8px;
-      margin-top: 10px;
-      padding: 1rem;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-      border: 1px solid rgba(0, 0, 0, 0.05);
-    }
-
-    .navbar .nav-link {
-      padding: 0.75rem 0;
-      border-bottom: 1px solid #f8f9fa;
-      margin-right: 0;
-    }
-
-    .navbar .nav-link:last-child {
-      border-bottom: none;
-    }
-
-    .navbar-toggler {
-      padding: 0.25rem 0.5rem;
-      border: 1px solid rgba(0, 0, 0, 0.1);
-    }
-
-    .navbar-toggler:focus {
-      box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
-    }
-  }
-
-  /* ENSURE CONTENT DOESN'T OVERLAP */
-  .container-fluid ~ * {
-    margin-top: 20px;
-  }
-
-  /* SMOOTH TOGGLE ANIMATION */
-  .navbar-collapse {
-    transition: all 0.3s ease-in-out;
-  }
-</style>

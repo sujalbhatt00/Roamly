@@ -25,6 +25,9 @@
           <form method="POST" action="/listings/<%= listing._id %>?_method=delete" class="d-inline">
             <button type="submit" class="btn btn-outline-danger px-4">Delete</button>
           </form>
+          <form method="POST" action="/bookings/create-checkout-session/<%= listing._id %>" class="d-inline">
+            <button type="submit" class="btn btn-primary px-4">Book Now</button>
+          </form>
         </div>
       </div>
     </div>
@@ -161,11 +164,11 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Form validation script loaded');
     
     form.addEventListener('submit', function(event) {
-        console.log('🔥 FORM SUBMIT TRIGGERED!');
+        console.log(' FORM SUBMIT TRIGGERED!');
         
         let isValid = true;
         
-        // Validate name
+       
         if (!nameInput.value.trim()) {
             nameInput.classList.add('is-invalid');
             isValid = false;
@@ -176,7 +179,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('✅ Name validated');
         }
         
-        // Validate rating
+   
         const selectedRating = document.querySelector('input[name="review[rating]"]:checked');
         if (!selectedRating) {
             ratingError.style.display = 'block';
@@ -186,8 +189,7 @@ document.addEventListener('DOMContentLoaded', function() {
             ratingError.style.display = 'none';
             console.log('✅ Rating validated:', selectedRating.value);
         }
-        
-        // Validate comment
+    
         if (!commentInput.value.trim()) {
             commentInput.classList.add('is-invalid');
             isValid = false;
@@ -204,19 +206,19 @@ document.addEventListener('DOMContentLoaded', function() {
             return false;
         }
         
-        // Log form data
+     
         const formData = new FormData(form);
         const data = {};
         for (let [key, value] of formData.entries()) {
             data[key] = value;
         }
         
-        console.log('✅ ALL VALIDATION PASSED');
-        console.log('📝 Form data:', data);
-        console.log('📍 Form action:', form.action);
-        console.log('🚀 SUBMITTING FORM...');
+        console.log(' ALL VALIDATION PASSED');
+        console.log(' Form data:', data);
+        console.log(' Form action:', form.action);
+        console.log(' SUBMITTING FORM...');
         
-        // Form will submit normally after this
+     
     });
 });
 </script>
