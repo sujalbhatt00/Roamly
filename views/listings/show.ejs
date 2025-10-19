@@ -2,31 +2,56 @@
 
 <div class="row mt-4 mb-4">
   <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1">
-    <div class="card shadow show-card border-0" style="border-radius:22px;overflow:hidden;">
-      <img src="<%= listing.image %>" class="card-img-top show-img" alt="Listing image" style="height:340px;object-fit:cover;">
+    <div class="card shadow show-card border-0" style="border-radius:22px; overflow:hidden;">
+      <!-- Listing Image -->
+      <img 
+        src="<%= listing.image || 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop' %>" 
+        class="card-img-top show-img" 
+        alt="Listing image" 
+        style="height:340px; object-fit:cover;"
+        onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop';">
+      
       <div class="card-body p-4">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-          <span class="badge bg-light text-dark border px-2 py-1" style="font-size:1rem;">
+        <!-- Location & Price -->
+        <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap">
+          <span class="badge bg-light text-dark border px-2 py-1 mb-1" style="font-size:1rem;">
             <i class="fa-solid fa-location-dot me-1"></i> <%= listing.location %>
           </span>
-          <span class="badge bg-danger text-white px-2 py-1" style="font-size:1.1rem;">
+          <span class="badge bg-danger text-white px-2 py-1 mb-1" style="font-size:1.1rem;">
             ₹<%= listing.price ? listing.price.toLocaleString("en-in") : "N/A" %>
           </span>
         </div>
+
+        <!-- Title -->
         <h2 class="card-title mb-2" style="font-weight:700;font-size:2rem;"><%= listing.title %></h2>
+
+        <!-- Country -->
         <div class="mb-3">
           <span class="badge bg-secondary px-2 py-1" style="font-size:1rem;">
             <i class="fa-solid fa-flag me-1"></i> <%= listing.country %>
           </span>
         </div>
+
+        <!-- Owner Info -->
+        <div class="d-flex align-items-center mb-3">
+          <img src="<%= listing.owner && listing.owner.avatar ? listing.owner.avatar : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png' %>" 
+               alt="Owner" class="rounded-circle me-2" style="width:45px;height:45px;object-fit:cover;">
+          <span class="fw-bold"> owned by <%= listing.owner ? listing.owner.username : 'anonymous' %></span>
+        </div>
+
+        <!-- Description -->
         <p class="card-text mb-3" style="font-size:1.1rem;line-height:1.6;"><%= listing.description %></p>
-        <div class="d-flex gap-3">
-          <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark edit-btn px-4">Edit</a>
-          <form method="POST" action="/listings/<%= listing._id %>?_method=delete" class="d-inline">
-            <button type="submit" class="btn btn-outline-danger px-4">Delete</button>
-          </form>
+
+        <!-- Actions -->
+        <div class="actions-group d-flex gap-3 flex-wrap">
+         <% if (currUser && listing.owner && (listing.owner._id.equals(currUser._id) || currUser.username === 'sujalbhatt')) { %>
+            <a href="/listings/<%= listing._id %>/edit" class="btn action-btn btn-dark edit-btn">Edit</a>
+            <form method="POST" action="/listings/<%= listing._id %>?_method=delete" class="d-inline">
+              <button type="submit" class="btn action-btn btn-outline-danger">Delete</button>
+            </form>
+          <% } %>  
           <form method="POST" action="/bookings/create-checkout-session/<%= listing._id %>" class="d-inline">
-            <button type="submit" class="btn btn-primary px-4">Book Now</button>
+            <button type="submit" class="btn action-btn book-btn">Book Now</button>
           </form>
         </div>
       </div>
@@ -34,29 +59,25 @@
   </div>
 </div>
 
-<div class="col-8 offset-2 mb-3">
+<!-- Review Form -->
+<% if(currUser) { %>
+<div class="col-10 offset-1 col-md-8 offset-md-2 mb-3">
   <hr>
   <h4>Leave a Review</h4>
   <form id="reviewForm" action="/listings/<%=listing._id %>/reviews" method="post">
     <div class="mb-3 mt-3">
       <label for="authorName" class="form-label">Your Name</label>
-      <input type="text" class="form-control" name="review[author][name]" id="authorName" required>
+      <input type="text" class="form-control" name="review[author][name]" id="authorName" value="<%= currUser.username %>" required>
       <div class="invalid-feedback">Please enter your name</div>
     </div>
     
     <div class="mb-3 mt-3">
       <label class="form-label">Rating</label>
       <div class="star-rating">
-        <input type="radio" name="review[rating]" value="1" id="star1" required>
-        <label for="star1" class="star">★</label>
-        <input type="radio" name="review[rating]" value="2" id="star2">
-        <label for="star2" class="star">★</label>
-        <input type="radio" name="review[rating]" value="3" id="star3">
-        <label for="star3" class="star">★</label>
-        <input type="radio" name="review[rating]" value="4" id="star4">
-        <label for="star4" class="star">★</label>
-        <input type="radio" name="review[rating]" value="5" id="star5">
-        <label for="star5" class="star">★</label>
+        <% for(let i = 5; i >= 1; i--) { %>
+          <input type="radio" name="review[rating]" value="<%= i %>" id="star<%= i %>" required>
+          <label for="star<%= i %>" class="star">★</label>
+        <% } %>
       </div>
       <div id="rating-error" class="text-danger" style="display:none;">Please select a rating</div>
     </div>
@@ -69,156 +90,119 @@
     
     <button type="submit" class="btn btn-outline-dark">Submit Review</button>
   </form>
+</div>
+<% } %>
 
-  <div>
-    <hr>
-    <h4>All Reviews</h4>
-    <% if (listing.reviews && listing.reviews.length > 0) { %>
-      <div class="row">
-        <% for (let review of listing.reviews) { %>
-          <div class="col-12 mb-3">
-            <div class="card">
-              <div class="card-body">
-                <div class="d-flex align-items-start mb-3">
-                  <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
-                    alt="Profile Picture"
-                    class="rounded-circle me-3"
-                    style="width: 50px; height: 50px; object-fit: cover;">
-                  <div class="flex-grow-1">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                      <div>
-                        <h6 class="mb-1 fw-bold"><%= review.author && review.author.name ? review.author.name : 'Anonymous' %></h6>
-                        <div class="text-warning mb-1">
-                          <% for (let i = 1; i <= 5; i++) { %>
-                            <% if (i <= review.rating) { %>
-                              <i class="fas fa-star"></i>
-                            <% } else { %>
-                              <i class="far fa-star"></i>
-                            <% } %>
+<!-- Reviews List -->
+<div class="col-10 offset-1 col-md-8 offset-md-2 mb-5">
+  <hr>
+  <h4>All Reviews</h4>
+  <% if (listing.reviews && listing.reviews.length > 0) { %>
+    <div class="row">
+      <% for (let review of listing.reviews) { %>
+        <div class="col-12 mb-3">
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <div class="d-flex align-items-start mb-3">
+                <img src="<%= review.author && review.author.avatar ? review.author.avatar : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png' %>"
+                  alt="Profile Picture"
+                  class="rounded-circle me-3"
+                  style="width:50px; height:50px; object-fit:cover;">
+                <div class="flex-grow-1">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div>
+                      <h6 class="mb-1 fw-bold"><%= review.author && review.author.name ? review.author.name : 'Anonymous' %></h6>
+                      <div class="text-warning mb-1">
+                        <% for (let i = 1; i <= 5; i++) { %>
+                          <% if (i <= review.rating) { %>
+                            <i class="fas fa-star"></i>
+                          <% } else { %>
+                            <i class="far fa-star"></i>
                           <% } %>
-                          <span class="ms-2 text-muted">(<%= review.rating %>/5)</span>
-                        </div>
+                        <% } %>
+                        <span class="ms-2 text-muted">(<%= review.rating %>/5)</span>
                       </div>
-                      <small class="text-muted"><%= new Date(review.createdAt).toLocaleDateString() %></small>
                     </div>
-                    <p class="card-text mb-2"><%= review.comment %></p>
-                    
+                    <small class="text-muted"><%= new Date(review.createdAt).toLocaleDateString() %></small>
+                  </div>
+                  <p class="card-text mb-2"><%= review.comment %></p>
+                  
+                  <% if(currUser && review.author && review.author._id && review.author._id.equals(currUser._id)) { %>
                     <form method="POST" action="/listings/<%=listing._id%>/reviews/<%=review._id%>?_method=DELETE" class="d-inline">
                       <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this review?')">
                         Delete Review
                       </button>
                     </form>
-                    
-                  </div>
+                  <% } %>
                 </div>
               </div>
             </div>
           </div>
-        <% } %>
-      </div>
-    <% } else { %>
-      <p class="text-muted">No reviews yet. Be the first to leave a review!</p>
-    <% } %>
-  </div>
+        </div>
+      <% } %>
+    </div>
+  <% } else { %>
+    <p class="text-muted">No reviews yet. Be the first to leave a review!</p>
+  <% } %>
 </div>
 
+<!-- Star Rating CSS -->
 <style>
 .star-rating {
-    display: flex;
-    gap: 5px;
-    margin-bottom: 10px;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  gap: 5px;
+  margin-bottom: 10px;
 }
-
-.star-rating input[type="radio"] {
-    display: none;
-}
-
-.star-rating label {
-    cursor: pointer;
-    font-size: 24px;
-    color: #ddd;
-    transition: color 0.3s;
-}
-
-.star-rating input[type="radio"]:checked ~ label,
-.star-rating label:hover,
-.star-rating label:hover ~ label {
-    color: #ffc107;
-}
-
-/* Fix for proper star highlighting */
-.star-rating input[type="radio"]:checked + label,
-.star-rating input[type="radio"]:checked + label ~ label {
-    color: #ffc107;
-}
+.star-rating input[type="radio"] { display: none; }
+.star-rating label { cursor: pointer; font-size: 30px; color: #ddd; transition: color 0.3s; }
+.star-rating input[type="radio"]:checked ~ label { color: #ffc107; }
+.star-rating label:hover, .star-rating label:hover ~ label { color: #ffc107; }
 </style>
 
+<!-- Form Validation JS -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('reviewForm');
-    const nameInput = document.getElementById('authorName');
-    const commentInput = document.getElementById('comment');
-    const ratingInputs = document.querySelectorAll('input[name="review[rating]"]');
-    const ratingError = document.getElementById('rating-error');
-    
-    console.log('Form validation script loaded');
-    
-    form.addEventListener('submit', function(event) {
-        console.log(' FORM SUBMIT TRIGGERED!');
-        
-        let isValid = true;
-        
-       
-        if (!nameInput.value.trim()) {
-            nameInput.classList.add('is-invalid');
-            isValid = false;
-            console.log('❌ Name validation failed');
-        } else {
-            nameInput.classList.remove('is-invalid');
-            nameInput.classList.add('is-valid');
-            console.log('✅ Name validated');
-        }
-        
-   
-        const selectedRating = document.querySelector('input[name="review[rating]"]:checked');
-        if (!selectedRating) {
-            ratingError.style.display = 'block';
-            isValid = false;
-            console.log('❌ Rating validation failed');
-        } else {
-            ratingError.style.display = 'none';
-            console.log('✅ Rating validated:', selectedRating.value);
-        }
-    
-        if (!commentInput.value.trim()) {
-            commentInput.classList.add('is-invalid');
-            isValid = false;
-            console.log('❌ Comment validation failed');
-        } else {
-            commentInput.classList.remove('is-invalid');
-            commentInput.classList.add('is-valid');
-            console.log('✅ Comment validated');
-        }
-        
-        if (!isValid) {
-            console.log('❌ FORM VALIDATION FAILED - PREVENTING SUBMIT');
-            event.preventDefault();
-            return false;
-        }
-        
-     
-        const formData = new FormData(form);
-        const data = {};
-        for (let [key, value] of formData.entries()) {
-            data[key] = value;
-        }
-        
-        console.log(' ALL VALIDATION PASSED');
-        console.log(' Form data:', data);
-        console.log(' Form action:', form.action);
-        console.log(' SUBMITTING FORM...');
-        
-     
-    });
+  const form = document.getElementById('reviewForm');
+  if (!form) return;
+
+  const nameInput = document.getElementById('authorName');
+  const commentInput = document.getElementById('comment');
+  const ratingInputs = document.querySelectorAll('input[name="review[rating]"]');
+  const ratingError = document.getElementById('rating-error');
+
+  form.addEventListener('submit', function(event) {
+    let isValid = true;
+
+    if (!nameInput.value.trim()) {
+      nameInput.classList.add('is-invalid');
+      isValid = false;
+    } else {
+      nameInput.classList.remove('is-invalid');
+      nameInput.classList.add('is-valid');
+    }
+
+    const selectedRating = document.querySelector('input[name="review[rating]"]:checked');
+    if (!selectedRating) {
+      ratingError.style.display = 'block';
+      isValid = false;
+    } else {
+      ratingError.style.display = 'none';
+    }
+
+    if (!commentInput.value.trim()) {
+      commentInput.classList.add('is-invalid');
+      isValid = false;
+    } else {
+      commentInput.classList.remove('is-invalid');
+      commentInput.classList.add('is-valid');
+    }
+
+    if (!isValid) {
+      event.preventDefault();
+      return false;
+    }
+  });
 });
 </script>

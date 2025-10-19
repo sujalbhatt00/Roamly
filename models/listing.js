@@ -6,13 +6,13 @@ const Review=require("./review.js")
 const listingSchema=new Schema({
     title:{
         type:String,
-
+        required:true
     },
     description:String,
     image:{
         type:String,
-        default:"https://unsplash.com/photos/milky-way-galaxy-over-a-small-church-at-night-aV9UbHhJdrA",
-        set: (v)=> v ==="" ?"https://unsplash.com/photos/milky-way-galaxy-over-a-small-church-at-night-aV9UbHhJdrA" : v,
+        default:"https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop",
+        set: (v)=> v ==="" ? "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop" : v,
     },
     price:Number,
     location:String,
@@ -21,15 +21,19 @@ const listingSchema=new Schema({
         {
             type:Schema.Types.ObjectId,
             ref:"Review"
-        }
-    ]
+        } 
+    ],
+    owner:{
+        type:Schema.Types.ObjectId,
+        ref:"User"
+    }
 });
 
 listingSchema.post("findOneAndDelete",async(listing)=>{
    if(listing){
      await Review.deleteMany({_id: {$in:listing.reviews}})
    }
-
 })
+
 const Listing=mongoose.model("Listing",listingSchema);
 module.exports=Listing;

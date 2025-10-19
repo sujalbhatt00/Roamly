@@ -72,7 +72,7 @@ body {
     transition: color 0.2s;
 }
 .f-info-socials i:hover {
-    color: #717171;
+    color: #868686;
 }
 .f-info {
     height: 7rem;
@@ -84,6 +84,13 @@ body {
     align-items: center;
     font-size: 0.9rem;
     border-top: 1px solid #ebebeb;
+    bottom:0;
+   position: fixed;
+left: 0;
+right: 0;
+z-index: 999;
+
+   
 }
 
 .listing-card {
@@ -283,25 +290,7 @@ body {
     }
 }
 
-/* @media (max-width: 767px) {
-    .container {
-        padding: 0 1rem;
-    }
-    .card-body {
-        padding: 0 !important;
-    }
-    .card-title,
-    .badge {
-        font-size: 0.85rem !important;
-    }
-    .img-ratio-box {
-        border-radius: 10px;
-        margin-bottom: 0.5rem;
-    }
-    .show-card .card-title {
-        font-size: 1.2rem;
-    }
-} */
+
 
 
 .star-rating {
@@ -432,4 +421,132 @@ body {
 
 .navbar-collapse {
   transition: all 0.3s ease-in-out;
+}
+
+.book-btn {
+    background: linear-gradient(135deg, #ff385c 0%, #ff6b81 100%);
+    border: none !important;
+    color: #fff !important;
+    font-weight: 700;
+    border-radius: 10px !important;
+    padding: 0.75rem 1.25rem !important;
+    box-shadow: 0 6px 18px rgba(255,56,92,0.18);
+    transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+}
+.book-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(255,56,92,0.2);
+    opacity: 0.98;
+}
+.book-btn:active,
+.book-btn:focus {
+    transform: translateY(0);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+    outline: none !important;
+}
+
+/* Small variant used on listing cards */
+.book-btn-sm {
+    background: linear-gradient(135deg, #ff385c 0%, #ff6b81 100%);
+    color: #fff !important;
+    border: none !important;
+    font-weight: 700;
+    border-radius: 8px !important;
+    padding: 0.35rem 0.6rem !important;
+    font-size: 0.85rem !important;
+    box-shadow: 0 6px 14px rgba(255,56,92,0.12);
+}
+
+/* Make sure primary/bootstrap styles don't override */
+.btn.book-btn,
+.btn.book-btn-sm {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (max-width: 575px) {
+    .book-btn { padding: 0.6rem 1rem !important; font-size: 0.95rem; }
+    .book-btn-sm { padding: 0.3rem 0.45rem !important; font-size: 0.8rem; }
+}
+
+/* Actions group: make action buttons equal size and inline */
+.actions-group {
+    align-items: center;
+}
+
+.action-btn {
+    min-width: 120px;
+    height: 44px;
+    padding: 0 1rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 10px !important;
+    font-weight: 700 !important;
+}
+
+/* Hover + focus micro-animations for all action buttons */
+.action-btn,
+.book-btn,
+.book-btn-sm {
+    transition: transform 0.14s cubic-bezier(.2,.8,.2,1), box-shadow 0.14s ease, opacity 0.12s ease;
+}
+.action-btn:hover:not(:disabled),
+.book-btn:hover:not(:disabled) {
+    transform: translateY(-3px) scale(1.01);
+    filter: brightness(1.03);
+}
+.action-btn:active,
+.book-btn:active {
+    transform: translateY(0) scale(0.997);
+}
+
+
+/* Ensure outline and spacing harmony with existing btn classes */
+.action-btn.btn-outline-danger {
+    background: transparent !important;
+    color: #222 !important;
+    border: 1px solid rgba(0,0,0,0.08) !important;
+}
+
+@media (max-width: 575px) {
+    /* By default keep action buttons in one row on phones and distribute width evenly */
+    .actions-group { flex-direction: row; gap: 0.5rem; }
+    /* Make Delete and Book expand, keep Edit compact */
+    .actions-group .action-btn { min-width: 0; }
+    .actions-group .action-btn:not(.edit-btn) { flex: 1 1 0; }
+    /* If you explicitly want stacking behavior, add .stack-mobile to the container */
+    .actions-group.stack-mobile { flex-direction: column; }
+    .actions-group.stack-mobile .action-btn { width: 100%; }
+}
+
+/* Very small devices fallback: reduce padding/height so buttons keep their shape */
+@media (max-width: 380px) {
+    .action-btn { min-width: 80px; height: 40px; padding: 0 0.5rem !important; font-size: 0.92rem; }
+    .book-btn { padding: 0 0.6rem !important; }
+    /* If three buttons can't fit, allow wrap into two columns for better fit */
+    .actions-group { flex-wrap: wrap; }
+    .actions-group .action-btn { flex: 1 1 45%; }
+    .actions-group .action-btn.book-btn { flex-basis: 100%; }
+    /* Keep Edit button compact on very narrow devices */
+    .action-btn.edit-btn { flex: 0 0 auto; padding: 0 0.6rem !important; }
+    /* Optional icon-only fallback when you include an <i> inside the edit button */
+    .action-btn.edit-btn i { display: inline-block; }
+    .action-btn.edit-btn .btn-text { display: inline-block; }
+}
+
+@media (max-width: 320px) {
+    .action-btn.edit-btn { padding: 0.35rem 0.5rem !important; }
+    .action-btn.edit-btn .btn-text { display: none; } /* hide text to conserve space if needed */
+}
+
+.nav-item.navlogin {
+    margin-left: auto; /* This pushes the button to the far right */
+}
+.toast-container {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  z-index: 1050;
 }

@@ -1,0 +1,83 @@
+<%# HTML (The <button> element has been removed) %>
+<% if(success && success.length > 0){ %>
+<div class="alert alert-success fade show flash-toast" role="alert">
+  <%= success %>
+  <div class="alert-progress"></div>
+</div>
+<% } %>
+
+<% if(error && error.length > 0){ %>
+<div class="alert alert-danger fade show flash-toast" role="alert">
+  <%= error %>
+  <div class="alert-progress"></div>
+</div>
+<% } %>
+
+
+<%# CSS (No changes needed here) %>
+<style>
+  .flash-toast {
+    min-width: 300px;
+    max-width: 350px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border-radius: 0.5rem;
+    border: none;
+    /* This makes the text and progress bar the only elements */
+    padding-right: 1rem; 
+  }
+
+  .alert.fade {
+    transition: opacity 0.45s ease, transform 0.45s ease;
+    will-change: opacity, transform;
+  }
+  .alert.fade:not(.show) {
+    opacity: 0;
+    transform: translateY(-8px);
+    pointer-events: none;
+  }
+
+  @keyframes progress-deplete {
+    from { width: 100%; }
+    to { width: 0%; }
+  }
+
+  .alert {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .alert-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 5px;
+    background-color: rgba(0, 0, 0, 0.25);
+    animation: progress-deplete 3s linear forwards;
+  }
+</style>
+
+
+<%# JavaScript (No changes needed, it will auto-close) %>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  document.querySelectorAll('.alert').forEach(function(a){
+    setTimeout(function(){
+      try {
+        if (window.bootstrap && bootstrap.Alert) {
+          var bsAlert = bootstrap.Alert.getOrCreateInstance(a);
+          bsAlert.close();
+          return;
+        }
+      } catch (e) {}
+      a.classList.remove('show');
+      var fallback = setTimeout(function(){
+        if (a.parentNode) a.parentNode.removeChild(a);
+      }, 500);
+      a.addEventListener('transitionend', function(){
+        clearTimeout(fallback);
+        if (a.parentNode) a.parentNode.removeChild(a);
+      }, { once: true });
+    }, 3000);
+  });
+});
+</script>

@@ -1,5 +1,5 @@
 {
-  "name": "wanderlust",
+  "name": "Roamly",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -20,6 +20,9 @@
     "method-override": "^3.0.0",
     "mongoose": "^8.18.0",
     "nodemon": "^3.1.10",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0",
+    "passport-local-mongoose": "^8.0.0",
     "session": "^0.1.0",
     "stripe": "^12.9.0"
   }

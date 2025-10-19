@@ -1,5 +1,4 @@
 <% layout("/layouts/boilerplate") %>
-<%=success%>
 <h2 class="mb-4 mt-3" style="font-weight:600;font-size:1.8rem;color:#222;">All Listings</h2>
 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 listings-grid">
 
@@ -8,7 +7,11 @@
       <a href="/listings/<%=listing._id%>" class="listing-link">
         <div class="listing-card">
           <div class="img-ratio-box">
-            <img src="<%=listing.image%>" class="card-img-top uniform-img" alt="<%=listing.title%>">
+            <img 
+              src="<%=listing.image || 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop'%>" 
+              class="card-img-top uniform-img" 
+              alt="<%=listing.title%>"
+              onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop';">
           </div>
           
           <div class="card-body">
@@ -27,7 +30,7 @@
             </p>
             <div class="mt-2">
               <form method="POST" action="/bookings/create-checkout-session/<%=listing._id%>">
-                <button type="submit" class="btn btn-sm btn-primary">Book Now</button>
+                <button type="submit" class="btn btn-sm book-btn-sm">Book Now</button>
               </form>
             </div>
           </div>

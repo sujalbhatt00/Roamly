@@ -1,7 +1,7 @@
-
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
   <div class="container-fluid d-flex align-items-center">
-    <span class="navbar-brand d-flex align-items-center me-3" style="pointer-events:none;user-select:none;">
+
+    <span class="navbar-brand d-flex align-items-center" style="pointer-events:none;user-select:none;">
       <img src="/images/ROAMLY.png" alt="ROAMLY" style="height:36px;object-fit:contain;">
     </span>
 
@@ -12,9 +12,9 @@
     </button>
 
     <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav me-auto align-items-center">
+      <div class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link active" href="/">Home</a>
+          <a class="nav-link" href="/">Home</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="/listings">All Listings</a>
@@ -22,7 +22,29 @@
         <li class="nav-item">
           <a class="nav-link" href="/listings/new">Add New Listing</a>
         </li>
-      </ul
+      </div>
+
+      <div class="navbar-nav ms-auto">
+       
+<% if(!currUser){ %>
+  <li class="nav-item">
+    <a class="nav-link" href="/signup">Sign Up</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/login">Login</a>
+  </li>
+<% } %>
+
+<% if(currUser){ %>
+  <li class="nav-item">
+    <a class="nav-link" href="/logout">Logout</a>
+  </li>
+<% } %>
+     
+      </div>
     </div>
+
+   
+
   </div>
 </nav>
