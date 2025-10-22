@@ -5,7 +5,7 @@ const passport = require("passport");
 const wrapAsync = require("../utils/wrapAsync.js");
 const {saveRedirectUrl} = require("../middleware.js");
 
-const userController = require("../controller/user.js")
+const userController = require("../controller/users.js")
 
 
 router.route("/signup")

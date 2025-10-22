@@ -5,7 +5,7 @@
     <div class="card shadow show-card border-0" style="border-radius:22px; overflow:hidden;">
       <!-- Listing Image -->
       <img 
-        src="<%= listing.image || 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop' %>" 
+        src="<%= listing.image && listing.image.url ? listing.image.url : 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop' %>" 
         class="card-img-top show-img" 
         alt="Listing image" 
         style="height:340px; object-fit:cover;"
