@@ -1,3 +1,10 @@
+const Listing = require("./models/listing");
+const Review = require("./models/review");  
+const{reviewSchema}=require("./schema.js")
+const{listingSchema}=require("./schema.js")
+const ExpressError=require("./utils/ExpressError");
+
+
 module.exports.isLoggedIn = (req, res, next) => {
     if (!req.isAuthenticated()) {
         req.session.redirectUrl = req.originalUrl;
@@ -13,3 +20,55 @@ module.exports.saveRedirectUrl = (req, res, next) => {
     }
     next();    
 }     
+ 
+module.exports.isOwner=async(req,res,next)=>{
+    let {id}=req.params;
+   let listing=await Listing.findById(id);
+      if(!listing.owner.equals(res.locals.currUser._id)){
+    req.flash("error","You do not have permission to edit this listing")
+    return res.redirect(`/listings/${id}`);
+      }
+        next();     
+    }
+
+
+
+module.exports.validateListing = (req, res, next) => {
+    try {
+        let {error} = listingSchema.validate(req.body);
+        
+        if (error) {
+            let errMsg = error.details.map((el) => el.message).join(",")
+            req.flash("error", errMsg);
+            return res.redirect("/listings/new");  // Redirect instead of throwing
+        } else {
+            next();
+        }
+    } catch (err) {
+        console.error("Validation error:", err);
+        req.flash("error", err.message);
+        return res.redirect("/listings/new");
+    }
+}
+
+module.exports.validateReview=(req,res,next)=>{
+    let{error}=reviewSchema.validate(req.body);
+    
+    if(error){
+        let errMsg=error.details.map((el)=> el.message).join(",")
+        throw new ExpressError(400,errMsg );
+    }
+    else{
+        next();
+    }
+}
+
+module.exports.isReviewAuthor=async(req,res,next)=>{
+    let{id,reviewid}=req.params;
+    const review=await Review.findById(reviewid);
+    if(!review.author.equals(res.locals.currUser._id)){
+        req.flash("error","You do not have permission to edit this review")
+        return res.redirect(`/listings/${id}`);
+    }
+    next();
+}
