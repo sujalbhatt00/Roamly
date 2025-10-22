@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 const initdata = require("./data");
 const Listing = require("../models/listing");
+const User = require("../models/user");
 
 const MONGO_URL = 'mongodb://127.0.0.1:27017/wanderlust';
 
-// Connect to MongoDB
 async function main() {
     try {
         await mongoose.connect(MONGO_URL);
@@ -14,27 +14,29 @@ async function main() {
     }
 }
 
-// Initialize database
 const initDB = async () => {
     try {
         // Delete all existing listings
         await Listing.deleteMany({});
         console.log("Old listings removed");
-
-        // Use a valid ObjectId (24 character hex string)
-        const ownerId = new mongoose.Types.ObjectId("650cf9f7b86bad23a7df3b3e"); // Example valid ObjectId
         
-        // You can also create a new random ObjectId like this:
-        // const ownerId = new mongoose.Types.ObjectId();
+        // Find existing user or create a new one with username 'sujalbhatt'
+        let owner = await User.findOne({ username: 'sujalbhatt' });
+        if(owner){
+            console.log("Found existing user 'sujalbhatt'");
+        }
 
+
+        console.log("Using owner:", owner._id);
+        
         const listingsWithOwner = initdata.data.map(listing => ({
             ...listing,
-            owner: ownerId  // Valid ObjectId format
+            owner: owner._id
         }));
 
         // Insert listings
         await Listing.insertMany(listingsWithOwner);
-        console.log(`Database initialized! All listings belong to ID: ${ownerId}`);
+        console.log(`Database initialized! All listings belong to user: ${owner.username} (${owner._id})`);
 
     } catch (err) {
         console.log("Error initializing database:", err);
@@ -43,5 +45,4 @@ const initDB = async () => {
     }
 };
 
-// Run
 main().then(() => initDB());
