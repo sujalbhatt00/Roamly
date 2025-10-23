@@ -1,6 +1,120 @@
 <% layout("/layouts/boilerplate") %>
-<h2 class="mb-4 mt-3" style="font-weight:600;font-size:1.8rem;color:#222;">All Listings</h2>
-<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 listings-grid">
+
+
+<style>
+  #filters {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+  }
+  .filter{
+    text-align: center;
+    margin-right: 2rem;
+    margin-top: 2rem;
+    opacity: 0.7;
+  }
+  .filter:hover {
+    opacity: 1;
+    cursor: pointer;
+  }
+  .filter p{
+    font-size: 0.7rem;
+  }
+  .taxinfo {
+    display:none;
+
+  }
+  .tax-toggle {
+    border:1px solid black;
+    border-radius:1rem;
+    padding:1rem;
+    display:flex;
+    height:3.2rem;
+    align-items:center;
+    justify-content:center;
+    margin-left: 0rem;
+  }
+</style>
+
+<div id="filters">
+  <div class="filter">
+    <div><i class="fa-solid fa-fire"></i></div>
+    <p>Trending</p>
+  </div>
+
+  <div class="filter">
+    <div><i class="fa-solid fa-bed"></i></div>
+    <p>Rooms</p>
+  </div>
+
+  
+  <div class="filter">
+    <div><i class="fa-solid fa-mountain-city"></i></div>
+    <p>Iconic Cities</p>
+  </div>
+
+  
+  <div class="filter">
+    <div><i class="fa-solid fa-mountain"></i></div>
+    <p>Mountains</p>
+  </div>
+
+  
+  <div class="filter">
+    <div><i class="fa-brands fa-fort-awesome"></i></div>
+    <p>Castles</p>
+  </div>
+
+  
+  <div class="filter">
+    <div><i class="fa-solid fa-person-swimming"></i></div>
+    <p>Amazing pools</p>
+  </div>
+
+   <div class="filter">
+    <div><i class="fa-solid fa-person-swimming"></i></div>
+    <p>Camping</p>
+  </div>
+
+   <div class="filter">
+    <div><i class="fa-solid fa-cow"></i></div>
+    <p>Farms</p>
+  </div>
+
+   <div class="filter">
+    <div><i class="fa-solid fa-snowflake"></i></div>
+    <p>Arctic</p>
+  </div>
+
+   
+   <div class="filter">
+    <div><i class="fa-solid fa-ship"></i></div>
+    <p>Boats</p>
+  </div>
+
+   
+
+  <div class="tax-toggle">
+    <div class="form-check-reverse form-switch">
+      <input class="form-check-input" 
+      type="checkbox" 
+      role="switch" 
+      id="flexSwitchCheckDefault">
+
+      <label class="form-check-label" 
+      for="flexSwitchCheckDefault">Display total price after taxes
+    </label>
+  </div>
+
+  </div>
+
+
+</div>
+
+
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 listings-grid mt-3" >
 
   <% for(let listing of allListing){ %>
     <div class="col">
@@ -27,6 +141,7 @@
               <span class="badge bg-danger text-white">
                 ₹<%= listing.price ? listing.price.toLocaleString("en-in") : "N/A" %>
               </span> /night
+              <i class="taxinfo" style="font-size: 0.8rem;">&nbsp;+18% tax</i>
             </p>
             <div class="mt-2">
               <form method="POST" action="/bookings/create-checkout-session/<%=listing._id%>">
@@ -39,3 +154,16 @@
     </div>
   <% } %>
 </div>
+
+<script>
+  const toggle = document.getElementById('flexSwitchCheckDefault');
+  toggle.addEventListener('click', () => {
+    const taxInfoElements = document.querySelectorAll('.taxinfo');
+  for(info of taxInfoElements){
+    if(info.style.display==='inline')
+    info.style.display='none';
+    else  
+    info.style.display='inline';
+  }
+  })
+  </script>

@@ -37,7 +37,12 @@ const listingSchema = new Schema({
               type: [Number],
               required: true
             }
-          }
+          },
+        //   category: {
+        //     type: String,
+        //     enum: ['Mountains', 'Arctic', 'Farms', 'Cottage', 'Cabin', 'Bungalow', 'Other'],
+        //     default: 'Other'
+        //   }
     
 });
 
