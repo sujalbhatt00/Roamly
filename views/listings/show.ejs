@@ -68,19 +68,80 @@
   </div>
 </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        if (typeof maplibregl !== 'undefined') {
-            const map = new maplibregl.Map({
-                container: 'map',
-                style: 'https://api.maptiler.com/maps/streets/style.json?key=<%= mapApiKey %>',
-                center: [78.9629, 20.5937],
-                zoom: 5
-            });
-            map.addControl(new maplibregl.NavigationControl());
-            console.log('Maplibre map created!');
-        } else {
-            console.log('Maplibre GL JS not loaded');
-        }
+<<script>
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // 1. Get the API key passed from your server (from app.locals)
+    const apiKey = "<%= MAPTILER_API_KEY %>";
+    
+    if (typeof maplibregl === 'undefined') {
+        console.error("MapLibre GL JS not loaded!");
+        return;
+    }
+    
+    if (!apiKey) {
+        console.error("MapTiler API key not found!");
+        return;
+    }
+
+    // 2. Create the map
+    const map = new maplibregl.Map({
+        container: 'map',
+        style: `https://api.maptiler.com/maps/streets/style.json?key=${apiKey}`,
+        center: [78.9629, 20.5937], // Default center
+        zoom: 5
     });
+
+    map.addControl(new maplibregl.NavigationControl());
+
+    // 3. Wait for the map style to load before adding marker
+    map.on('load', function() {
+        const location = "<%= listing.location %>, <%= listing.country %>";
+
+        // 4. Check if listing has coordinates (from init.js)
+        <% if (listing.geometry && listing.geometry.coordinates && 
+              listing.geometry.coordinates[0] !== 0 && 
+              listing.geometry.coordinates[1] !== 0) { %>
+
+            // 5a. Use existing coordinates
+            const lng = <%= listing.geometry.coordinates[0] %>;
+            const lat = <%= listing.geometry.coordinates[1] %>;
+            
+            new maplibregl.Marker()
+                .setLngLat([lng, lat])
+                .addTo(map);
+            
+            map.flyTo({
+                center: [lng, lat],
+                zoom: 12
+            });
+
+        <% } else { %>
+
+            // 5b. No coordinates found, geocode the address
+            fetch(`https://api.maptiler.com/geocoding/${encodeURIComponent(location)}.json?key=${apiKey}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.features && data.features.length > 0) {
+                        const coords = data.features[0].center;
+                        
+                        new maplibregl.Marker()
+                            .setLngLat(coords)
+                            .addTo(map);
+                        
+                        map.flyTo({
+                            center: coords,
+                            zoom: 12
+                        });
+                    } else {
+                        console.error("Geocoding failed: Address not found.");
+                    }
+                })
+                .catch(err => {
+                    console.error("Geocoding error:", err);
+                });
+        <% } %>
+    });
+
+});
 </script>
