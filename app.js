@@ -24,7 +24,7 @@ const userRouter=require("./routes/user.js");
 const reviewRouter=require("./routes/review.js");
 const listingsRouter=require("./routes/listing.js");
 const bookingsRouter=require("./routes/bookings.js");
-
+app.use('/maptiler', express.static(__dirname + '/node_modules/@maptiler/sdk/dist')); 
 const sessionOptions={
     secret:"mysupersecretcode",
     resave:false,
@@ -49,6 +49,7 @@ app.use((req,res,next)=>{
     console.log(res.locals.success);
     res.locals.error=req.flash("error");
     res.locals.currUser=req.user;
+    res.locals.mapApiKey = process.env.MAPTILER_API_KEY;
     next();
 });
 

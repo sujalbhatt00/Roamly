@@ -6,28 +6,50 @@
     <title>Roamly</title>
     <link rel="icon" type="image/png" href="/images/ROAMLY2.png">
     
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- MapTiler SDK - Load BOTH CSS and JS directly in the head -->
+<!-- Maplibre GL JS (UMD build, always available) -->
+<link href="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css" rel="stylesheet" />
+<script src="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js"></script>
+<script>
+    window.maptilerReady = true; // For compatibility with your script
+</script>
+    
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="/css/index.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
 </head>
 <body class="d-flex flex-column min-vh-100">
-
     <%- include("../includes/navbar.ejs") %>
 
     <div class="flash-container">
-        <%- include("../includes/flash.ejs") %>
+        <% if (success && success.length) { %>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <%= success %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <% } %>
+
+        <% if (error && error.length) { %>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <%= error %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <% } %>
     </div>
 
     <!-- Main content -->
-    <main class="flex-grow-1 d-flex flex-column justify-content-center">
-        <div class="container">
-            <%- body %>
-        </div>
+    <main class="container mt-3 mb-5 flex-grow-1">
+        <%- body %>
     </main>
 
     <%- include("../includes/footer.ejs") %>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/js/script.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
