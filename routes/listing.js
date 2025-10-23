@@ -23,6 +23,11 @@ if (process.env.NODE_ENV != "production") {
         wrapAsync(listingController.createListing)
       );
    
+      router.get("/category/:category", wrapAsync(async (req, res) => {
+    const { category } = req.params;
+    const allListing = await Listing.find({ category });
+    res.render("listings/index.ejs", { allListing });
+}));
    
   // new route
   router.get("/new", isLoggedIn, listingController.renderNewForm);

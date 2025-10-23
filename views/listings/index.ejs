@@ -1,6 +1,5 @@
 <% layout("/layouts/boilerplate") %>
 
-
 <style>
   #filters {
     display: flex;
@@ -8,23 +7,30 @@
     gap: 0.9rem;
     overflow-x: auto;
     padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
   }
   .filter{
     text-align: center;
     margin-right: 2rem;
     margin-top: 2rem;
     opacity: 0.7;
+    text-decoration: none;
+    color: inherit;
+    transition: opacity 0.2s;
   }
   .filter:hover {
     opacity: 1;
     cursor: pointer;
+    color: #d90429;
   }
   .filter p{
-    font-size: 0.7rem;
+    font-size: 0.8rem;
+    margin-bottom: 0;
+    margin-top: 0.3rem;
+    font-weight: 600;
   }
   .taxinfo {
     display:none;
-
   }
   .tax-toggle {
     border:1px solid black;
@@ -35,108 +41,91 @@
     align-items:center;
     justify-content:center;
     margin-left: 0rem;
+    margin-top: 2rem;
   }
 </style>
 
+<!-- Category Filter Buttons -->
 <div id="filters">
-  <div class="filter">
+   
+  <a href="/listings/category/Trending" class="filter">
     <div><i class="fa-solid fa-fire"></i></div>
     <p>Trending</p>
-  </div>
-
-  <div class="filter">
+  </a>
+  <a href="/listings" class="filter">
+    <div><i class="fa-solid fa-globe"></i></div>
+    <p>all places</p>
+  </a> 
+  <a href="/listings/category/Rooms" class="filter">
     <div><i class="fa-solid fa-bed"></i></div>
     <p>Rooms</p>
-  </div>
-
-  
-  <div class="filter">
+  </a>
+  <a href="/listings/category/Iconic Cities" class="filter">
     <div><i class="fa-solid fa-mountain-city"></i></div>
     <p>Iconic Cities</p>
-  </div>
-
-  
-  <div class="filter">
+  </a>
+  <a href="/listings/category/Mountain" class="filter">
     <div><i class="fa-solid fa-mountain"></i></div>
-    <p>Mountains</p>
-  </div>
-
-  
-  <div class="filter">
+    <p>Mountain</p>
+  </a>
+  <a href="/listings/category/Castles" class="filter">
     <div><i class="fa-brands fa-fort-awesome"></i></div>
     <p>Castles</p>
-  </div>
-
-  
-  <div class="filter">
+  </a>
+  <a href="/listings/category/Amazing pools" class="filter">
     <div><i class="fa-solid fa-person-swimming"></i></div>
     <p>Amazing pools</p>
-  </div>
-
-   <div class="filter">
+  </a>
+  <a href="/listings/category/Camping" class="filter">
     <div><i class="fa-solid fa-person-swimming"></i></div>
     <p>Camping</p>
-  </div>
-
-   <div class="filter">
+  </a>
+  <a href="/listings/category/Farms" class="filter">
     <div><i class="fa-solid fa-cow"></i></div>
     <p>Farms</p>
-  </div>
-
-   <div class="filter">
+  </a>
+  <a href="/listings/category/Arctic" class="filter">
     <div><i class="fa-solid fa-snowflake"></i></div>
     <p>Arctic</p>
-  </div>
-
-   
-   <div class="filter">
+  </a>
+  <a href="/listings/category/Boats" class="filter">
     <div><i class="fa-solid fa-ship"></i></div>
     <p>Boats</p>
-  </div>
-
-   
-
+  </a>
   <div class="tax-toggle">
     <div class="form-check-reverse form-switch">
       <input class="form-check-input" 
       type="checkbox" 
       role="switch" 
       id="flexSwitchCheckDefault">
-
       <label class="form-check-label" 
       for="flexSwitchCheckDefault">Display total price after taxes
-    </label>
+      </label>
+    </div>
   </div>
-
-  </div>
-
-
 </div>
 
-
-<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 listings-grid mt-3" >
-
+<!-- Listings Grid/List -->
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 listings-grid mt-3">
   <% for(let listing of allListing){ %>
     <div class="col">
-      <a href="/listings/<%=listing._id%>" class="listing-link">
+      <a href="/listings/<%=listing._id%>" class="listing-link" style="text-decoration:none;">
         <div class="listing-card">
           <div class="img-ratio-box">
             <img 
-          src="<%=  listing.image.url  %>"
+              src="<%= listing.image && listing.image.url ? listing.image.url : 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop' %>"
               class="card-img-top uniform-img" 
               alt="<%=listing.title%>"
               onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop';">
           </div>
-          
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-1">
               <span class="badge bg-light text-dark border">
                 <i class="fa-solid fa-location-dot me-1"></i><%=listing.location%>, <%=listing.country%>
               </span>
+              <span class="badge bg-info text-dark border ms-2"><%= listing.category %></span>
             </div>
-            
             <h5 class="card-title"><%=listing.title%></h5>
-            
             <p class="mb-0">
               <span class="badge bg-danger text-white">
                 ₹<%= listing.price ? listing.price.toLocaleString("en-in") : "N/A" %>
@@ -159,11 +148,11 @@
   const toggle = document.getElementById('flexSwitchCheckDefault');
   toggle.addEventListener('click', () => {
     const taxInfoElements = document.querySelectorAll('.taxinfo');
-  for(info of taxInfoElements){
-    if(info.style.display==='inline')
-    info.style.display='none';
-    else  
-    info.style.display='inline';
-  }
+    for(info of taxInfoElements){
+      if(info.style.display==='inline')
+        info.style.display='none';
+      else  
+        info.style.display='inline';
+    }
   })
-  </script>
+</script>

@@ -38,12 +38,19 @@ const listingSchema = new Schema({
               required: true
             }
           },
-        //   category: {
-        //     type: String,
-        //     enum: ['Mountains', 'Arctic', 'Farms', 'Cottage', 'Cabin', 'Bungalow', 'Other'],
-        //     default: 'Other'
-        //   }
-    
+      category: {
+        type: String,
+        enum: [
+            'Trending', 'Arctic', 'Mountain', 'Castles', 'Farms', 'Camping',
+            'Rooms', 'Iconic Cities', 'Amazing pools', 'Boats', 'Other'
+        ],
+        default: 'Other'
+    },
+    // ...existing code...
+bookedDates: [{
+    type: Date
+}],
+
 });
 
 listingSchema.post("findOneAndDelete", async(listing)=>{
