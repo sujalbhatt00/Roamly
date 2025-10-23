@@ -26,7 +26,7 @@ router.post("/", validateReview,wrapAsync(reviewController.createReview));
 
 // delete review route 
 
-router.delete("/:reviewId", wrapAsync(reviewController.deleteReview)
+router.delete("/:reviewid", wrapAsync(reviewController.deleteReview)
 );
 
 module.exports = router;
