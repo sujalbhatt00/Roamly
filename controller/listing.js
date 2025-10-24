@@ -1,5 +1,6 @@
 const Listing = require("../models/listing.js");
 const fetch = require("node-fetch");
+const Booking = require("../models/booking.js"); 
 
 // Geocode location using MapTiler
 async function geocodeLocation(location) {
@@ -25,7 +26,12 @@ async function geocodeLocation(location) {
 // --- INDEX LISTINGS ---
 module.exports.index = async (req, res) => {
   const allListing = await Listing.find({});
-  res.render("listings/index.ejs", { allListing });
+  let userBookings = [];
+  if (req.user) {
+    userBookings = await Booking.find({ user: req.user._id, status: "booked" }).select("listing");
+    userBookings = userBookings.map(b => b.listing.toString());
+  }
+  res.render("listings/index.ejs", { allListing, userBookings });
 };
 
 

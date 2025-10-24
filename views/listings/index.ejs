@@ -74,6 +74,7 @@
     overflow: hidden;
     transition: transform 0.2s;
     background: #fff;
+    position: relative;
   }
 
   .listing-card:hover {
@@ -94,6 +95,18 @@
     object-fit: cover;
     top: 0;
     left: 0;
+  }
+
+  .booked-badge {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: red;
+    color: white;
+    padding: 0.25rem 0.6rem;
+    font-weight: bold;
+    border-radius: 0 0.5rem 0.5rem 0;
+    z-index: 10;
   }
 </style>
 
@@ -145,7 +158,6 @@
       <p>Boats</p>
     </a>
 
-    <!-- Tax Toggle (fits well in scroll row) -->
     <div class="tax-toggle ms-auto">
       <div class="form-check-reverse form-switch m-0">
         <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
@@ -160,13 +172,19 @@
 <!-- Listings Grid -->
 <div class="container-fluid px-3">
   <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 listings-grid mt-3">
+    <% const today = new Date().toISOString().split("T")[0]; %>
     <% for(let listing of allListing){ %>
+      <% const bookedFutureDates = listing.bookedDates?.filter(d => d >= today) || []; %>
+      <% const isBooked = bookedFutureDates.length > 0; %>
       <div class="col">
         <a href="/listings/<%=listing._id%>" class="listing-link text-decoration-none">
           <div class="listing-card">
+            <% if(isBooked){ %>
+              <span class="booked-badge">Booked</span>
+            <% } %>
             <div class="img-ratio-box">
               <img 
-                src="<%= listing.image && listing.image.url ? listing.image.url : 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop' %>"
+                src="<%= listing.image?.url || 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop' %>"
                 class="card-img-top uniform-img" 
                 alt="<%=listing.title%>"
                 onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop';">
@@ -186,8 +204,10 @@
                 <i class="taxinfo" style="font-size: 0.8rem;">&nbsp;+18% tax</i>
               </p>
               <div class="mt-2">
-                <form method="POST" action="/bookings/create-checkout-session/<%=listing._id%>">
-                  <button type="submit" class="btn btn-sm btn-outline-danger book-btn-sm">Book Now</button>
+                <form method="GET" action="/listings/<%= listing._id %>">
+                  <button type="submit" class="btn btn-sm btn-outline-danger book-btn-sm" <%= isBooked ? "disabled" : "" %>>
+                    <%= isBooked ? "Booked" : "Book Now" %>
+                  </button>
                 </form>
               </div>
             </div>

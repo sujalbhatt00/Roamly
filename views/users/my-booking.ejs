@@ -1,0 +1,126 @@
+<% layout("/layouts/boilerplate") %>
+
+<style>
+  .bookings-container {
+    padding: 2rem 0;
+  }
+
+  .booking-card {
+    border-radius: 1rem;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .booking-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+  }
+
+  .booking-img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+  }
+
+  .booking-body {
+    padding: 1rem 1.25rem;
+  }
+
+  .booking-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #d90429;
+    text-decoration: none;
+  }
+
+  .booking-title:hover {
+    text-decoration: underline;
+  }
+
+  .booking-dates, .booking-price {
+    font-size: 0.95rem;
+    color: #555;
+    margin-bottom: 0.3rem;
+  }
+
+  .booking-status {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    padding: 0.25rem 0.7rem;
+    font-weight: 600;
+    border-radius: 0.5rem;
+    color: white;
+  }
+
+  .status-confirmed {
+    background-color: #28a745;
+  }
+
+  .status-cancelled {
+    background-color: #dc3545;
+  }
+
+  .status-pending {
+    background-color: #ffc107;
+    color: #212529;
+  }
+
+  /* Responsive grid */
+  @media (min-width: 768px) {
+    .booking-col {
+      flex: 0 0 48%;
+      margin-right: 2%;
+    }
+    .booking-col:nth-child(2n) {
+      margin-right: 0;
+    }
+  }
+
+  @media (min-width: 992px) {
+    .booking-col {
+      flex: 0 0 31.33%;
+      margin-right: 2%;
+    }
+    .booking-col:nth-child(3n) {
+      margin-right: 0;
+    }
+  }
+</style>
+
+<div class="container bookings-container">
+  <h2 class="mb-4 text-center fw-bold">My Bookings</h2>
+
+  <% if (bookings.length === 0) { %>
+    <p class="text-center text-muted">You have no bookings yet.</p>
+  <% } else { %>
+    <div class="d-flex flex-wrap gap-4 justify-content-center">
+      <% bookings.forEach(booking => { %>
+        <div class="booking-col">
+          <div class="booking-card shadow-sm">
+            <% const imgUrl = booking.listing.image?.url || 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop'; %>
+            <img src="<%= imgUrl %>" alt="<%= booking.listing.title %>" class="booking-img">
+
+            <div class="booking-body">
+              <a href="/listings/<%= booking.listing._id %>" class="booking-title"><%= booking.listing.title %></a>
+              <p class="booking-dates">
+                <strong>From:</strong> <%= new Date(booking.startDate).toLocaleDateString() %> <br>
+                <strong>To:</strong> <%= new Date(booking.endDate).toLocaleDateString() %>
+              </p>
+              <p class="booking-price">
+                <strong>Total Price:</strong> ₹<%= booking.totalPrice.toLocaleString("en-in") %>
+              </p>
+            </div>
+
+            <span class="booking-status <%= booking.status.toLowerCase() === 'confirmed' ? 'status-confirmed' : booking.status.toLowerCase() === 'cancelled' ? 'status-cancelled' : 'status-pending' %>">
+              <%= booking.status %>
+            </span>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+</div>

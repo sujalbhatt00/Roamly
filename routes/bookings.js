@@ -3,7 +3,7 @@ const router = express.Router();
 const Listing = require('../models/listing');
 const Booking = require('../models/booking');
 const { isLoggedIn } = require('../middleware'); // ensure user is logged in
-
+const wrapAsync = require('../utils/wrapAsync');
 // Create booking (manual)
 router.post('/create/:listingId', isLoggedIn, async (req, res) => {
   try {
@@ -68,5 +68,10 @@ router.post('/create/:listingId', isLoggedIn, async (req, res) => {
     res.redirect(`/listings/${req.params.listingId}`);
   }
 });
+router.get("/my-bookings", isLoggedIn, wrapAsync(async (req, res) => {
+  const Booking = require("../models/booking");
+  const bookings = await Booking.find({ user: req.user._id }).populate("listing");
+  res.render("users/my-booking.ejs", { bookings });
+}));
 
 module.exports = router;
