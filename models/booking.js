@@ -10,16 +10,24 @@ const bookingSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,
     ref: 'User',
-    required: false
+    required: true
   },
-  price: {
+  startDate: {
+    type: Date,
+    required: true
+  },
+  endDate: {
+    type: Date,
+    required: true
+  },
+  totalPrice: {
     type: Number,
     required: true
   },
-  stripeSessionId: String,
-  paid: {
-    type: Boolean,
-    default: false
+  status: {
+    type: String,
+    enum: ['booked', 'cancelled'],
+    default: 'booked'
   },
   createdAt: {
     type: Date,

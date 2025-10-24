@@ -1,31 +1,102 @@
-<% layout("/layouts/boilerplate")%>
+<% layout("/layouts/boilerplate") %>
 
-<div class="row mt-3">
-    
-      <div class="col-8 offset-2">
-        <h1>Login</h1>
-   <form action="/login"method="post" >
-     <div class="mb-3">
-       <label for="username"  class="form-label">Username</label>
-        <input name="username" 
-        id="username"
-        required 
-        type="text" 
-         class="form-control"/>
-
-   <div class="valid-feedback">looks good</div>
-      
-       <div class="mb-3">
-       <label for="Password"  class="form-label">Password</label>
-        <input name="password" 
-        id="Password"
-        required 
-        type="password" 
-         class="form-control"/>
-
-   <div class="valid-feedback">looks good</div>
-   <button class="btn btn-success mt-3">Login </button>
-      </div> 
-   </form>
+<div class="login-wrapper d-flex justify-content-center align-items-center">
+  <div class="login-card shadow-lg p-4 rounded-4 bg-white">
+    <div class="text-center mb-4">
+      <img src="/images/ROAMLY.png" alt="Logo" class="login-logo mb-3">
+      <h3 class="fw-bold mb-2">Welcome Back</h3>
+      <p class="text-muted">Log in to continue your journey with Roamly</p>
     </div>
+
+    <form action="/login" method="post" novalidate>
+      <div class="mb-3">
+        <label for="username" class="form-label fw-semibold">Username</label>
+        <input 
+          name="username"
+          id="username"
+          type="text"
+          required
+          class="form-control form-control-lg rounded-3"
+          placeholder="Enter your username">
+      </div>
+
+      <div class="mb-3">
+        <label for="password" class="form-label fw-semibold">Password</label>
+        <input 
+          name="password"
+          id="password"
+          type="password"
+          required
+          class="form-control form-control-lg rounded-3"
+          placeholder="Enter your password">
+      </div>
+
+      <button class="btn btn-danger w-100 py-2 rounded-3 mt-3 fw-semibold">
+        Log In
+      </button>
+
+      <div class="text-center mt-3">
+        <p class="text-muted mb-0">Don’t have an account?
+          <a href="/signup" class="text-danger fw-semibold text-decoration-none">Sign up</a>
+        </p>
+      </div>
+    </form>
+  </div>
 </div>
+
+<style>
+/* --- Page Background --- */
+.login-wrapper {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #fefefe, #f7f7f7);
+  padding: 2rem;
+}
+
+/* --- Card --- */
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.login-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+
+/* --- Logo --- */
+.login-logo {
+  height: 50px;
+  object-fit: contain;
+}
+
+/* --- Form Inputs --- */
+.form-control {
+  border: 1px solid #ddd;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.form-control:focus {
+  border-color: #fe424d;
+  box-shadow: 0 0 0 0.25rem rgba(254, 66, 77, 0.2);
+}
+
+/* --- Button --- */
+.btn-danger {
+  background-color: #fe424d;
+  border: none;
+  transition: background-color 0.2s, box-shadow 0.2s;
+}
+.btn-danger:hover {
+  background-color: #e03e44;
+  box-shadow: 0 4px 12px rgba(254, 66, 77, 0.3);
+}
+
+/* --- Responsive --- */
+@media (max-width: 576px) {
+  .login-card {
+    padding: 1.5rem;
+  }
+  .login-logo {
+    height: 40px;
+  }
+}
+</style>

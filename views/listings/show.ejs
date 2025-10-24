@@ -49,13 +49,62 @@
               <button type="submit" class="btn btn-outline-danger px-4">Delete</button>
             </form>
           <% } %>
-          <form method="POST" action="/bookings/create-checkout-session/<%= listing._id %>" class="d-inline">
-            <button type="submit" class="btn btn-danger px-4">Book Now</button>
-          </form>
+          <!-- Book Now Button -->
+          
+
+          <!-- Book Now Modal -->
+<div class="modal fade" id="bookModal" tabindex="-1" aria-labelledby="bookModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form method="POST" action="/bookings/create/<%= listing._id %>">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="bookModalLabel">Book Your Stay</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <label class="form-label">Select Date Range:</label>
+          <input type="text" name="dateRange" id="dateRange" class="form-control" required autocomplete="off">
+          <input type="hidden" name="startDate" id="startDate">
+          <input type="hidden" name="endDate" id="endDate">
+
+          <% if (listing.bookedDates && listing.bookedDates.length > 0) { %>
+            <div class="mt-2 text-danger small">
+              <strong>Unavailable Dates:</strong>
+              <%= listing.bookedDates.map(d => new Date(d).toLocaleDateString()).join(", ") %>
+            </div>
+          <% } %>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-danger">Confirm Booking</button>
         </div>
       </div>
-    </div>
+    </form>
   </div>
+</div>
+
+<!-- Flatpickr for Date Range -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const bookedDates = <%- JSON.stringify(listing.bookedDates ? listing.bookedDates.map(d => new Date(d).toISOString().split("T")[0]) : []) %>;
+
+  flatpickr("#dateRange", {
+    mode: "range",
+    minDate: "today",
+    dateFormat: "Y-m-d",
+    disable: bookedDates,
+    onChange: function(selectedDates) {
+      if (selectedDates.length === 2) {
+        document.getElementById("startDate").value = selectedDates[0].toISOString().split("T")[0];
+        document.getElementById("endDate").value = selectedDates[1].toISOString().split("T")[0];
+      }
+    }
+  });
+});
+</script>
+
 
   <!-- REVIEWS LIST -->
   <div class="row mt-5">

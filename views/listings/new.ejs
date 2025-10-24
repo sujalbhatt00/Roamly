@@ -1,70 +1,165 @@
-<% layout("/layouts/boilerplate")%>
-<body>
-   <div class="row mt-3">
-      <div class="col-8 offset-2">
-     
-   <h3> Create A New listing</h3>
-    <form method="POST" action="/listings" novalidate class="needs-validation" enctype="multipart/form-data" >
-     <div class="mb-3">
-       <label for="title"  class="form-label">Title</label>
-        <input name="listing[title]" required type="text" placeholder="enter title" class="form-control"/>
-   <div class="valid-feedback">title looks good</div>
-      </div>
-           
-       <div class="mb-3">
-         <label for="description" class="form-label">Description</label>
-          <textarea name="listing[description]" required type="text" class="form-control"></textarea>
-        <div class="invalid-feedback">please enter the valid description</div>
-         </div>
-           
-            <div class="mb-3"> 
-            <label for="Image" class="form-label">Image Upload</label>
-               <input name="listing[image]" type="file" required class="form-control">
+<% layout("/layouts/boilerplate") %>
+<body class="bg-light py-5">
+  <div class="container">
+    <div class="col-lg-8 mx-auto">
+      <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-body p-4 p-md-5">
+          <h3 class="fw-bold mb-4 text-center">
+            <i class="bi bi-house-door-fill me-2"></i>Add New Property
+          </h3>
+          <hr class="mb-4" />
+          <form method="POST" action="/listings" novalidate class="needs-validation" enctype="multipart/form-data">
+            <!-- Title -->
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Title</label>
+              <input name="listing[title]" type="text" required placeholder="Enter title" class="form-control form-control-lg">
+              <div class="valid-feedback">Title looks good!</div>
             </div>
-            
+            <!-- Description -->
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Description</label>
+              <textarea name="listing[description]" rows="3" required placeholder="Describe your listing..." class="form-control form-control-lg"></textarea>
+              <div class="invalid-feedback">Please enter a valid description.</div>
+            </div>
+            <!-- Image -->
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Image Upload</label>
+              <input name="listing[image]" type="file"class="form-control form-control-lg">
+            </div>
+            <!-- Price -->
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Price (₹)</label>
+              <input name="listing[price]" type="number" required placeholder="1200" class="form-control form-control-lg">
+              <div class="invalid-feedback">Please enter a valid price.</div>
+            </div>
+            <!-- Country / State / City Dropdowns -->
             <div class="row">
-                <div class="mb-3 col-md-4">
-          <label for="Price" class="form-label">Price</label> 
-           <input name="listing[price]" class="form-control" required placeholder="1200" type="number">
-        <div class="invalid-feedback">Price should be valid  </div>
-         </div>
-           
-       <div class="mb-3 col-md-8">
-          <label for="country" class="form-label">country</label> 
-          <input name="listing[country]"  required class="form-control" placeholder="India"  type="text">
- <div class="ivalid-feedback">Country name should be valid</div>
-         </div>
-
+              <div class="col-md-4 mb-3">
+                <label class="form-label fw-semibold">Country</label>
+                <select id="country" name="listing[country]" class="form-select form-select-lg" required>
+                  <option value="" disabled selected>Select Country</option>
+                  <% countries.forEach(function(country) { %>
+                    <% if(country.name) { %>
+                      <option value="<%= country.name %>"><%= country.name %></option>
+                    <% } %>
+                  <% }); %>
+                </select>
+                <div class="invalid-feedback">Please select a country.</div>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label fw-semibold">State</label>
+                <select id="state" name="listing[state]" class="form-select form-select-lg" required disabled>
+                  <option value="" disabled selected>Select State</option>
+                </select>
+                <div class="invalid-feedback">Please select a state.</div>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label fw-semibold">City</label>
+                <select id="city" name="listing[city]" class="form-select form-select-lg" required disabled>
+                  <option value="" disabled selected>Select City</option>
+                </select>
+                <div class="invalid-feedback">Please select a city.</div>
+              </div>
             </div>
-     
-           
-      <div class="mb-3">
-          <label for="title" class="form-label">Location</label> 
-           <input name="listing[location]"  required class="form-control" type="text">
-       <div class="valid-feedback">Location should be valid</div>
-         </div>
-           <BR>
-           
-<div class="mb-3">
-  <label for="category" class="form-label">Category</label>
-  <select name="listing[category]" class="form-select" required>
-    <option value="Arctic">Arctic</option>
-    <option value="Mountain">Mountain</option>
-    <option value="Castles">Castles</option>
-    <option value="Farms">Farms</option>
-    <option value="Camping">Camping</option>
-    <option value="Rooms">Rooms</option>
-    <option value="Iconic Cities">Iconic Cities</option>
-    <option value="Amazing pools">Amazing pools</option>
-    <option value="Boats">Boats</option>
-    <option value="Other">Other</option>
-  </select>
-</div>
-            
-        <button class="btn btn-dark add-btn">Add</button>
-<br/><br/>
-    </form>
+            <!-- Location -->
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Location</label>
+              <input name="listing[location]" type="text" required placeholder="Enter location" class="form-control form-control-lg">
+              <div class="invalid-feedback">Please enter a valid location.</div>
+            </div>
+            <!-- Category -->
+            <div class="mb-4">
+              <label class="form-label fw-semibold">Category</label>
+              <select name="listing[category]" class="form-select form-select-lg" required>
+                <option disabled selected>Select a category</option>
+                <option value="Arctic">Arctic</option>
+                <option value="Mountain">Mountain</option>
+                <option value="Castles">Castles</option>
+                <option value="Farms">Farms</option>
+                <option value="Camping">Camping</option>
+                <option value="Rooms">Rooms</option>
+                <option value="Iconic Cities">Iconic Cities</option>
+                <option value="Amazing pools">Amazing pools</option>
+                <option value="Boats">Boats</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-dark btn-lg w-100 mt-4">Add Property</button>
+          </form>
+        </div>
+      </div>
     </div>
-    </div>
+  </div>
+<script>
+  const countries = <%- JSON.stringify(countries) %>;
+  document.addEventListener("DOMContentLoaded", function() {
+    const countrySelect = document.getElementById("country");
+    const stateSelect = document.getElementById("state");
+    const citySelect = document.getElementById("city");
+
+    countrySelect.addEventListener("change", function() {
+      const selectedCountry = countries.find(c => c.name === this.value);
+      stateSelect.innerHTML = '<option value="" disabled selected>Select State</option>';
+      citySelect.innerHTML = '<option value="" disabled selected>Select City</option>';
+      if (selectedCountry && Array.isArray(selectedCountry.states) && selectedCountry.states.length > 0) {
+        stateSelect.disabled = false;
+        selectedCountry.states.forEach(function(state) {
+          if(state.name) {
+            const option = document.createElement("option");
+            option.value = state.name;
+            option.textContent = state.name;
+            stateSelect.appendChild(option);
+          }
+        });
+      } else {
+        stateSelect.disabled = true;
+        citySelect.disabled = true;
+      }
+    });
+
+    stateSelect.addEventListener("change", function() {
+      const selectedCountry = countries.find(c => c.name === countrySelect.value);
+      const selectedState = selectedCountry && selectedCountry.states ? selectedCountry.states.find(s => s.name === this.value) : null;
+      citySelect.innerHTML = '<option value="" disabled selected>Select City</option>';
+      if (selectedState && Array.isArray(selectedState.cities) && selectedState.cities.length > 0) {
+        citySelect.disabled = false;
+        selectedState.cities
+          .filter(city => city.name) // Only cities with a name property
+          .forEach(function(city) {
+            const option = document.createElement("option");
+            option.value = city.name;
+            option.textContent = city.name;
+            citySelect.appendChild(option);
+          });
+      } else {
+        citySelect.disabled = true;
+      }
+    });
+  });
+</script>
+<script>
+  (() => {
+    'use strict';
+    const forms = document.querySelectorAll('.needs-validation');
+    Array.from(forms).forEach(form => {
+      form.addEventListener('submit', event => {
+        if (!form.checkValidity()) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      }, false);
+    });
+  })();
+</script>
+<script>
+  document.querySelectorAll('form.needs-validation').forEach(form => {
+    form.addEventListener('submit', function(e) {
+      // Enable state and city before submit so their values are sent
+      document.getElementById('state').disabled = false;
+      document.getElementById('city').disabled = false;
+    });
+  });
+</script>
 </body>
 </html>

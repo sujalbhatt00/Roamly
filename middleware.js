@@ -34,22 +34,19 @@ module.exports.isOwner=async(req,res,next)=>{
 
 
 module.exports.validateListing = (req, res, next) => {
-    try {
-        let {error} = listingSchema.validate(req.body);
-        
-        if (error) {
-            let errMsg = error.details.map((el) => el.message).join(",")
-            req.flash("error", errMsg);
-            return res.redirect("/listings/new");  // Redirect instead of throwing
+    const { error } = listingSchema.validate(req.body);
+    if (error) {
+        const errMsg = error.details.map((el) => el.message).join(",");
+        req.flash("error", errMsg);
+        if (req.params.id) {
+            return res.redirect(`/listings/${req.params.id}/edit`);
         } else {
-            next();
+            return res.redirect("/listings/new");
         }
-    } catch (err) {
-        console.error("Validation error:", err);
-        req.flash("error", err.message);
-        return res.redirect("/listings/new");
+    } else {
+        next();
     }
-}
+};
 
 module.exports.validateReview=(req,res,next)=>{
     let{error}=reviewSchema.validate(req.body);

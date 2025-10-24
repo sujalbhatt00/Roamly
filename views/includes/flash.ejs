@@ -1,83 +1,96 @@
-<%# HTML (The <button> element has been removed) %>
-<% if(success && success.length > 0){ %>
-<div class="alert alert-success fade show flash-toast" role="alert">
-  <%= success %>
-  <div class="alert-progress"></div>
+<% if (success && success.length > 0) { %>
+<div class="toast-message success-toast">
+  <i class="fa-solid fa-circle-check"></i>
+  <span><%= success %></span>
+  <div class="toast-progress"></div>
 </div>
 <% } %>
 
-<% if(error && error.length > 0){ %>
-<div class="alert alert-danger fade show flash-toast" role="alert">
-  <%= error %>
-  <div class="alert-progress"></div>
+<% if (error && error.length > 0) { %>
+<div class="toast-message error-toast">
+  <i class="fa-solid fa-circle-exclamation"></i>
+  <span><%= error %></span>
+  <div class="toast-progress"></div>
 </div>
 <% } %>
 
-
-<%# CSS (No changes needed here) %>
 <style>
-  .flash-toast {
-    min-width: 300px;
-    max-width: 350px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    border-radius: 0.5rem;
-    border: none;
-    /* This makes the text and progress bar the only elements */
-    padding-right: 1rem; 
-  }
+.toast-message {
+  position: fixed;
+  top: 90px;
+  right: 25px;
+  z-index: 3000;
+  min-width: 320px;
+  max-width: 380px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(30, 30, 30, 0.9);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 500;
+  border-radius: 14px;
+  padding: 0.9rem 1.1rem;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+  transform: translateX(130%);
+  opacity: 0;
+  animation: toastSlideIn 0.4s ease forwards, toastFadeOut 0.6s ease 2.6s forwards;
+}
 
-  .alert.fade {
-    transition: opacity 0.45s ease, transform 0.45s ease;
-    will-change: opacity, transform;
-  }
-  .alert.fade:not(.show) {
-    opacity: 0;
-    transform: translateY(-8px);
-    pointer-events: none;
-  }
+.toast-message i {
+  font-size: 1.2rem;
+}
 
-  @keyframes progress-deplete {
-    from { width: 100%; }
-    to { width: 0%; }
-  }
+.success-toast {
+  background: rgba(46, 204, 113, 0.95);
+}
+.error-toast {
+  background: rgba(231, 76, 60, 0.95);
+}
 
-  .alert {
-    position: relative;
-    overflow: hidden;
-  }
+.toast-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 4px;
+  width: 100%;
+  background: rgba(255,255,255,0.8);
+  animation: progressShrink 3s linear forwards;
+  border-bottom-left-radius: 14px;
+  border-bottom-right-radius: 14px;
+}
 
-  .alert-progress {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 5px;
-    background-color: rgba(0, 0, 0, 0.25);
-    animation: progress-deplete 3s linear forwards;
+@keyframes toastSlideIn {
+  from { transform: translateX(130%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+@keyframes toastFadeOut {
+  to { transform: translateX(130%); opacity: 0; }
+}
+@keyframes progressShrink {
+  from { width: 100%; }
+  to { width: 0%; }
+}
+
+@media (max-width: 480px) {
+  .toast-message {
+    right: 10px;
+    left: 10px;
+    min-width: auto;
   }
+}
 </style>
 
-
-<%# JavaScript (No changes needed, it will auto-close) %>
 <script>
-document.addEventListener('DOMContentLoaded', function(){
-  document.querySelectorAll('.alert').forEach(function(a){
-    setTimeout(function(){
-      try {
-        if (window.bootstrap && bootstrap.Alert) {
-          var bsAlert = bootstrap.Alert.getOrCreateInstance(a);
-          bsAlert.close();
-          return;
-        }
-      } catch (e) {}
-      a.classList.remove('show');
-      var fallback = setTimeout(function(){
-        if (a.parentNode) a.parentNode.removeChild(a);
-      }, 500);
-      a.addEventListener('transitionend', function(){
-        clearTimeout(fallback);
-        if (a.parentNode) a.parentNode.removeChild(a);
-      }, { once: true });
-    }, 3000);
-  });
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    document.querySelectorAll('.toast-message').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateX(130%)';
+      setTimeout(() => el.remove(), 600);
+    });
+  }, 3000);
 });
 </script>
