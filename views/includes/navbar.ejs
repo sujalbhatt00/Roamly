@@ -456,14 +456,71 @@
             </div>
 
             <div class="navbar-search-col">
-                <form class="search-container" role="search" action="/listings/search">
-                    <input class="search-input" type="search" name="q" placeholder="Search destinations" aria-label="Search"/>
-                    <button class="search-btn" type="submit">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                        </svg>
-                    </button>
-                </form>
+             <form class="search-container" action="/listings/search" method="get" autocomplete="off" style="width:100%; max-width:700px;">
+  <input type="text" name="q" class="search-input" placeholder="Search destination..." id="navbar-search-input">
+  <button type="submit" class="search-btn"><i class="fa fa-search"></i></button>
+</form>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const input = document.getElementById("navbar-search-input");
+  let suggestionBox;
+
+  input.addEventListener("input", async function() {
+    const q = input.value.trim();
+    if (q.length < 1) {
+      if (suggestionBox) suggestionBox.remove();
+      return;
+    }
+    // Fetch suggestions from backend
+    const res = await fetch(`/listings/search?q=${encodeURIComponent(q)}&ajax=1`);
+    const data = await res.json();
+    if (!suggestionBox) {
+      suggestionBox = document.createElement("div");
+      suggestionBox.className = "search-suggestions";
+      input.parentNode.appendChild(suggestionBox);
+    }
+    suggestionBox.innerHTML = "";
+    data.forEach(listing => {
+      const item = document.createElement("div");
+      item.className = "suggestion-item";
+      item.textContent = `${listing.title} (${listing.location}, ${listing.country})`;
+      item.onclick = () => window.location.href = `/listings/${listing._id}`;
+      suggestionBox.appendChild(item);
+    });
+    if (data.length === 0) {
+      suggestionBox.innerHTML = "<div class='suggestion-item'>No results found</div>";
+    }
+  });
+
+  document.addEventListener("click", function(e) {
+    if (suggestionBox && !input.contains(e.target)) suggestionBox.remove();
+  });
+});
+</script>
+<style>
+.search-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #eee;
+  z-index: 9999;
+  max-height: 260px;
+  overflow-y: auto;
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+.suggestion-item {
+  padding: 0.7rem 1rem;
+  cursor: pointer;
+  font-size: 1rem;
+  border-bottom: 1px solid #f3f3f3;
+}
+.suggestion-item:last-child { border-bottom: none; }
+.suggestion-item:hover { background: #f7f7f7; }
+</style>
             </div>
 
             <div class="navbar-auth-col">
