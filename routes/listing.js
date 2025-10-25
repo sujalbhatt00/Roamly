@@ -67,7 +67,14 @@ router.get("/search", wrapAsync(async (req, res) => {
     // Return JSON for suggestions
     return res.json(allListing.slice(0, 8)); // Limit to 8 suggestions
   }
-  res.render("listings/index.ejs", { allListing });
+  // Pass userBookings for UI
+  let userBookings = [];
+  if (req.user) {
+    const Booking = require("../models/booking");
+    userBookings = await Booking.find({ user: req.user._id, status: "booked" }).select("listing");
+    userBookings = userBookings.map(b => b.listing.toString());
+  }
+  res.render("listings/index.ejs", { allListing, userBookings });
 }));
 
 module.exports = router;

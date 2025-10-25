@@ -74,4 +74,32 @@ router.get("/my-bookings", isLoggedIn, wrapAsync(async (req, res) => {
   res.render("users/my-booking.ejs", { bookings });
 }));
 
+
+router.post("/delete/:bookingId", isLoggedIn, wrapAsync(async (req, res) => {
+  const { bookingId } = req.params;
+  const booking = await Booking.findById(bookingId).populate("listing");
+  if (!booking) {
+    req.flash("error", "Booking not found");
+    return res.redirect("/bookings/my-bookings");
+  }
+  // Remove booked dates from listing
+  if (booking.listing && booking.startDate && booking.endDate) {
+    const start = new Date(booking.startDate);
+    const end = new Date(booking.endDate);
+    let datesToRemove = [];
+    for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+      datesToRemove.push(new Date(d).toISOString());
+    }
+    booking.listing.bookedDates = booking.listing.bookedDates.filter(date =>
+      !datesToRemove.includes(new Date(date).toISOString())
+    );
+    await booking.listing.save();
+  }
+  await Booking.findByIdAndDelete(bookingId);
+  req.flash("success", "Booking deleted successfully");
+  res.redirect("/bookings/my-bookings");
+}));
+
+
+
 module.exports = router;

@@ -171,6 +171,9 @@
 
 <!-- Listings Grid -->
 <div class="container-fluid px-3">
+  <% if (allListing.length === 0) { %>
+    <div class="text-center text-muted my-5">No listings found for your search.</div>
+  <% } %>
   <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 listings-grid mt-3">
     <% const today = new Date().toISOString().split("T")[0]; %>
     <% for(let listing of allListing){ %>
