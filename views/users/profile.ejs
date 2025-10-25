@@ -1,0 +1,70 @@
+<% layout("/layouts/boilerplate") %>
+<style>
+  .profile-card {
+    max-width: 600px;
+    margin: 2rem auto;
+    background: #fff;
+    border-radius: 1.5rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.09);
+    padding: 2rem 2.5rem;
+  }
+  .profile-avatar {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 1rem;
+    border: 2px solid #eee;
+  }
+  .profile-details-list {
+    margin-bottom: 1.5rem;
+  }
+  .profile-details-list li {
+    font-size: 1.07em;
+    padding: 0.5em 0;
+    border-bottom: 1px solid #f3f3f3;
+  }
+  .profile-details-list li:last-child {
+    border-bottom: none;
+  }
+  .btn-outline-danger, .btn-outline-primary {
+    font-weight: 500;
+    border-radius: 0.7rem;
+    padding: 0.5rem 1.5rem;
+    margin-top: 0.7em;
+    margin-right: 0.5em;
+    transition: background 0.2s, color 0.2s;
+  }
+  .btn-outline-danger:hover {
+    background: #FF385C;
+    color: #fff;
+    border-color: #FF385C;
+  }
+  .btn-outline-primary:hover {
+    background: #E03E44;
+    color: #fff;
+    border-color: #E03E44;
+  }
+</style>
+<div class="profile-card">
+  <div class="text-center mb-4">
+    <img src="<%= user.avatar || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png' %>" class="profile-avatar" alt="Avatar">
+    <h3 class="fw-bold mb-1"><%= user.username %></h3>
+    <p class="text-muted mb-0"><%= user.email %></p>
+  </div>
+  <hr>
+  <h5 class="fw-semibold mb-3">Account Details</h5>
+  <ul class="list-group list-group-flush profile-details-list">
+    <li class="list-group-item">Username: <strong><%= user.username %></strong></li>
+    <li class="list-group-item">Email: <strong><%= user.email %></strong></li>
+    <li class="list-group-item">Joined: <strong><%= user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "N/A" %></strong></li>
+  </ul>
+  <hr>
+  <div class="d-flex flex-wrap">
+    <a href="/bookings/my-bookings" class="btn btn-outline-danger">My Bookings</a>
+    <a href="/profile/edit" class="btn btn-outline-primary">Edit Profile</a>
+    <form method="POST" action="/profile/delete" onsubmit="return confirm('Are you sure you want to delete your profile? This action cannot be undone.');">
+  <button type="submit" class="btn btn-outline-danger ms-2">Delete Profile</button>
+</form>
+  </div>
+</div>

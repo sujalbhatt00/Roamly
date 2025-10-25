@@ -1,0 +1,65 @@
+<% layout("/layouts/boilerplate") %>
+<style>
+  .profile-edit-card {
+    max-width: 500px;
+    margin: 2rem auto;
+    background: #fff;
+    border-radius: 1.5rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.09);
+    padding: 2rem 2.5rem;
+  }
+  .profile-avatar-preview {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 1rem;
+    border: 2px solid #eee;
+  }
+  .form-label {
+    font-weight: 500;
+  }
+  .btn-save {
+    background: #FF385C;
+    color: #fff;
+    font-weight: 600;
+    border-radius: 0.7rem;
+    padding: 0.5rem 1.5rem;
+    border: none;
+    transition: background 0.2s;
+  }
+  .btn-save:hover {
+    background: #E03E44;
+  }
+</style>
+<div class="profile-edit-card">
+  <h2 class="mb-4 text-center fw-bold">Edit Profile</h2>
+  <form method="POST" enctype="multipart/form-data">
+    <div class="text-center">
+      <img src="<%= user.avatar || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png' %>" class="profile-avatar-preview" id="avatarPreview">
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Change Avatar</label>
+      <input type="file" class="form-control" name="avatar" accept="image/*" onchange="previewAvatar(event)">
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Username</label>
+      <input type="text" class="form-control" name="username" value="<%= user.username %>" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Email</label>
+      <input type="email" class="form-control" name="email" value="<%= user.email %>" required>
+    </div>
+    <div class="d-grid mt-4">
+      <button type="submit" class="btn btn-save">Save Changes</button>
+    </div>
+  </form>
+</div>
+<script>
+  function previewAvatar(event) {
+    const [file] = event.target.files;
+    if (file) {
+      document.getElementById('avatarPreview').src = URL.createObjectURL(file);
+    }
+  }
+</script>
