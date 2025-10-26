@@ -1,230 +1,295 @@
 <% layout("/layouts/boilerplate") %>
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-  :root {
-    --primary-color: #E54D42; /* Main brand color */
-    --primary-rgb: 229, 77, 66;
-    --dark-color: #222222;
-    --text-color: #333;
-    --text-muted: #6c757d;
-    --border-color: #eee;
-    --bg-light: #f8f9fa;
-    --shadow-sm: 0 2px 4px rgba(0,0,0,0.06);
-    --shadow-md: 0 5px 15px rgba(0,0,0,0.1);
-    --border-radius-sm: 8px;
-    --border-radius: 16px; /* A slightly softer, modern radius */
-  }
+  /* --- Refined Variables --- */
+  :root {
+    --primary-color: #E54D42; /* Main brand color */
+    --primary-rgb: 229, 77, 66;
+    --primary-light: #ffeced; /* Lighter shade for backgrounds */
+    --dark-color: #222222;
+    --text-color: #333;
+    --text-muted: #6c757d;
+    --border-color: #eee;
+    --bg-light: #f9fafb; /* Slightly warmer light gray */
+    --shadow-sm: 0 3px 6px rgba(0,0,0,0.05); /* Softer shadow */
+    --shadow-md: 0 8px 16px rgba(0,0,0,0.08);
+    --border-radius-sm: 8px;
+    --border-radius: 16px;
+    --gradient-primary: linear-gradient(135deg, rgba(229, 77, 66, 0.8) 0%, rgba(229, 77, 66, 1) 100%);
+  }
 
-  body {
-    font-family: 'Inter', sans-serif;
-    background-color: var(--bg-light); /* Page background */
-    color: var(--text-color);
-    line-height: 1.6;
-    padding: 2rem 1rem; /* Add padding for mobile */
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-light); /* Page background */
+    color: var(--text-color);
+    line-height: 1.6;
+    padding-top: 2rem; /* Ensure space from top on all screens */
+    padding-bottom: 2rem;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
-  .profile-card {
-    max-width: 550px;
-    margin: 0 auto; /* Centered */
-    background: #fff;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-md);
-    overflow: hidden; /* To contain borders */
-  }
+  .profile-card {
+    max-width: 500px; /* Slightly narrower */
+    margin: 1rem auto; /* Vertical margin added */
+    background: #fff;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+    overflow: hidden; /* To contain borders */
+    border: 1px solid var(--border-color); /* Subtle border */
+    animation: fadeInScale 0.5s ease-out; /* Add animation */
+  }
 
-  /* 1. Profile Header (Avatar, Name, Email) */
-  .profile-header {
-    text-align: center;
-    padding: 2.5rem 2rem;
-  }
+  @keyframes fadeInScale {
+    from { opacity: 0; transform: scale(0.98); }
+    to { opacity: 1; transform: scale(1); }
+  }
 
-  .profile-avatar {
-    width: 120px;
-    height: 120px;
-    object-fit: cover;
-    border-radius: 50%;
-    margin-bottom: 1rem;
-    border: 4px solid #fff; /* White border to lift it */
-    box-shadow: 0 0 0 1px var(--border-color), var(--shadow-sm); /* Subtle shadow */
-  }
+  /* 1. Profile Header - More Colorful & Modern */
+  .profile-header {
+    text-align: center;
+    padding: 3rem 2rem 2rem; /* Adjusted padding */
+    background: var(--gradient-primary); /* Use gradient */
+    color: #fff; /* White text on gradient */
+    position: relative;
+  }
 
-  .profile-header h3 {
-    font-weight: 700;
-    font-size: 1.75rem;
-    color: var(--dark-color);
-    margin-bottom: 0.25rem;
-  }
+  .profile-avatar {
+    width: 100px; /* Slightly smaller */
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 1.25rem; /* More space */
+    border: 5px solid #fff; /* Thicker white border */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15); /* Stronger shadow for lift */
+    position: relative; /* Ensure it's above pseudo-elements if any */
+    z-index: 2;
+  }
 
-  .profile-header .email {
-    font-size: 1rem;
-    color: var(--text-muted);
-    margin-bottom: 0;
-  }
+  .profile-header h3 {
+    font-weight: 700;
+    font-size: 1.6rem; /* Slightly smaller */
+    color: #fff; /* White text */
+    margin-bottom: 0.35rem;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1); /* Subtle text shadow */
+  }
 
-  /* 2. Reusable Section Styling */
-  .profile-section {
-    padding: 2rem 2.5rem;
-    border-top: 1px solid var(--border-color);
-  }
+  .profile-header .email {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.85); /* Slightly transparent white */
+    margin-bottom: 0;
+  }
 
-  .profile-section h5 {
-    font-weight: 600;
-    font-size: 1.2rem;
-    color: var(--dark-color);
-    margin-bottom: 1.5rem;
-  }
+  /* 2. Reusable Section Styling */
+  .profile-section {
+    padding: 1.75rem 2rem; /* Consistent padding */
+    border-top: 1px solid var(--border-color);
+  }
+  .profile-section:first-of-type { /* No top border for the first section */
+     border-top: none;
+  }
 
-  /* 3. Details List */
-  .details-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
 
-  .details-list li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 1rem;
-    padding: 1rem 0;
-    border-bottom: 1px solid #f9f9f9;
-  }
-  .details-list li:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
-  }
-  .details-list li span {
-    color: var(--text-muted);
-  }
-  .details-list li strong {
-    color: var(--dark-color);
-    font-weight: 600;
-  }
+  .profile-section h5 {
+    font-weight: 600;
+    font-size: 1.1rem; /* Slightly smaller heading */
+    color: var(--dark-color);
+    margin-bottom: 1.25rem; /* Consistent bottom margin */
+    padding-bottom: 0.5rem; /* Add subtle underline space */
+    border-bottom: 2px solid var(--primary-light); /* Accent line */
+    display: inline-block; /* Make border only as wide as text */
+  }
 
-  /* 4. Actions (Buttons) */
-  .profile-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem; /* Modern spacing */
-  }
-  
-  .profile-actions form {
-    display: contents; /* Makes form play nice with flexbox */
-  }
+  /* 3. Details List - Improved Spacing */
+  .details-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
 
-  /* --- Base Button Styles --- */
-  .btn {
-    display: inline-block;
-    padding: 10px 20px;
-    border-radius: var(--border-radius-sm);
-    text-decoration: none;
-    font-weight: 600;
-    border: 1px solid transparent;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    text-align: center;
-    font-size: 0.95rem;
-  }
-  .btn:active {
-    transform: scale(0.98);
-  }
+  .details-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.95rem; /* Slightly smaller text */
+    padding: 0.8rem 0; /* Adjusted padding */
+    border-bottom: 1px solid var(--bg-light); /* Lighter divider */
+    transition: background-color 0.15s ease;
+  }
+   .details-list li:hover { /* Subtle hover */
+      background-color: #fafafa;
+   }
 
-  /* Primary Outline Button */
-  .btn-primary-outline {
-    border-color: var(--primary-color);
-    color: var(--primary-color);
-    background: #fff;
-  }
-  .btn-primary-outline:hover {
-    background-color: var(--primary-color);
-    color: #fff;
-  }
+  .details-list li:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+  .details-list li span {
+    color: var(--text-muted);
+    margin-right: 1rem; /* Add space between label and value */
+  }
+  .details-list li strong {
+    color: var(--dark-color);
+    font-weight: 500; /* Slightly less bold */
+    text-align: right; /* Align value to the right */
+  }
 
-  /* Danger Outline Button */
-  .btn-danger-outline {
-    border-color: #dc3545;
-    color: #dc3545;
-    background: #fff;
-  }
-  .btn-danger-outline:hover {
-    background-color: #dc3545;
-    color: #fff;
-  }
-  
-  /* --- 5. Logout Link --- */
-  .logout-section {
-    padding: 1.5rem 2.5rem;
-    border-top: 1px solid var(--border-color);
-    background-color: var(--bg-light); /* Slightly different background */
-    text-align: center;
-  }
-  .logout-link {
-    color: var(--primary-color);
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 1rem;
-    transition: all 0.2s ease;
-  }
-  .logout-link:hover {
-    color: var(--roamly-dark-red);
-    text-decoration: underline;
-  }
-  
-  /* Media Query for smaller screens */
-  @media (max-width: 600px) {
-    .profile-card {
-      padding: 0;
-    }
-    .profile-header {
-      padding: 2rem 1.5rem;
-    }
-    .profile-section {
-      padding: 1.5rem;
-    }
-    .logout-section {
-      padding: 1.25rem 1.5rem;
-    }
-  }
+  /* 4. Actions (Buttons) - Better Mobile Stacking */
+  .profile-actions {
+    display: flex;
+    flex-direction: column; /* Stack vertically by default */
+    gap: 0.75rem;
+  }
+
+  /* --- Base Button Styles --- */
+  .btn {
+    display: block; /* Make buttons block level */
+    width: 100%; /* Full width */
+    padding: 12px 20px; /* Adjusted padding */
+    border-radius: var(--border-radius-sm);
+    text-decoration: none;
+    font-weight: 600;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    font-size: 0.95rem;
+  }
+  .btn i { /* Add icon spacing if needed */
+      margin-right: 0.5em;
+  }
+  .btn:active {
+    transform: scale(0.98) translateY(1px);
+  }
+
+  /* Primary Outline Button */
+  .btn-primary-outline {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    background: #fff;
+  }
+  .btn-primary-outline:hover {
+    background-color: var(--primary-light); /* Lighter hover background */
+    color: var(--primary-color);
+  }
+
+  /* Danger Outline Button */
+  .btn-danger-outline {
+    border-color: #dc3545;
+    color: #dc3545;
+    background: #fff;
+  }
+  .btn-danger-outline:hover {
+    background-color: rgba(220, 53, 69, 0.05); /* Very light red hover */
+    color: #dc3545;
+  }
+
+  /* --- 5. Logout Link - Styled as a Button --- */
+  .logout-section {
+    padding: 1.5rem 2rem;
+    border-top: 1px solid var(--border-color);
+    background-color: #fff;
+  }
+  /* Style logout link like a less prominent button */
+  .logout-link {
+    display: block;
+    width: 100%;
+    padding: 12px 20px;
+    border-radius: var(--border-radius-sm);
+    text-decoration: none;
+    font-weight: 500;
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    font-size: 0.95rem;
+  }
+  .logout-link:hover {
+    background-color: var(--bg-light);
+    color: var(--dark-color);
+    text-decoration: none;
+  }
+
+  /* Media Query for smaller screens - Already mobile-first, but refine further */
+  @media (max-width: 480px) {
+    body {
+      padding: 1rem 0; /* Remove side padding, rely on card */
+    }
+    .profile-card {
+      margin: 1rem; /* Add margin instead of body padding */
+      border-radius: var(--border-radius); /* Keep consistent radius */
+    }
+    .profile-header {
+      padding: 2rem 1.5rem 1.5rem;
+    }
+    .profile-avatar {
+        width: 90px;
+        height: 90px;
+    }
+    .profile-header h3 {
+        font-size: 1.4rem;
+    }
+    .profile-section {
+      padding: 1.5rem;
+    }
+    .details-list li {
+        font-size: 0.9rem;
+        padding: 0.7rem 0;
+    }
+    .logout-section {
+      padding: 1.25rem 1.5rem;
+    }
+  }
+
+  /* Media Query for larger screens (Tablet+) - Side-by-side buttons */
+  @media (min-width: 576px) {
+      .profile-actions {
+        flex-direction: row; /* Buttons side-by-side */
+      }
+      .profile-actions .btn {
+        flex: 1; /* Make buttons share space */
+      }
+  }
+
 </style>
 
 <div class="profile-card">
-  <div class="profile-header">
-    <img src="<%= user.avatar || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png' %>" class="profile-avatar" alt="Avatar">
-    <h3 class="mb-1"><%= user.username %></h3>
-    <p class="email mb-0"><%= user.email %></p>
-  </div>
-  
-  <div class="profile-section">
-    <h5>Account Details</h5>
-    <ul class="details-list">
-      <li>
-        <span>Username</span>
-        <strong><%= user.username %></strong>
-      </li>
-      <li>
-        <span>Email</span>
-        <strong><%= user.email %></strong>
-      </li>
-      <li>
-        <span>Joined</span>
-        <strong><%= user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "N/A" %></strong>
-      </li>
-    </ul>
-  </div>
+  <div class="profile-header">
+    <img src="<%= user.avatar || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png' %>" class="profile-avatar" alt="Avatar">
+    <h3 class="mb-1"><%= user.username %></h3>
+    <p class="email mb-0"><%= user.email %></p>
+  </div>
+  
+  <div class="profile-section">
+    <h5>Account Details</h5>
+    <ul class="details-list">
+      <li>
+        <span>Username</span>
+        <strong><%= user.username %></strong>
+      </li>
+      <li>
+        <span>Email</span>
+        <strong><%= user.email %></strong>
+      </li>
+      <li>
+        <span>Joined</span>
+        <strong><%= user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "N/A" %></strong>
+      </li>
+    </ul>
+  </div>
 
-  <div class="profile-section profile-actions">
-    <a href="/bookings/my-bookings" class="btn btn-primary-outline">My Bookings</a>
-    <a href="/profile/edit" class="btn btn-primary-outline">Edit Profile</a>
-    <a href="/profile/delete" class="btn btn-danger-outline">Delete Profile</a>
-  </div>
+  <div class="profile-section profile-actions">
+    <a href="/bookings/my-bookings" class="btn btn-primary-outline">My Bookings</a>
+    <a href="/profile/edit" class="btn btn-primary-outline">Edit Profile</a>
+    <a href="/profile/delete" class="btn btn-danger-outline">Delete Profile</a>
+  </div>
 
-  <div class="logout-section">
-    <a href="/logout" class="logout-link">Log Out</a>
-  </div>
+  <div class="logout-section">
+    <a href="/logout" class="logout-link">Log Out</a>
+  </div>
 
 </div>
- 
