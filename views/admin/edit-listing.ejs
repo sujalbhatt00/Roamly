@@ -1,0 +1,136 @@
+<% layout("layouts/boilerplate") %>
+
+<div class="edit-wrapper d-flex justify-content-center align-items-center py-5">
+  <div class="edit-card p-4 p-md-5 rounded-4 bg-glass shadow-lg w-100" style="max-width: 600px;">
+
+    <!-- Header -->
+    <div class="text-center mb-4">
+      <h2 class="fw-bold text-dark">Edit Listing</h2>
+      <p class="text-muted">Update the details of your listing below and save changes.</p>
+    </div>
+
+    <!-- Form -->
+    <form method="POST" action="/admin/listings/<%= listing._id %>/edit" novalidate>
+      <div class="form-floating mb-3">
+        <input 
+          type="text" 
+          name="listing[title]" 
+          value="<%= listing.title %>" 
+          class="form-control rounded-3" 
+          id="title" 
+          placeholder="Listing Title" 
+          required>
+        <label for="title">Title</label>
+      </div>
+
+      <div class="form-floating mb-3">
+        <textarea 
+          name="listing[description]" 
+          class="form-control rounded-3" 
+          id="description" 
+          placeholder="Description" 
+          style="height: 120px;" 
+          required><%= listing.description %></textarea>
+        <label for="description">Description</label>
+      </div>
+
+      <div class="form-floating mb-3">
+        <input 
+          type="number" 
+          name="listing[price]" 
+          value="<%= listing.price %>" 
+          class="form-control rounded-3" 
+          id="price" 
+          placeholder="Price" 
+          required>
+        <label for="price">Price</label>
+      </div>
+
+      <div class="form-floating mb-3">
+        <input 
+          type="text" 
+          name="listing[location]" 
+          value="<%= listing.location %>" 
+          class="form-control rounded-3" 
+          id="location" 
+          placeholder="Location" 
+          required>
+        <label for="location">Location</label>
+      </div>
+
+      <div class="form-floating mb-4">
+        <input 
+          type="text" 
+          name="listing[country]" 
+          value="<%= listing.country %>" 
+          class="form-control rounded-3" 
+          id="country" 
+          placeholder="Country" 
+          required>
+        <label for="country">Country</label>
+      </div>
+
+      <button type="submit" class="btn btn-success w-100 py-2 rounded-3 fw-semibold">
+        Save Changes
+      </button>
+    </form>
+  </div>
+</div>
+
+<style>
+/* --- Wrapper --- */
+.edit-wrapper {
+  min-height: 80vh;
+  background: linear-gradient(135deg, #f9f9f9, #fefefe);
+}
+
+/* --- Card --- */
+.bg-glass {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.edit-card {
+  animation: fadeInUp 0.5s ease-in-out;
+}
+
+/* --- Animation --- */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Form inputs --- */
+.form-floating > .form-control {
+  border: 1px solid #ddd;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-floating > .form-control:focus {
+  border-color: #28a745;
+  box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.2);
+}
+
+/* --- Button --- */
+.btn-success {
+  background: linear-gradient(90deg, #28a745, #45c26d);
+  border: none;
+  transition: all 0.25s ease;
+}
+
+.btn-success:hover {
+  background: linear-gradient(90deg, #45c26d, #28a745);
+  box-shadow: 0 6px 16px rgba(40, 167, 69, 0.3);
+  transform: translateY(-2px);
+}
+
+/* --- Responsive --- */
+@media (max-width: 576px) {
+  .edit-card {
+    padding: 1.5rem;
+    margin: 0 1rem;
+  }
+}
+</style>

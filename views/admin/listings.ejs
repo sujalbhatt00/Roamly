@@ -1,0 +1,335 @@
+<% layout("layouts/boilerplate") %>
+
+<style>
+    /* --- Base Styles & Variables --- */
+    :root {
+        --roamly-red: #E54D42;
+        --roamly-red-dark: #c9302c;
+        --roamly-red-light: #fee2e2;
+        --roamly-blue: #3b82f6;
+        --roamly-blue-light: #dbeafe;
+        --roamly-gray-50: #f9fafb;
+        --roamly-gray-200: #e5e7eb;
+        --roamly-gray-500: #6b7280;
+        --roamly-gray-700: #374151;
+        --roamly-gray-800: #1f2937;
+        --roamly-gray-900: #111827;
+        --roamly-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    }
+
+    .admin-listings-body {
+        min-height: 100vh;
+        background-color: var(--roamly-gray-50);
+        padding: 2rem;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    .admin-container {
+        max-width: 80rem;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* --- Header --- */
+    .admin-header {
+        font-size: 1.875rem;
+        font-weight: 700;
+        color: var(--roamly-gray-900);
+        margin-bottom: 2rem;
+    }
+
+    /* --- Table Wrapper --- */
+    .table-wrapper {
+        width: 100%;
+        overflow-x: auto; /* Ensures table is scrollable on small screens */
+        background-color: #ffffff;
+        border-radius: 0.75rem;
+        box-shadow: var(--roamly-shadow);
+    }
+
+    .listings-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 800px; /* Forces horizontal scroll if container is too small */
+    }
+
+    .listings-table th,
+    .listings-table td {
+        padding: 1rem 1.5rem;
+        text-align: left;
+        border-bottom: 1px solid var(--roamly-gray-200);
+        white-space: nowrap;
+    }
+
+    .listings-table th {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--roamly-gray-500);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        background-color: var(--roamly-gray-50);
+    }
+
+    .listings-table td {
+        font-size: 0.875rem;
+        color: var(--roamly-gray-700);
+    }
+
+    .listings-table tbody tr:hover {
+        background-color: var(--roamly-gray-50);
+    }
+    
+    .listings-table .title {
+        font-weight: 600;
+        color: var(--roamly-gray-800);
+    }
+    
+    .listings-table .actions-cell {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    /* --- Action Buttons --- */
+    .btn-action {
+        border: none;
+        border-radius: 0.375rem;
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-edit {
+        background-color: var(--roamly-blue-light);
+        color: var(--roamly-blue);
+    }
+    .btn-edit:hover {
+        background-color: var(--roamly-blue);
+        color: #ffffff;
+    }
+
+    .btn-delete {
+        background-color: var(--roamly-red-light);
+        color: var(--roamly-red);
+    }
+    .btn-delete:hover {
+        background-color: var(--roamly-red);
+        color: #ffffff;
+    }
+
+    /* --- Confirmation Modal (Copied from bookings) --- */
+    .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
+        display: none; /* Hidden by default */
+        align-items: center;
+        justify-content: center;
+        z-index: 1050;
+    }
+    
+    .modal-overlay.active {
+        display: flex;
+    }
+
+    .modal-content {
+        background-color: #ffffff;
+        padding: 2rem;
+        border-radius: 0.75rem;
+        box-shadow: var(--roamly-shadow);
+        width: 100%;
+        max-width: 400px;
+        text-align: center;
+    }
+
+    .modal-icon {
+        width: 3.5rem;
+        height: 3.5rem;
+        border-radius: 9999px;
+        background-color: var(--roamly-red-light);
+        color: var(--roamly-red);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem auto;
+    }
+
+    .modal-icon svg {
+        width: 2rem;
+        height: 2rem;
+    }
+
+    .modal-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--roamly-gray-900);
+        margin-bottom: 0.5rem;
+    }
+
+    .modal-text {
+        font-size: 0.875rem;
+        color: var(--roamly-gray-500);
+        margin-bottom: 1.5rem;
+    }
+
+    .modal-actions {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .modal-btn {
+        flex: 1;
+        padding: 0.625rem 1rem;
+        border: 1px solid var(--roamly-gray-200);
+        border-radius: 0.375rem;
+        font-weight: 600;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .modal-btn-cancel {
+        background-color: #ffffff;
+        color: var(--roamly-gray-700);
+    }
+    .modal-btn-cancel:hover {
+        background-color: var(--roamly-gray-50);
+    }
+
+    .modal-btn-confirm {
+        background-color: var(--roamly-red);
+        color: #ffffff;
+        border-color: var(--roamly-red);
+    }
+    .modal-btn-confirm:hover {
+        background-color: var(--roamly-red-dark);
+        border-color: var(--roamly-red-dark);
+    }
+</style>
+
+<div class="admin-listings-body">
+    <div class="admin-container">
+        
+        <h1 class="admin-header">Manage All Listings</h1>
+
+        <div class="table-wrapper">
+            <table class="listings-table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Location</th>
+                        <th>Owner</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% listings.forEach(listing => { %>
+                        <tr>
+                            <td class="title"><%= listing.title %></td>
+                            <td><%= listing.location %>, <%= listing.country %></td>
+                            <td><%= listing.owner?.username || 'N/A' %></td>
+                            <td class="actions-cell">
+                                <a href="/admin/listings/<%= listing._id %>/edit" class="btn-action btn-edit">Edit</a>
+                                
+                                <!-- This form will be submitted by the modal script -->
+                                <form method="POST" action="/admin/listings/<%= listing._id %>/delete" style="display:inline;" id="deleteForm-<%= listing._id %>">
+                                    <button 
+                                        type="button" 
+                                        class="btn-action btn-delete" 
+                                        data-form-id="deleteForm-<%= listing._id %>"
+                                    >
+                                        Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }) %>
+                    <% if (listings.length === 0) { %>
+                        <tr>
+                            <td colspan="4" style="text-align: center; color: var(--roamly-gray-500); padding: 2rem;">
+                                No listings found.
+                            </td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div class="modal-overlay" id="deleteModal">
+    <div class="modal-content">
+        <div class="modal-icon">
+            <!-- Heroicon: Trash -->
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12.576 0a48.108 48.108 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.144-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.057-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+            </svg>
+        </div>
+        <h2 class="modal-title">Delete Listing?</h2>
+        <p class="modal-text">Are you sure you want to permanently delete this listing? This action cannot be undone.</p>
+        <div class="modal-actions">
+            <button type="button" class="modal-btn modal-btn-cancel" id="cancelDelete">
+                Cancel
+            </button>
+            <button type="button" class="modal-btn modal-btn-confirm" id="confirmDelete">
+                Yes, Delete
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const modal = document.getElementById('deleteModal');
+        const cancelBtn = document.getElementById('cancelDelete');
+        const confirmBtn = document.getElementById('confirmDelete');
+        const deleteButtons = document.querySelectorAll('.btn-delete');
+        
+        let formToSubmit = null;
+
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                const formId = e.currentTarget.getAttribute('data-form-id');
+                formToSubmit = document.getElementById(formId);
+                if (modal) {
+                    modal.classList.add('active');
+                }
+            });
+        });
+
+        function closeModal() {
+            if (modal) {
+                modal.classList.remove('active');
+            }
+            formToSubmit = null;
+        }
+
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', closeModal);
+        }
+
+        if (confirmBtn) {
+            confirmBtn.addEventListener('click', () => {
+                if (formToSubmit) {
+                    formToSubmit.submit();
+                }
+                closeModal();
+            });
+        }
+
+        // Close modal if clicking on the overlay
+        if (modal) {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+        }
+    });
+</script>

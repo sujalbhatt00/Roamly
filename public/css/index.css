@@ -1,4 +1,4 @@
-/* .uniform-img {
+ .uniform-img {
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
@@ -527,7 +527,7 @@ z-index: 999;
     .actions-group .action-btn { flex: 1 1 45%; }
     .actions-group .action-btn.book-btn { flex-basis: 100%; }
     /* Keep Edit button compact on very narrow devices */
-    /* .action-btn.edit-btn { flex: 0 0 auto; padding: 0 0.6rem !important; }
+    .action-btn.edit-btn { flex: 0 0 auto; padding: 0 0.6rem !important; }
     
     .action-btn.edit-btn i { display: inline-block; }
     .action-btn.edit-btn .btn-text { display: inline-block; }
@@ -559,4 +559,4 @@ z-index: 999;
 
 .mapboxgl-missing-css {
     display: none !important;
-} */ */
+} 

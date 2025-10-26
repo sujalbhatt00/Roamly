@@ -15,7 +15,8 @@ app.use(methodOverride("_method"));
 const ejsMate=require("ejs-mate")
 app.engine("ejs",ejsMate)
 const ExpressError=require("./utils/ExpressError");
-const session=require("express-session")
+const session=require("express-session");
+const MongoStore = require("connect-mongo");
 const flash=require("connect-flash")
 const passport=require("passport");
 const LocalStrategy=require("passport-local");
@@ -25,11 +26,27 @@ const reviewRouter=require("./routes/review.js");
 const listingsRouter=require("./routes/listing.js");
 const bookingsRouter=require("./routes/bookings.js");
 const staticRoutes = require("./routes/static");
+const adminRoutes = require("./routes/admin");
 
 
 app.use('/maptiler', express.static(__dirname + '/node_modules/@maptiler/sdk/dist')); 
+
+
+const store=MongoStore.create({
+    mongoUrl:process.env.ATLASDB_URL,
+    crypto:{
+    secret:process.env.SECRET
+    },
+    touchAfter:24*60*60,
+});
+
+store.on("error",function(e){   
+    console.log("Session store error:",e);
+});
+
 const sessionOptions={
-    secret:"mysupersecretcode",
+    store:store,
+    secret:process.env.SECRET,
     resave:false,
     saveUninitialized: true,
      cookie:{
@@ -37,7 +54,8 @@ const sessionOptions={
         maxAge:1000*60*60*24*3,
         httpOnly:true
      }
-}
+};
+
 app.use(session(sessionOptions));
 app.use(flash());
  
@@ -56,7 +74,9 @@ app.use((req,res,next)=>{
     next();
 });
 
-const MONGO_URL="mongodb://127.0.0.1:27017/wanderlust";
+// const MONGO_URL="mongodb://127.0.0.1:27017/wanderlust";
+const dbUrl=process.env.ATLASDB_URL;
+
 main().then(() =>{
     console.log("connect to DB")
 }).catch(err=>{
@@ -64,7 +84,7 @@ main().then(() =>{
 });
 
 async function main() {
-    await mongoose.connect(MONGO_URL)
+    await mongoose.connect(dbUrl)
 }
 
 app.use((req, res, next) => {
@@ -81,6 +101,7 @@ app.use("/listings/:id/reviews",reviewRouter);
 app.use("/",userRouter);
 app.use("/bookings",bookingsRouter);
 app.use("/", staticRoutes);
+app.use("/", adminRoutes);
 
 app.use((req, res, next) => {
     next(new ExpressError(404,"page not found!"));

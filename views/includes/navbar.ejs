@@ -174,11 +174,12 @@
     }
 
     .host-link {
-      text-decoration: none;
+    text-decoration: none;
       color: var(--roamly-text-dark);
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 16px;
+      font-weight: 500;
       padding: 12px 16px;
+      margin-left: 19px;
       border-radius: 22px;
       transition: all 0.2s ease;
       white-space: nowrap;
@@ -383,20 +384,20 @@
     }
     /* Style for profile link at top */
      .offcanvas-profile-link {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        font-weight: 600;
-        color: var(--roamly-text-dark);
-        padding: 1rem 1.5rem; /* Match other links */
-        transition: background-color 0.2s ease, color 0.2s ease;
+       display: flex;
+       align-items: center;
+       gap: 12px;
+       font-weight: 600;
+       color: var(--roamly-text-dark);
+       padding: 1rem 1.5rem; /* Match other links */
+       transition: background-color 0.2s ease, color 0.2s ease;
      }
      .offcanvas-profile-link:hover {
-         background-color: var(--roamly-light-gray);
+       background-color: var(--roamly-light-gray);
      }
      .offcanvas-profile-link .auth-user-avatar {
-         width: 40px;
-         height: 40px;
+       width: 40px;
+       height: 40px;
      }
 
 
@@ -583,13 +584,22 @@
       </div>
 
       <div class="navbar-auth-col">
-        <a class="host-link" href="/listings/new">Roamly your home</a>
+        <a class="host-link" href="/listings/new">Add new property</a>
 
         <div class="auth-links">
           <% if(!currUser){ %>
             <a class="auth-text-link" href="/signup">Sign Up</a>
             <a class="auth-text-link" href="/login">Login</a>
           <% } else { %>
+
+            <!-- === ADMIN LINK (DESKTOP) === -->
+            <% if (currUser && currUser.username === "sujalbhatt") { %>
+              <a class="auth-text-link" href="/admin" title="Admin">
+                <i class="fa-solid fa-user-shield" style="margin-right: 4px;"></i>Admin
+              </a>
+            <% } %>
+            <!-- === END ADMIN LINK === -->
+
             <a class="auth-text-link" href="/bookings/my-bookings">My Bookings</a>
             <a class="auth-text-link" href="/logout">Logout</a>
 
@@ -607,6 +617,7 @@
       </div>
     </div>
 
+    <!-- === MOBILE NAVBAR === -->
     <div class="d-lg-none w-100">
       <div class="navbar-mobile-content">
         <a class="mobile-logo" href="/listings"><b>ROAMLY</b></a>
@@ -625,6 +636,7 @@
     </div>
   </nav>
 
+  <!-- === MOBILE OFFCANVAS MENU === -->
   <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel" data-bs-scroll="true">
     <div class="offcanvas-header">
       <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu</h5>
@@ -644,6 +656,15 @@
             </span>
             <%= currUser.username %>
           </a>
+
+          <!-- === ADMIN LINK (MOBILE) === -->
+          <% if (currUser && currUser.username === "sujalbhatt") { %>
+            <a class="offcanvas-link" href="/admin">
+              <i class="fa-solid fa-user-shield" style="width: 20px; text-align: center; margin-right: 8px;"></i> Admin
+            </a>
+          <% } %>
+          <!-- === END ADMIN LINK === -->
+
           <a class="offcanvas-link" href="/bookings/my-bookings">My Bookings</a>
         <% } else { %>
           <a class="offcanvas-link" href="/signup" style="font-weight: 600;">Sign Up</a>
@@ -653,7 +674,7 @@
         <div class="offcanvas-divider"></div>
 
         <a class="offcanvas-link" href="/listings">Explore</a>
-        <a class="offcanvas-link" href="/listings/new">Roamly your home</a>
+        <a class="offcanvas-link" href="/listings/new">Add new property</a>
       </div>
 
       <div class="offcanvas-bottom-section">
@@ -665,6 +686,7 @@
     </div>
   </div>
 
+  <!-- === MOBILE SEARCH MODAL === -->
   <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-fullscreen-sm-down">
       <div class="modal-content search-modal-content">
@@ -788,17 +810,17 @@
           // Reset hamburger state if offcanvas is closed by clicking outside
           const toggler = document.querySelector('.navbar-toggler[data-bs-target="#offcanvasNavbar"]');
           if (toggler && toggler.getAttribute('aria-expanded') === 'true') {
-              toggler.setAttribute('aria-expanded', 'false');
+             toggler.setAttribute('aria-expanded', 'false');
           }
         });
         // Ensure hamburger state matches offcanvas state when toggled directly
          offcanvas.addEventListener('shown.bs.offcanvas', () => {
-            const toggler = document.querySelector('.navbar-toggler[data-bs-target="#offcanvasNavbar"]');
-             if (toggler) toggler.setAttribute('aria-expanded', 'true');
+           const toggler = document.querySelector('.navbar-toggler[data-bs-target="#offcanvasNavbar"]');
+           if (toggler) toggler.setAttribute('aria-expanded', 'true');
          });
-          offcanvas.addEventListener('hide.bs.offcanvas', () => {
-            const toggler = document.querySelector('.navbar-toggler[data-bs-target="#offcanvasNavbar"]');
-             if (toggler) toggler.setAttribute('aria-expanded', 'false');
+         offcanvas.addEventListener('hide.bs.offcanvas', () => {
+           const toggler = document.querySelector('.navbar-toggler[data-bs-target="#offcanvasNavbar"]');
+           if (toggler) toggler.setAttribute('aria-expanded', 'false');
          });
       }
 
