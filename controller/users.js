@@ -92,6 +92,35 @@ The Roamly Team`
   }
 };
 
+// Add this to your controller/users.js
+
+module.exports.sendResetOtp = async (req, res) => {
+  const { email } = req.body;
+  const user = await User.findOne({ email });
+  if (!user) {
+    req.flash("error", "No user found with that email.");
+    return res.redirect("/forgot-password");
+  }
+  // Generate numeric OTP
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  user.otp = otp;
+  user.otpExpires = Date.now() + 10 * 60 * 1000;
+  await user.save();
+
+  await transporter.sendMail({
+    from: process.env.OTP_EMAIL,
+    to: email,
+    subject: "Roamly Password Reset OTP",
+    text: `Your password reset code is: ${otp}\n\nThis code is valid for 10 minutes.`
+  });
+
+  req.flash("success", "OTP sent to your email.");
+  res.redirect(`/reset-password?email=${encodeURIComponent(email)}`);
+};
+
+
+
+
 // Handle OTP verification
 module.exports.verifyOtp = async (req, res) => {
   const { email, otp } = req.body;

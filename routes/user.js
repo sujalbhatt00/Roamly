@@ -14,6 +14,7 @@ const upload = multer({
   storage,
   limits: { fileSize: 1024 * 1024 } // 1MB limit
 });
+const otpGenerator = require("otp-generator");
 
 router.get("/profile/edit", (req, res) => {
   if (!req.isAuthenticated()) {
