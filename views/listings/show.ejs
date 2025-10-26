@@ -516,7 +516,7 @@ document.addEventListener('DOMContentLoaded', function() {
         dateFormat: "Y-m-d",
         disable: bookedDates,
         // Make calendar more mobile friendly
-        static: true, // Keep calendar open within modal on mobile
+        // static: true, // Commenting out static for now, often better without in modal
         monthSelectorType: 'static', // Simpler month navigation
         onChange: function(selectedDates, dateStr, instance) {
           if (selectedDates.length === 2) {
@@ -532,10 +532,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Check if selected range includes any disabled date
             let rangeIsValid = true;
+            const checkStart = new Date(start.toDateString()); // Compare dates only
+            const checkEnd = new Date(end.toDateString());
             for (let i = 0; i < bookedDates.length; i++) {
                 const bookedDate = new Date(bookedDates[i] + "T00:00:00"); // Ensure UTC comparison
-                const checkStart = new Date(start.toDateString()); // Compare dates only
-                const checkEnd = new Date(end.toDateString());
 
                 if (bookedDate >= checkStart && bookedDate <= checkEnd) {
                     rangeIsValid = false;
@@ -629,9 +629,10 @@ document.addEventListener('DOMContentLoaded', function() {
     try {
         const map = new maplibregl.Map({
           container: 'map',
-          style: `https://api.maptiler.com/maps/streets-v2/style.json?key=${apiKey}`, // Updated style
+          // **** USING OLDER STYLE URL THAT WORKED FOR YOU ****
+          style: `https://api.maptiler.com/maps/streets/style.json?key=${apiKey}`,
           center: center,
-          zoom: 11 // Slightly more zoomed out initially
+          zoom: 11
         });
 
         // Add controls
