@@ -129,6 +129,7 @@
     color: white;
     letter-spacing: 0.3px;
     text-transform: uppercase;
+    z-index: 10; /* Ensures status is on top of image */
   }
   .status-confirmed { background: var(--success-color); }
   .status-cancelled { background: var(--danger-color); }
@@ -226,8 +227,6 @@
     <div class="bookings-grid">
       <% bookings.forEach(booking => { %>
         <div class="booking-card">
-          <% const imgUrl = booking.listing.image?.url || 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop'; %>
-          <img src="<%= imgUrl %>" alt="<%= booking.listing.title %>" class="booking-img">
 
           <span class="booking-status 
             <%= booking.status.toLowerCase() === 'confirmed' ? 'status-confirmed' : 
@@ -236,10 +235,22 @@
             <%= booking.status %>
           </span>
 
-          <div class="booking-body">
-            <a href="/listings/<%= booking.listing._id %>" class="booking-title"><%= booking.listing.title %></a>
+          <% if (booking.listing) { %>
+            <% const imgUrl = booking.listing.image?.url || 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop'; %>
+            <img src="<%= imgUrl %>" alt="<%= booking.listing.title %>" class="booking-img">
+
+            <div class="booking-body">
+              <a href="/listings/<%= booking.listing._id %>" class="booking-title"><%= booking.listing.title %></a>
+          
+          <% } else { %>
+            <img src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop" alt="Listing no longer available" class="booking-img">
             
-            <p class="booking-info">
+            <div class="booking-body">
+              <a href="#" class="booking-title" style="color: var(--text-muted); text-decoration: none; cursor: default;">
+                Listing no longer available
+              </a>
+          <% } %>
+          <p class="booking-info">
               <strong>From:</strong> <%= new Date(booking.startDate).toLocaleDateString() %><br>
               <strong>To:</strong> <%= new Date(booking.endDate).toLocaleDateString() %>
             </p>
@@ -255,9 +266,8 @@
                 </button>
               </form>
             </div>
-          </div>
-        </div>
-      <% }) %>
+
+          </div> </div> <% }) %>
     </div>
   <% } %>
 </div>
