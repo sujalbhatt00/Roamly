@@ -1,60 +1,131 @@
-<footer class="bg-secondary text-white pt-5 pb-4 mt-auto">
-  <div class="container mt-auto">
-    <div class="row">
+<footer class="footer pt-5 pb-4 mt-auto">
+  <div class="container">
+    <div class="row gy-4">
 
-      <!-- About Roamly -->
-      <div class="col-12 col-md-3 mb-4">
-        <h6 class="fw-bold mb-3">Roamly</h6>
+      <div class="col-12 col-md-3">
+        <h5 class="fw-bold mb-3 text-uppercase">Roamly</h5>
         <ul class="list-unstyled">
-          <li><a href="/about" class="text-white text-decoration-none">About Us</a></li>
-          <li><a href="/contact" class="text-white text-decoration-none">Contact</a></li>
+          <li><a href="/about" class="footer-link">About Us</a></li>
+          <li><a href="/contact" class="footer-link">Contact</a></li>
         </ul>
       </div>
 
-      <!-- Support -->
-      <div class="col-12 col-md-3 mb-4">
-        <h6 class="fw-bold mb-3">Support</h6>
+      <div class="col-12 col-md-3">
+        <h5 class="fw-bold mb-3 text-uppercase">Support</h5>
         <ul class="list-unstyled">
-          <li><a href="/help" class="text-white text-decoration-none">Help Center</a></li>
-          <li><a href="/terms" class="text-white text-decoration-none">Terms</a></li>
-          <li><a href="/privacy" class="text-white text-decoration-none">Privacy</a></li>
+          <li><a href="/help" class="footer-link">Help Center</a></li>
+          <li><a href="/terms" class="footer-link">Terms</a></li>
+          <li><a href="/privacy" class="footer-link">Privacy</a></li>
         </ul>
       </div>
 
-      <!-- Explore -->
-      <div class="col-12 col-md-3 mb-4">
-        <h6 class="fw-bold mb-3">Explore</h6>
+      <div class="col-12 col-md-3">
+        <h5 class="fw-bold mb-3 text-uppercase">Explore</h5>
         <ul class="list-unstyled">
-          <li><a href="/listings" class="text-white text-decoration-none">Browse Listings</a></li>
-          <li><a href="/cities" class="text-white text-decoration-none">Cities</a></li>
-          <li><a href="/experiences" class="text-white text-decoration-none">Experiences</a></li>
-        </ul>
+          <li><a href="/listings" class="footer-link">Browse Listings</a></li>
+          </ul>
       </div>
 
-      <!-- Socials -->
-      <div class="col-12 col-md-3 mb-4 text-center text-md-end">
-        <h6 class="fw-bold mb-3">Follow Us</h6>
-        <a href="#" class="text-white mx-2"><i class="fa-brands fa-facebook fa-lg"></i></a>
-        <a href="#" class="text-white mx-2"><i class="fa-brands fa-instagram fa-lg"></i></a>
-        <a href="#" class="text-white mx-2"><i class="fa-brands fa-linkedin fa-lg"></i></a>
-        <a href="#" class="text-white mx-2"><i class="fa-brands fa-twitter fa-lg"></i></a>
+      <div class="col-12 col-md-3 text-center text-md-end">
+        <h5 class="fw-bold mb-3 text-uppercase">Follow Us</h5>
+        <div class="social-icons">
+          <a href="https://www.instagram.com/sujalbhatt00" target="_blank" rel="noopener noreferrer" class="social-link"><i class="fa-brands fa-instagram"></i></a>
+          <a href="https://www.linkedin.com/in/sujal-b-139067249/" target="_blank" rel="noopener noreferrer" class="social-link"><i class="fa-brands fa-linkedin"></i></a>
+          </div>
       </div>
 
     </div>
 
-    <hr class="border-light">
+    <hr class="my-4">
 
-    <!-- Bottom row -->
-    <div class="row">
-      <div class="col-12 col-md-6 text-center text-md-start mb-2 mb-md-0">
-        &copy; 2025 Roamly Private Limited
+    <div class="row align-items-center">
+      <div class="col-12 text-center text-md-start small"> © <%= new Date().getFullYear() %> <strong>Roamly</strong> Private Limited
       </div>
-      <div class="col-12 col-md-6 text-center text-md-end">
-        <a href="/privacy" class="text-white text-decoration-none mx-2">Privacy</a>
-        <a href="/terms" class="text-white text-decoration-none mx-2">Terms</a>
       </div>
-    </div>
   </div>
 </footer>
-</body>
-</html> 
+
+<style>
+/* --- Roamly Design System Variables (Add if not globally available) --- */
+:root {
+  --roamly-red: #E54D42;
+  --roamly-dark-color: #222222;
+  --roamly-text-color: #333;
+  --roamly-text-medium: #717171;
+  --roamly-light-gray: #f8f9fa;
+  --roamly-border-gray: #e0e0e0;
+}
+
+.footer {
+  background: var(--roamly-light-gray); /* Use variable */
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.2px;
+  border-top: 1px solid var(--roamly-border-gray); /* Use variable */
+  color: var(--roamly-text-medium); /* Use variable for base text color */
+}
+
+.footer h5 {
+  color: var(--roamly-dark-color); /* Use variable */
+  font-size: 0.9rem; /* Slightly smaller heading */
+  font-weight: 700; /* Bolder */
+  letter-spacing: 0.5px;
+}
+
+.footer-link {
+  display: block; /* Keep block display */
+  color: var(--roamly-text-medium); /* Use variable */
+  text-decoration: none;
+  margin-bottom: 0.5rem; /* Increased spacing slightly */
+  font-size: 0.95rem; /* Slightly larger link text */
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.footer-link:hover {
+  color: var(--roamly-red); /* Use variable */
+  transform: translateX(3px); /* Keep hover effect */
+}
+
+.social-icons a.social-link { /* Be more specific */
+  display: inline-block;
+  margin: 0 8px;
+  font-size: 1.25rem;
+  color: var(--roamly-text-medium); /* Use variable */
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.social-icons a.social-link:hover {
+  color: var(--roamly-red); /* Use variable */
+  transform: translateY(-3px); /* Keep hover effect */
+}
+
+.footer hr { /* Target hr specifically inside footer */
+  opacity: 0.5; /* Slightly less transparent */
+  border-color: var(--roamly-border-gray); /* Use variable */
+}
+
+/* Ensure copyright text uses correct color */
+.footer .small {
+    color: var(--roamly-text-medium);
+}
+.footer .small strong {
+    color: var(--roamly-dark-color); /* Make brand name darker */
+}
+
+/* Adjust alignment for small screens */
+@media (max-width: 767.98px) { /* Changed breakpoint to align with Bootstrap's md */
+  .footer h5,
+  .footer ul { /* Center list items container too */
+    text-align: center;
+  }
+  .footer-link {
+     display: inline-block; /* Make links inline for centering */
+     margin: 0 0.5rem 0.5rem 0.5rem; /* Adjust margin for inline */
+  }
+  .footer-link:hover {
+      transform: none; /* Disable shift on mobile */
+  }
+  .social-icons {
+      margin-top: 0.5rem; /* Add space above social icons on mobile */
+  }
+}
+</style>

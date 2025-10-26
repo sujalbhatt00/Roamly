@@ -1,0 +1,163 @@
+<% layout("layouts/boilerplate") %>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+  /* --- Roamly Design System Variables --- */
+  :root {
+    --roamly-red: #E54D42;
+    --roamly-dark-color: #222222;
+    --roamly-text-color: #333;
+    --roamly-text-medium: #717171;
+    --roamly-light-gray: #f8f9fa;
+    --roamly-border-gray: #e0e0e0;
+    --shadow-md: 0 5px 15px rgba(0,0,0,0.1);
+    --border-radius-lg: 16px;
+    --border-radius-sm: 8px; /* Added for FAQ items */
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--roamly-light-gray); /* Light page background */
+    color: var(--roamly-text-color);
+    line-height: 1.7;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+
+  .help-container {
+    max-width: 800px; /* Good width for text */
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 3rem 3.5rem;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--roamly-border-gray);
+  }
+
+  .help-heading {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--roamly-dark-color);
+    text-align: center;
+    margin-bottom: 2rem;
+    position: relative;
+    padding-bottom: 1rem;
+  }
+
+  /* Decorative underline for heading */
+  .help-heading::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background-color: var(--roamly-red);
+    border-radius: 2px;
+  }
+
+  .help-intro {
+    font-size: 1.1rem;
+    color: var(--roamly-text-medium);
+    margin-bottom: 2.5rem; /* More space before FAQ */
+    text-align: center;
+  }
+
+  /* Style the FAQ list */
+  .faq-list {
+    list-style: none; /* Remove default bullets */
+    padding: 0;
+    margin: 0;
+  }
+
+  .faq-item {
+    background-color: var(--roamly-light-gray); /* Light background for each item */
+    border: 1px solid var(--roamly-border-gray); /* Subtle border */
+    border-radius: var(--border-radius-sm); /* Slightly rounded corners */
+    padding: 1.25rem 1.5rem; /* Padding inside each item */
+    margin-bottom: 1rem; /* Space between items */
+    transition: box-shadow 0.2s ease;
+  }
+
+  .faq-item:hover {
+      box-shadow: var(--shadow-sm); /* Subtle shadow on hover */
+  }
+
+  .faq-question {
+    font-weight: 600; /* Bolder question */
+    color: var(--roamly-dark-color);
+    margin-bottom: 0.5rem; /* Space between question and answer */
+    display: block; /* Ensure it takes full width */
+    font-size: 1.1rem;
+  }
+
+  .faq-answer {
+    color: var(--roamly-text-medium);
+    font-size: 1rem;
+    margin: 0; /* Remove default paragraph margins if nested */
+    line-height: 1.6;
+  }
+
+  .faq-answer a {
+    color: var(--roamly-red);
+    font-weight: 500;
+    text-decoration: none;
+    border-bottom: 1px dashed var(--roamly-red);
+    transition: all 0.2s ease;
+  }
+
+  .faq-answer a:hover {
+    color: var(--roamly-dark-red);
+    border-bottom-style: solid;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .help-container {
+      padding: 2rem 1.5rem;
+    }
+    .help-heading {
+      font-size: 2rem;
+    }
+    .help-intro {
+        font-size: 1rem;
+        margin-bottom: 2rem;
+    }
+    .faq-question {
+        font-size: 1rem;
+    }
+    .faq-answer {
+        font-size: 0.95rem;
+    }
+     .faq-item {
+        padding: 1rem;
+    }
+  }
+
+</style>
+
+<div class="container help-container">
+  <h2 class="help-heading">Help Center ❓</h2>
+  <p class="help-intro">Find quick answers to some frequently asked questions below.</p>
+
+  <ul class="faq-list">
+    <li class="faq-item">
+      <strong class="faq-question">How do I book a property?</strong>
+      <p class="faq-answer">Browse through the available listings using the categories or search bar. Once you find a property you like, click on it to view details. On the listing page, select your dates using the calendar and click the "Book Now" or "Confirm Booking" button.</p>
+    </li>
+    <li class="faq-item">
+      <strong class="faq-question">How do I cancel a booking?</strong>
+      <p class="faq-answer">Navigate to your <a href="/bookings/my-bookings">My Bookings</a> page (you must be logged in). Find the booking you wish to cancel and click the "Delete Booking" button. Please note cancellation policies may vary.</p>
+    </li>
+    <li class="faq-item">
+      <strong class="faq-question">How do I contact a host?</strong>
+      <p class="faq-answer">Host contact information isn't directly shared before booking for privacy reasons. Once your booking is confirmed, you'll typically receive communication details. For pre-booking questions, check the listing description thoroughly.</p>
+    </li>
+    <li class="faq-item">
+      <strong class="faq-question">Need more help?</strong>
+      <p class="faq-answer">If your question isn't answered here, please don't hesitate to <a href="/contact">Contact us</a> directly. We're here to assist!</p>
+    </li>
+  </ul>
+</div>

@@ -1,654 +1,822 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roamly</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        /* --- General Reset & Base Styles --- */
-        :root {
-            --roamly-red: #FF385C;
-            --roamly-dark-red: #E03E44;
-            --roamly-light-gray: #f7f7f7;
-            --roamly-border-gray: #dddddd;
-            --roamly-text-dark: #222222;
-            --roamly-text-medium: #717171;
-            --roamly-shadow-light: rgba(0,0,0,0.08);
-            --roamly-shadow-medium: rgba(0,0,0,0.18);
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roamly</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    /* --- General Reset & Base Styles --- */
+    :root {
+      --roamly-red: #E54D42; /* Updated Red */
+      --roamly-dark-red: #c9302c; /* Updated Dark Red */
+      --roamly-light-gray: #f8f9fa;
+      --roamly-border-gray: #dddddd;
+      --roamly-text-dark: #222222;
+      --roamly-text-medium: #717171;
+      --roamly-shadow-light: rgba(0,0,0,0.08);
+      --roamly-shadow-medium: rgba(0,0,0,0.18);
+    }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Circular', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background-color: #fff;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Circular', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background-color: white; /* Changed from #fff */
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        /* --- Navbar Container & Sticky Behavior --- */
-        .navbar {
-            position: sticky;
-            top: 0;
-            z-index: 1050; /* Higher than offcanvas */
-            width: 100%;
-            background-color: #ffffff;
-            border-bottom: 1px solid #ebebeb;
-            transition: box-shadow 0.3s ease;
-            padding: 0; /* Remove default padding */
-        }
+    /* --- Navbar Container & Sticky Behavior --- */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 1050;
+      width: 100%;
+      background-color: #ffffff; /* Changed back to white */
+      border-bottom: 1px solid #ebebeb;
+      transition: box-shadow 0.3s ease;
+      padding: 0;
+    }
 
-        .navbar.scrolled {
-            box-shadow: 0 1px 8px var(--roamly-shadow-light);
-        }
+    .navbar.scrolled {
+      box-shadow: 0 1px 8px var(--roamly-shadow-light);
+    }
 
-        .navbar-desktop-content {
-            display: grid;
-            grid-template-columns: 1fr auto 1fr; /* Logo/Explore | Search | Auth */
-            align-items: center;
-            height: 100px; /* MODIFIED: Increased navbar height */
-            padding: 0 max(80px, 5vw); /* MODIFIED: Dynamic padding for better full-width appearance */
-            gap: 24px;
-            /* Removed max-width to allow elements to size dynamically */
-            margin: 0 auto; /* Still center if content is smaller than viewport - but elements can now grow */
-        }
+    .navbar-desktop-content {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr; /* Logo/Explore | Search | Auth */
+      align-items: center;
+      height: 80px; /* Standard Height */
+      padding: 0 80px;
+      gap: 24px;
+      margin: 0 auto;
+      width: 100%;
+    }
 
-        /* --- Logo & Explore Link (Desktop) --- */
-        .navbar-brand-col {
-            display: flex;
-            align-items: center;
-            justify-self: start;
-            flex-shrink: 0;
-        }
+    /* --- Logo & Explore Link (Desktop) --- */
+    .navbar-brand-col {
+      display: flex;
+      align-items: center;
+      justify-self: start;
+      flex-shrink: 0;
+    }
 
-        .roamly-logo {
-            text-decoration: none;
-            font-size: 5rem; /* MODIFIED: Made logo even bigger */
-            font-weight: 700;
-            margin-left: auto;
-            color: var(--roamly-red); /* Darker red */
-            letter-spacing: -0.5px;
-            white-space: nowrap; /* Keep logo on one line */
-        }
-
-
-        
-        .explore-link {
-            text-decoration: none;
-            color: var(--roamly-text-dark);
-            font-size: 16px;
-            font-weight: 600;
-            padding: 12px 16px;
-            margin-left: 19px; /* Space from logo */
-            border-radius: 22px;
-            transition: all 0.2s ease;
-            white-space: nowrap;
-        }
-        
-        .explore-link:hover {
-            background-color: var(--roamly-light-gray);
-        }
-
-        /* --- Search Bar (Desktop) --- */
-        .navbar-search-col {
-            display: flex;
-            justify-content: center;
-            justify-self: center; /* Center in its grid column */
-            width: 100%;
-            max-width: 850px; /* Kept this for overall max, but search-container now controls its size more */
-        }
-
-        .search-container {
-            display: flex;
-            align-items: center;
-            width: 100%;
-            max-width: 700px; /* MODIFIED: Made search bar even longer */
-            border: 1px solid var(--roamly-border-gray);
-            border-radius: 40px;
-            padding: 8px 8px 8px 24px;
-            transition: all 0.2s ease;
-            background: #ffffff;
-            box-shadow: 0 1px 2px var(--roamly-shadow-light);
-        }
-
-        .search-container:hover {
-            box-shadow: 0 2px 4px var(--roamly-shadow-medium);
-        }
-
-        .search-container:focus-within {
-            box-shadow: 0 3px 12px var(--roamly-shadow-light);
-        }
-
-        .search-input {
-            border: none;
-            outline: none;
-            background: transparent;
-            flex: 1;
-            font-size: 14px;
-            color: var(--roamly-text-dark);
-            font-weight: 400;
-        }
-
-        .search-input::placeholder {
-            color: var(--roamly-text-medium);
-        }
-
-        .search-btn {
-            background: var(--roamly-red);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            flex-shrink: 0;
-        }
-
-        .search-btn:hover {
-            transform: scale(1.04);
-            box-shadow: 0 4px 8px rgba(255, 56, 92, 0.3);
-            background: var(--roamly-dark-red);
-        }
-
-        .search-btn:active {
-            transform: scale(0.96);
-        }
-
-        /* --- Auth Links (Desktop) --- */
-        .navbar-auth-col {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            justify-self: end;
-            flex-shrink: 0;
-        }
-
-        .host-link {
-            text-decoration: none;
-            color: var(--roamly-text-dark);
-            font-size: 14px;
-            font-weight: 600;
-            padding: 12px 16px;
-            border-radius: 22px;
-            transition: all 0.2s ease;
-            white-space: nowrap;
-        }
-
-        .host-link:hover {
-            background-color: var(--roamly-light-gray);
-        }
-
-        .auth-links {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 8px 8px 8px 16px;
-            border: 1px solid var(--roamly-border-gray);
-            border-radius: 21px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            background: #ffffff;
-        }
-
-        .auth-links:hover {
-            box-shadow: 0 2px 4px var(--roamly-shadow-medium);
-        }
-
-        .auth-text-link {
-            text-decoration: none;
-            color: var(--roamly-text-dark);
-            font-size: 14px;
-            font-weight: 600;
-            transition: color 0.2s ease;
-            white-space: nowrap;
-        }
-
-        .auth-text-link:hover {
-            color: var(--roamly-red);
-        }
-
-        .auth-user-avatar {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Placeholder color */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        .auth-user-avatar svg {
-            width: 16px;
-            height: 16px;
-        }
-        /* --- Mobile Navbar (d-lg-none) --- */
-        .navbar-mobile-content {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 70px; /* MODIFIED: Taller height for mobile */
-            padding: 0 24px; /* Mobile padding */
-            gap: 12px;
-        }
-
-        .mobile-logo {
-            font-size: 2.2rem; /* MODIFIED: Adjusted mobile logo size */
-            color: var(--roamly-red);
-            font-weight: 700;
-            text-decoration: none;
-            flex-shrink: 0;
-            white-space: nowrap;
-        }
-
-        .mobile-search-pill {
-            flex-grow: 1; /* Takes up available space */
-            flex-shrink: 1;
-            min-width: 0; /* Allow shrinking */
-            border: 1px solid var(--roamly-border-gray);
-            border-radius: 24px;
-            padding: 8px 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background-color: #fff;
-            box-shadow: 0 1px 2px var(--roamly-shadow-light);
-            cursor: pointer;
-            transition: box-shadow 0.2s ease;
-        }
-        .mobile-search-pill:hover {
-            box-shadow: 0 2px 4px var(--roamly-shadow-medium);
-        }
-        .mobile-search-pill i {
-            color: var(--roamly-text-dark);
-            font-size: 1rem;
-        }
-        .mobile-search-pill span {
-            color: var(--roamly-text-medium);
-            font-size: 0.9rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        /* --- Hamburger Menu Icon (Mobile) --- */
-        .navbar-toggler {
-            border: none;
-            padding: 0.25rem 0.5rem;
-            font-size: 1.25rem;
-            line-height: 1;
-            background-color: transparent;
-            border-radius: 0.375rem;
-            transition: box-shadow 0.15s ease-in-out;
-            cursor: pointer;
-            flex-shrink: 0; /* Prevents it from shrinking */
-        }
-        .navbar-toggler-icon {
-            display: inline-block;
-            width: 1.5em; /* Standard Bootstrap size */
-            height: 1.5em;
-            vertical-align: middle;
-            background-image: var(--bs-navbar-toggler-icon-bg);
-            background-repeat: no-repeat;
-            background-position: center;
-            background-size: 100%;
-        }
-        /* Using Bootstrap's custom toggler icon */
-        .navbar-toggler {
-            --bs-navbar-toggler-icon-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23444' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
-        }
+    .roamly-logo {
+      text-decoration: none;
+      font-size: 2rem !important; /* MODIFIED: Even Bigger logo */
+      font-weight: 900 !important; /* MODIFIED: Boldest */
+      color: var(--roamly-red) !important; /* MODIFIED: Ensure color */
+      letter-spacing: -0.03em; /* MODIFIED: Slightly tighter spacing */
+      white-space: nowrap;
+      line-height: 1; /* Adjust vertical alignment */
+    }
+    .roamly-logo:hover {
+       color: var(--roamly-red) !important; /* MODIFIED: Explicitly no hover color change */
+    }
 
 
-        /* --- Offcanvas Menu (Mobile) --- */
-        .offcanvas {
-            --bs-offcanvas-width: 280px;
-            background-color: #fff;
-            z-index: 1051; /* Higher than navbar */
-            border: none;
-        }
-        .offcanvas-header {
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid var(--roamly-border-gray);
-        }
-        .offcanvas-title {
-            color: var(--roamly-red);
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-        .offcanvas-body {
-            padding: 0.5rem 0;
-        }
-        .offcanvas-link {
-            display: block;
-            padding: 1rem 1.5rem;
-            color: var(--roamly-text-dark);
-            text-decoration: none;
-            font-size: 1.1rem;
-            font-weight: 500;
-            transition: background-color 0.2s ease, color 0.2s ease;
-        }
-        .offcanvas-link:hover {
-            background-color: var(--roamly-light-gray);
-            color: var(--roamly-red);
-        }
-        .offcanvas-divider {
-            border-top: 1px solid var(--roamly-light-gray);
-            margin: 0.5rem 0;
-        }
+    .explore-link {
+      text-decoration: none;
+      color: var(--roamly-text-dark);
+      font-size: 16px;
+      font-weight: 500;
+      padding: 12px 16px;
+      margin-left: 19px;
+      border-radius: 22px;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
 
-        /* --- Blur Overlay --- */
-        .blur-overlay {
-            position: fixed;
-            top: 0; 
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: 1040; /* Lower than offcanvas, higher than page content */
-            background-color: rgba(0, 0, 0, 0.1); 
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-        }
-        
-        .blur-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
+    .explore-link:hover {
+      background-color: var(--roamly-light-gray);
+    }
 
-        /* --- Responsive Adjustments --- */
-        /* Tablet/Small Laptop (e.g., iPad Pro portrait) */
-        @media (max-width: 1200px) {
-            .navbar-desktop-content {
-                padding: 0 max(40px, 3vw); /* Reduced dynamic padding for smaller screens */
-                gap: 16px;
-                height: 90px; /* MODIFIED: Adjusted tablet navbar height */
-            }
-            .roamly-logo {
-                font-size: 4rem; /* MODIFIED: Adjusted logo size for smaller desktops */
-            }
-            .explore-link {
-                padding: 8px 12px;
-                font-size: 15px;
-            }
-            .search-container {
-                max-width: 500px; /* Adjusted search bar length for smaller desktops */
-            }
-            .host-link, .auth-text-link {
-                font-size: 13px;
-                padding: 10px 14px;
-            }
-            .auth-links {
-                padding: 6px 6px 6px 14px;
-                gap: 10px;
-            }
-            .auth-user-avatar {
-                width: 28px;
-                height: 28px;
-            }
-            .auth-user-avatar svg {
-                width: 14px;
-                height: 14px;
-            }
-        }
+    /* --- Search Bar (Desktop) --- */
+    .navbar-search-col {
+      display: flex;
+      justify-content: center;
+      justify-self: center;
+      width: 100%;
+      max-width: 850px;
+      position: relative; /* Anchor for suggestions */
+    }
 
-        /* Mobile / Smaller Tablet (below 992px) */
-        @media (max-width: 991.98px) {
-            .navbar-desktop-content {
-                display: none; /* Hide desktop content */
-            }
-            .navbar-mobile-content {
-                display: flex; /* Show mobile content */
-            }
-        }
+    .search-container {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      max-width: 700px;
+      border: 1px solid var(--roamly-border-gray);
+      border-radius: 40px;
+      padding: 8px 8px 8px 24px;
+      transition: all 0.2s ease;
+      background: #ffffff;
+      box-shadow: 0 1px 2px var(--roamly-shadow-light);
+    }
 
-        @media (max-width: 767.98px) {
-            .navbar-mobile-content {
-                height: 64px; /* MODIFIED: Adjusted mobile navbar height */
-                padding: 0 16px;
-                gap: 8px;
-            }
-            .mobile-logo {
-                font-size: 2.2rem; /* MODIFIED: Adjusted mobile logo size */
-            }
-            .mobile-search-pill {
-                padding: 6px 10px;
-            }
-            .mobile-search-pill i {
-                font-size: 0.9rem;
-            }
-            .mobile-search-pill span {
-                font-size: 0.8rem;
-            }
-            .offcanvas {
-                --bs-offcanvas-width: 250px;
-            }
-        }
+    .search-container:hover {
+      box-shadow: 0 2px 4px var(--roamly-shadow-medium);
+    }
 
-        @media (max-width: 420px) {
-            .mobile-logo {
-                font-size: 2rem; /* MODIFIED: Adjusted mobile logo size */
-            }
-            .mobile-search-pill span {
-                display: none; /* Hide search text on very small screens */
-            }
-        }
+    .search-container:focus-within {
+      box-shadow: 0 3px 12px var(--roamly-shadow-light);
+    }
 
-    </style>
+    .search-input {
+      border: none;
+      outline: none;
+      background: transparent;
+      flex: 1;
+      font-size: 14px;
+      color: var(--roamly-text-dark);
+      font-weight: 400;
+    }
+
+    .search-input::placeholder {
+      color: var(--roamly-text-medium);
+    }
+
+    .search-btn {
+      background: var(--roamly-red);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .search-btn:hover {
+      transform: scale(1.04);
+      box-shadow: 0 4px 8px rgba(255, 56, 92, 0.3);
+      background: var(--roamly-dark-red);
+    }
+
+    .search-btn:active {
+      transform: scale(0.96);
+    }
+
+    /* --- Auth Links (Desktop) --- */
+    .navbar-auth-col {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-self: end;
+      flex-shrink: 0;
+    }
+
+    .host-link {
+      text-decoration: none;
+      color: var(--roamly-text-dark);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 12px 16px;
+      border-radius: 22px;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .host-link:hover {
+      background-color: var(--roamly-light-gray);
+    }
+
+    .auth-links {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 8px 8px 16px;
+      border: 1px solid var(--roamly-border-gray);
+      border-radius: 21px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: #ffffff;
+    }
+
+    .auth-links:hover {
+      box-shadow: 0 2px 4px var(--roamly-shadow-medium);
+    }
+
+    .auth-text-link {
+      text-decoration: none;
+      color: var(--roamly-text-dark);
+      font-size: 14px;
+      font-weight: 600;
+      transition: color 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .auth-text-link:hover {
+      color: var(--roamly-red);
+    }
+
+    .auth-user-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Placeholder color */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+      overflow: hidden;
+    }
+    .auth-user-avatar svg {
+      width: 16px;
+      height: 16px;
+    }
+    .auth-user-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* --- Mobile Navbar (d-lg-none) --- */
+    .navbar-mobile-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 70px;
+      padding: 0 24px;
+      gap: 12px;
+    }
+
+    .mobile-logo {
+      font-size: 1.3rem !important; /* MODIFIED: Bigger mobile logo */
+      font-weight: 900 !important; /* MODIFIED: Boldest */
+      color: var(--roamly-red) !important;
+      text-decoration: none;
+      flex-shrink: 0;
+      white-space: nowrap;
+      letter-spacing: -0.03em;
+      line-height: 1; /* Adjust vertical alignment */
+    }
+     .mobile-logo:hover {
+       color: var(--roamly-red) !important; /* MODIFIED: Explicitly no hover color change */
+    }
+
+    .mobile-search-pill {
+      flex-grow: 1;
+      flex-shrink: 1;
+      min-width: 0;
+      border: 1px solid var(--roamly-border-gray);
+      border-radius: 24px;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background-color: #fff;
+      box-shadow: 0 1px 2px var(--roamly-shadow-light);
+      cursor: pointer;
+      transition: box-shadow 0.2s ease;
+    }
+    .mobile-search-pill:hover {
+      box-shadow: 0 2px 4px var(--roamly-shadow-medium);
+    }
+    .mobile-search-pill i {
+      color: var(--roamly-text-dark);
+      font-size: 1rem;
+    }
+    .mobile-search-pill span {
+      color: var(--roamly-text-medium);
+      font-size: 0.9rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* --- Modern Hamburger Menu Icon --- */
+    .navbar-toggler {
+      border: none;
+      padding: 0; /* Remove padding */
+      font-size: 1.25rem;
+      line-height: 1;
+      background-color: transparent;
+      border-radius: 0.375rem;
+      transition: box-shadow 0.15s ease-in-out;
+      cursor: pointer;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 26px; /* Slightly narrower */
+      height: 20px; /* Slightly shorter */
+      position: relative;
+    }
+
+    .navbar-toggler-icon { display: none; } /* Hide default icon */
+
+    .toggler-bar {
+      display: block;
+      width: 100%;
+      height: 2.5px; /* MODIFIED: Thinner bars */
+      background-color: var(--roamly-text-dark);
+      border-radius: 3px;
+      transition: all 0.3s ease-in-out;
+      transform-origin: center;
+    }
+
+    /* 'X' animation when menu is open */
+    .navbar-toggler[aria-expanded="true"] .toggler-bar:nth-child(1) {
+      transform: translateY(8.75px) rotate(45deg); /* Adjusted translation */
+    }
+    .navbar-toggler[aria-expanded="true"] .toggler-bar:nth-child(2) {
+      opacity: 0;
+      transform: scaleX(0); /* Add scale for smoother disappearance */
+    }
+    .navbar-toggler[aria-expanded="true"] .toggler-bar:nth-child(3) {
+      transform: translateY(-8.75px) rotate(-45deg); /* Adjusted translation */
+    }
+
+
+    /* --- Offcanvas Menu (Mobile) --- */
+    .offcanvas {
+      --bs-offcanvas-width: 280px;
+      background-color: #fff;
+      z-index: 1051;
+      border: none;
+    }
+    .offcanvas-header {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--roamly-border-gray);
+    }
+    .offcanvas-title {
+      color: var(--roamly-red);
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    .offcanvas-body {
+      padding: 0; /* Remove default padding */
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: calc(100vh - 56.8px); /* Adjust based on header height */
+    }
+    .offcanvas-top-section, .offcanvas-bottom-section {
+        padding: 0.5rem 0;
+    }
+    .offcanvas-link {
+      display: block;
+      padding: 1rem 1.5rem;
+      color: var(--roamly-text-dark);
+      text-decoration: none;
+      font-size: 1.1rem;
+      font-weight: 500;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+    .offcanvas-link:hover {
+      background-color: var(--roamly-light-gray);
+      color: var(--roamly-red);
+    }
+    .offcanvas-divider {
+      border-top: 1px solid var(--roamly-border-gray);
+      margin: 0; /* Remove default margins */
+    }
+    /* Style for profile link at top */
+     .offcanvas-profile-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 600;
+        color: var(--roamly-text-dark);
+        padding: 1rem 1.5rem; /* Match other links */
+        transition: background-color 0.2s ease, color 0.2s ease;
+     }
+     .offcanvas-profile-link:hover {
+         background-color: var(--roamly-light-gray);
+     }
+     .offcanvas-profile-link .auth-user-avatar {
+         width: 40px;
+         height: 40px;
+     }
+
+
+    /* --- Blur Overlay --- */
+    .blur-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 1040;
+      background-color: rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .blur-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* --- Responsive Adjustments --- */
+    @media (max-width: 1200px) {
+      .navbar-desktop-content {
+        padding: 0 40px;
+        gap: 16px;
+        height: 80px;
+      }
+      .explore-link {
+        padding: 8px 12px;
+        font-size: 15px;
+      }
+      .search-container {
+        max-width: 500px;
+      }
+      .host-link, .auth-text-link {
+        font-size: 13px;
+        padding: 10px 14px;
+      }
+      .auth-links {
+        padding: 6px 6px 6px 14px;
+        gap: 10px;
+      }
+      .auth-user-avatar {
+        width: 28px;
+        height: 28px;
+      }
+      .auth-user-avatar svg {
+        width: 14px;
+        height: 14px;
+      }
+    }
+
+    @media (max-width: 991.98px) {
+      .navbar-desktop-content {
+        display: none;
+      }
+      .navbar-mobile-content {
+        display: flex;
+      }
+    }
+
+    @media (max-width: 767.98px) {
+      .navbar-mobile-content {
+        height: 64px;
+        padding: 0 16px;
+        gap: 8px;
+      }
+      .mobile-search-pill {
+        padding: 6px 10px;
+      }
+      .mobile-search-pill i {
+        font-size: 0.9rem;
+      }
+      .mobile-search-pill span {
+        font-size: 0.8rem;
+      }
+      .offcanvas {
+        --bs-offcanvas-width: 250px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .mobile-search-pill span {
+        display: none; /* Hide search text on very small screens */
+      }
+    }
+
+    /* --- Search Suggestions Box --- */
+    .search-suggestions {
+      position: absolute;
+      top: 110%; /* Position below search bar */
+      left: 0;
+      right: 0;
+      background: #fff;
+      border: 1px solid #eee;
+      z-index: 9999;
+      max-height: 260px;
+      overflow-y: auto;
+      border-radius: 12px; /* Rounded corners */
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      width: 100%;
+      margin: 0 auto;
+    }
+    .suggestion-item {
+      padding: 0.7rem 1.5rem; /* More padding */
+      cursor: pointer;
+      font-size: 1rem;
+      border-bottom: 1px solid #f3f3f3;
+      color: var(--roamly-text-dark);
+      display: block;
+      text-decoration: none;
+    }
+    .suggestion-item:last-child { border-bottom: none; }
+    .suggestion-item:hover { background: #f7f7f7; }
+    .suggestion-item strong { color: var(--roamly-red); }
+
+    /* --- Mobile Search Modal --- */
+    .search-modal-content {
+      border-radius: 0;
+      border: none;
+      background-color: var(--roamly-light-gray);
+    }
+    .search-modal-header {
+      border-bottom: none;
+      padding: 1rem 1rem 0 1rem;
+      background-color: var(--roamly-light-gray);
+    }
+    .search-modal-body {
+      padding: 1rem;
+      background-color: var(--roamly-light-gray);
+    }
+    .search-modal-body .search-container {
+      max-width: none;
+      width: 100%;
+      border-radius: 12px;
+      padding: 12px 12px 12px 20px;
+      box-shadow: none;
+      border: 1px solid #ccc;
+      background-color: #fff;
+    }
+    .search-modal-body .search-input {
+      font-size: 1rem;
+    }
+    .search-modal-body .search-btn {
+      width: 40px;
+      height: 40px;
+    }
+    .search-modal-body .search-suggestions {
+      position: relative;
+      top: 10px;
+      box-shadow: none;
+      border: none;
+      border-radius: 12px;
+      background-color: var(--roamly-light-gray);
+    }
+    .search-modal-body .suggestion-item {
+      background-color: #fff;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      border: 1px solid var(--roamly-border-gray);
+    }
+
+  </style>
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg">
- <div class="d-none d-lg-grid navbar-desktop-content w-100">
-            
-            <div class="navbar-brand-col">
-                <a class="roamly-logo" m style="font-weight: bold;margin-left:auto; font-size: 1.5rem;" href="/listings"><B>ROAMLY</B></a>
-                <a class="explore-link" href="/listings">Explore</a>
-            </div>
+  <nav class="navbar navbar-expand-lg">
+    <div class="d-none d-lg-grid navbar-desktop-content w-100">
 
-            <div class="navbar-search-col">
-             <form class="search-container" action="/listings/search" method="get" autocomplete="off" style="width:100%; max-width:700px;">
-  <input type="text" name="q" class="search-input" placeholder="Search destination..." id="navbar-search-input">
-  <button type="submit" class="search-btn"><i class="fa fa-search"></i></button>
-</form>
+      <div class="navbar-brand-col">
+        <a class="roamly-logo" href="/listings"><b>ROAMLY</b></a>
+        <a class="explore-link" href="/listings">Explore</a>
+      </div>
 
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-  const input = document.getElementById("navbar-search-input");
-  let suggestionBox;
+      <div class="navbar-search-col">
+        <form class="search-container" action="/listings/search" method="GET" autocomplete="off">
+          <input type="text" name="q" class="search-input" placeholder="Search destination..." id="navbar-search-input">
+          <button type="submit" class="search-btn"><i class="fa fa-search"></i></button>
+        </form>
+      </div>
 
-  input.addEventListener("input", async function() {
-    const q = input.value.trim();
-    if (q.length < 1) {
-      if (suggestionBox) suggestionBox.remove();
-      return;
-    }
-    // Fetch suggestions from backend
-    const res = await fetch(`/listings/search?q=${encodeURIComponent(q)}&ajax=1`);
-    const data = await res.json();
-    if (!suggestionBox) {
-      suggestionBox = document.createElement("div");
-      suggestionBox.className = "search-suggestions";
-      input.parentNode.appendChild(suggestionBox);
-    }
-    suggestionBox.innerHTML = "";
-    data.forEach(listing => {
-      const item = document.createElement("div");
-      item.className = "suggestion-item";
-      item.textContent = `${listing.title} (${listing.location}, ${listing.country})`;
-      item.onclick = () => window.location.href = `/listings/${listing._id}`;
-      suggestionBox.appendChild(item);
-    });
-    if (data.length === 0) {
-      suggestionBox.innerHTML = "<div class='suggestion-item'>No results found</div>";
-    }
-  });
+      <div class="navbar-auth-col">
+        <a class="host-link" href="/listings/new">Roamly your home</a>
 
-  document.addEventListener("click", function(e) {
-    if (suggestionBox && !input.contains(e.target)) suggestionBox.remove();
-  });
-});
-</script>
-<style>
-.search-suggestions {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  background: #fff;
-  border: 1px solid #eee;
-  z-index: 9999;
-  max-height: 260px;
-  overflow-y: auto;
-  border-radius: 0 0 12px 12px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-}
-.suggestion-item {
-  padding: 0.7rem 1rem;
-  cursor: pointer;
-  font-size: 1rem;
-  border-bottom: 1px solid #f3f3f3;
-}
-.suggestion-item:last-child { border-bottom: none; }
-.suggestion-item:hover { background: #f7f7f7; }
-</style>
-            </div>
+        <div class="auth-links">
+          <% if(!currUser){ %>
+            <a class="auth-text-link" href="/signup">Sign Up</a>
+            <a class="auth-text-link" href="/login">Login</a>
+          <% } else { %>
+            <a class="auth-text-link" href="/bookings/my-bookings">My Bookings</a>
+            <a class="auth-text-link" href="/logout">Logout</a>
 
-            <div class="navbar-auth-col">
-    <a class="host-link" href="/listings/new">Roamly your home</a>
-
-<div class="auth-links" onclick="toggleOffcanvas()">
-    <% if(!currUser){ %>
-        <a class="auth-text-link" href="/signup">Sign Up</a>
-        <a class="auth-text-link" href="/login">Login</a>
-    <% } else { %>
-        <a class="auth-text-link" href="/bookings/my-bookings">My Bookings</a>
-        <a class="auth-text-link" href="/logout">Logout</a>
-      
-<a class="auth-text-link" href="/profile" title="Profile">
-  <span class="auth-user-avatar">
-    <% if (currUser && currUser.avatar) { %>
-      <img src="<%= currUser.avatar %>" alt="Profile" style="width:30px; height:30px; object-fit:cover; border-radius:50%;">
-    <% } else { %>
-      <i class="fa fa-user"></i>
-    <% } %>
-  </span>
-</a>
-
-    <% } %>
-</div>
-
-</div>
+            <a class="auth-text-link" href="/profile" title="Profile">
+              <span class="auth-user-avatar">
+                <% if (currUser && currUser.avatar) { %>
+                  <img src="<%= currUser.avatar %>" alt="Profile">
+                <% } else { %>
+                  <i class="fa fa-user"></i>
+                <% } %>
+              </span>
+            </a>
+          <% } %>
         </div>
-
-        <!-- --- Mobile Navbar (Visible on Small Screens - d-lg-none) --- --><div class="d-lg-none w-100">
-            <div class="navbar-mobile-content">
-                <a class="mobile-logo" style="font-weight: bold; font-size: 1.5rem;" href="/listings"><B>ROAMLY</B></a>
-                
-                <div class="mobile-search-pill">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <span>Search destinations</span>
-                </div>
-
-                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation" onclick="toggleBlur()">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-            </div>
-        </div>
-    </nav>
-
-    <!-- --- Offcanvas Menu (Mobile Only) --- --><div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel" data-bs-scroll="true">
-        <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" onclick="toggleBlur()"></button>
-        </div>
-        <div class="offcanvas-body">
-            <div>
-                <a class="offcanvas-link" href="/explore">Explore</a>
-                <a class="offcanvas-link" href="/listings/new">Roamly your home</a>
-            </div>
-           
-           <div>
-  <% if(!currUser){ %>
-    <a class="offcanvas-link" href="/signup">Sign Up</a>
-    <a class="offcanvas-link" href="/login">Login</a>
-<% } else { %>
-    <a class="offcanvas-link" href="/bookings/my-bookings">My Bookings</a>
-    <a class="offcanvas-link" href="/profile"><i class="fa fa-user"></i> Profile</a>
-    <a class="offcanvas-link" href="/logout">Logout</a>
-<% } %>
-</div>
-        </div>
+      </div>
     </div>
 
-    <!-- --- Blur Overlay --- --><div class="blur-overlay" id="blur-overlay"></div>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        const offcanvasNavbar = document.getElementById('offcanvasNavbar');
-        const blurOverlay = document.getElementById('blur-overlay');
-        const navbar = document.querySelector('.navbar');
+    <div class="d-lg-none w-100">
+      <div class="navbar-mobile-content">
+        <a class="mobile-logo" href="/listings"><b>ROAMLY</b></a>
 
-        function toggleBlur() {
-            if (offcanvasNavbar.classList.contains('show')) {
-                blurOverlay.classList.remove('active');
-            } else {
-                blurOverlay.classList.add('active');
+        <div class="mobile-search-pill" data-bs-toggle="modal" data-bs-target="#searchModal">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <span>Search destinations</span>
+        </div>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation" onclick="toggleBlur()">
+          <span class="toggler-bar"></span>
+          <span class="toggler-bar"></span>
+          <span class="toggler-bar"></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel" data-bs-scroll="true">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" onclick="toggleBlur()"></button>
+    </div>
+
+    <div class="offcanvas-body">
+      <div class="offcanvas-top-section">
+        <% if(currUser){ %>
+          <a class="offcanvas-profile-link" href="/profile">
+            <span class="auth-user-avatar">
+              <% if (currUser.avatar) { %>
+                <img src="<%= currUser.avatar %>" alt="Profile">
+              <% } else { %>
+                <i class="fa fa-user"></i>
+              <% } %>
+            </span>
+            <%= currUser.username %>
+          </a>
+          <a class="offcanvas-link" href="/bookings/my-bookings">My Bookings</a>
+        <% } else { %>
+          <a class="offcanvas-link" href="/signup" style="font-weight: 600;">Sign Up</a>
+          <a class="offcanvas-link" href="/login">Login</a>
+        <% } %>
+
+        <div class="offcanvas-divider"></div>
+
+        <a class="offcanvas-link" href="/listings">Explore</a>
+        <a class="offcanvas-link" href="/listings/new">Roamly your home</a>
+      </div>
+
+      <div class="offcanvas-bottom-section">
+        <% if(currUser){ %>
+          <div class="offcanvas-divider"></div>
+          <a class="offcanvas-link" href="/logout">Logout</a>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen-sm-down">
+      <div class="modal-content search-modal-content">
+        <div class="modal-header search-modal-header">
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body search-modal-body" id="mobile-search-form-container">
+          <form class="search-container" action="/listings/search" method="GET" autocomplete="off" id="mobile-search-form">
+            <input type="text" name="q" class="search-input" placeholder="Search destination..." id="mobile-search-input">
+            <button type="submit" class="search-btn"><i class="fa fa-search"></i></button>
+          </form>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="blur-overlay" id="blur-overlay"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+
+      // --- 1. SEARCH SUGGESTION LOGIC ---
+      function setupSearchSuggestions(inputId, containerSelector) {
+        const input = document.getElementById(inputId);
+        if (!input) return;
+
+        const searchContainer = input.closest(containerSelector);
+        if (!searchContainer) return;
+
+        let suggestionBox = null;
+        let debounceTimer;
+
+        function ensureSuggestionBox() {
+          if (!suggestionBox) {
+            suggestionBox = document.createElement("div");
+            suggestionBox.className = "search-suggestions";
+            searchContainer.appendChild(suggestionBox);
+
+            if (inputId === 'mobile-search-input') {
+              suggestionBox.style.position = 'relative';
+              suggestionBox.style.top = '10px';
+              suggestionBox.style.boxShadow = 'none';
+              suggestionBox.style.border = 'none';
+              suggestionBox.style.background = 'transparent';
             }
+          }
         }
 
-        // Add event listener to hide blur when offcanvas is hidden
-        offcanvasNavbar.addEventListener('hide.bs.offcanvas', () => {
-            blurOverlay.classList.remove('active');
-        });
-        
-        // Add event listener to show blur when offcanvas is shown (just in case)
-        offcanvasNavbar.addEventListener('show.bs.offcanvas', () => {
-            blurOverlay.classList.add('active');
+        async function fetchSuggestions() {
+          const q = input.value.trim();
+
+          if (q.length < 1) {
+            if (suggestionBox) {
+              suggestionBox.remove();
+              suggestionBox = null;
+            }
+            return;
+          }
+
+          const res = await fetch(`/listings/search?q=${encodeURIComponent(q)}&ajax=1`);
+          const data = await res.json();
+
+          ensureSuggestionBox();
+          suggestionBox.innerHTML = "";
+
+          if (data.length === 0) {
+            suggestionBox.innerHTML = `<div class='suggestion-item' style='cursor:default;'>No results found for "${q}"</div>`;
+          } else {
+            data.forEach(listing => {
+              const item = document.createElement("a");
+              item.className = "suggestion-item";
+              item.href = `/listings/${listing._id}`;
+
+              const regex = new RegExp(q, 'gi');
+              const title = (listing.title || '').replace(regex, (match) => `<strong>${match}</strong>`);
+              const location = (`${listing.location || ''}, ${listing.country || ''}`).replace(regex, (match) => `<strong>${match}</strong>`);
+
+              item.innerHTML = `
+                <div style="font-weight: 600;">${title}</div>
+                <div style="font-size: 0.9rem; color: #717171;">${location}</div>
+              `;
+              suggestionBox.appendChild(item);
+            });
+          }
+        }
+
+        input.addEventListener("input", () => {
+          clearTimeout(debounceTimer);
+          debounceTimer = setTimeout(fetchSuggestions, 250);
         });
 
+        document.addEventListener("click", function(e) {
+          if (suggestionBox && !searchContainer.contains(e.target)) {
+            suggestionBox.remove();
+            suggestionBox = null;
+          }
+        });
 
-        // Scroll effect for navbar shadow
+        if (inputId === 'mobile-search-input') {
+          const modal = document.getElementById('searchModal');
+          modal.addEventListener('shown.bs.modal', () => {
+            input.focus();
+          });
+        }
+      }
+
+      setupSearchSuggestions("navbar-search-input", ".navbar-search-col");
+      setupSearchSuggestions("mobile-search-input", "#mobile-search-form-container");
+
+      // --- 2. BLUR OVERLAY FOR MOBILE ---
+      window.toggleBlur = function() {
+        document.getElementById('blur-overlay').classList.toggle('active');
+      }
+
+      const offcanvas = document.getElementById('offcanvasNavbar');
+      if (offcanvas) {
+        offcanvas.addEventListener('hidden.bs.offcanvas', () => {
+          document.getElementById('blur-overlay').classList.remove('active');
+          // Reset hamburger state if offcanvas is closed by clicking outside
+          const toggler = document.querySelector('.navbar-toggler[data-bs-target="#offcanvasNavbar"]');
+          if (toggler && toggler.getAttribute('aria-expanded') === 'true') {
+              toggler.setAttribute('aria-expanded', 'false');
+          }
+        });
+        // Ensure hamburger state matches offcanvas state when toggled directly
+         offcanvas.addEventListener('shown.bs.offcanvas', () => {
+            const toggler = document.querySelector('.navbar-toggler[data-bs-target="#offcanvasNavbar"]');
+             if (toggler) toggler.setAttribute('aria-expanded', 'true');
+         });
+          offcanvas.addEventListener('hide.bs.offcanvas', () => {
+            const toggler = document.querySelector('.navbar-toggler[data-bs-target="#offcanvasNavbar"]');
+             if (toggler) toggler.setAttribute('aria-expanded', 'false');
+         });
+      }
+
+
+      // --- 3. NAVBAR SCROLL EFFECT ---
+      const navbar = document.querySelector('.navbar');
+      if (navbar) {
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 10) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
+          if (window.scrollY > 10) {
+            navbar.classList.add('scrolled');
+          } else {
+            navbar.classList.remove('scrolled');
+          }
         });
+      }
 
-        // Basic search functionality (for demo)
-        document.querySelector('.mobile-search-pill').addEventListener('click', () => {
-            alert('Mobile search clicked!');
-            // You can redirect to a search page or open a modal here
-        });
+    });
+  </script>
 
-        document.querySelector('.search-container').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const query = document.querySelector('.search-input').value;
-            if (query) {
-                alert('Searching for: ' + query);
-                // window.location.href = `/listings/search?q=${encodeURIComponent(query)}`;
-            }
-        });
-
-        // Example for dynamic auth links (EJS logic is usually handled server-side)
-        // For a client-side demo, you might simulate login/logout
-        function simulateAuthToggle() {
-            // This part is typically handled by server-side EJS
-            // For a pure HTML/JS demo, you'd swap content based on a JS variable
-        }
-        // simulateAuthToggle(); // Call if you want to test client-side swapping
-    </script>
 </body>
 </html>
-

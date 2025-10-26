@@ -24,6 +24,9 @@ const userRouter=require("./routes/user.js");
 const reviewRouter=require("./routes/review.js");
 const listingsRouter=require("./routes/listing.js");
 const bookingsRouter=require("./routes/bookings.js");
+const staticRoutes = require("./routes/static");
+
+
 app.use('/maptiler', express.static(__dirname + '/node_modules/@maptiler/sdk/dist')); 
 const sessionOptions={
     secret:"mysupersecretcode",
@@ -77,6 +80,7 @@ app.use("/listings",listingsRouter);
 app.use("/listings/:id/reviews",reviewRouter);
 app.use("/",userRouter);
 app.use("/bookings",bookingsRouter);
+app.use("/", staticRoutes);
 
 app.use((req, res, next) => {
     next(new ExpressError(404,"page not found!"));

@@ -1,96 +1,303 @@
 <% layout("/layouts/boilerplate") %>
-<body class="bg-light py-5">
-  <div class="container">
-    <div class="col-lg-8 mx-auto">
-      <div class="card shadow-sm border-0 rounded-4">
-        <div class="card-body p-4 p-md-5">
-          <h3 class="fw-bold mb-4 text-center">
-            <i class="bi bi-house-door-fill me-2"></i>Add New Property
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+  :root {
+    --roamly-red: #E54D42;
+    --roamly-red-rgb: 229, 77, 66;
+    --roamly-dark-red: #c9302c;
+    --roamly-light-gray: #f8f9fa;
+    --roamly-border-gray: #e0e0e0;
+    --roamly-text-dark: #222222;
+    --roamly-text-medium: #717171;
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.06);
+    --shadow-md: 0 5px 15px rgba(0,0,0,0.1);
+    --border-radius-sm: 8px;
+    --border-radius-lg: 16px;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--roamly-light-gray);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .form-page-container {
+    max-width: 900px;
+    margin: 2.5rem auto;
+    padding: 0 1rem;
+  }
+
+  .form-card {
+    background: #fff;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    border: none;
+    overflow: hidden;
+  }
+
+  .form-card-body {
+    padding: 2.5rem 3rem;
+  }
+
+  @media (max-width: 767.98px) {
+    .form-card-body {
+      padding: 2rem 1.5rem;
+    }
+  }
+
+  .form-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .form-header h3 {
+    font-weight: 700;
+    font-size: 2rem;
+    color: var(--roamly-text-dark);
+  }
+  .form-header i {
+    color: var(--roamly-red);
+    margin-right: 0.5rem;
+  }
+  .form-header hr {
+    margin-top: 1.5rem;
+    border-top: 1px solid var(--roamly-border-gray);
+  }
+
+  /* --- Modern Form Group --- */
+  .form-group-modern {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-group-modern .form-label {
+    font-weight: 600;
+    color: var(--roamly-text-dark);
+    margin-bottom: 0.5rem;
+  }
+
+  .form-group-modern .form-control,
+  .form-group-modern .form-select {
+    border: 1px solid var(--roamly-border-gray);
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border-radius: var(--border-radius-sm);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .form-group-modern .form-control:focus,
+  .form-group-modern .form-select:focus {
+    outline: none;
+    border-color: var(--roamly-red);
+    box-shadow: 0 0 0 3px rgba(var(--roamly-red-rgb), 0.2);
+  }
+
+  textarea.form-control {
+    min-height: 120px;
+  }
+
+  /* --- Custom File Upload --- */
+  .file-upload-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border: 2px dashed var(--roamly-border-gray);
+    border-radius: var(--border-radius-sm);
+    padding: 2rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .file-upload-label:hover {
+    border-color: var(--roamly-red);
+    background-color: var(--roamly-light-gray);
+  }
+  .file-upload-label i {
+    font-size: 2.5rem;
+    color: var(--roamly-text-medium);
+    margin-bottom: 0.75rem;
+  }
+  .file-upload-label span {
+    color: var(--roamly-text-dark);
+    font-weight: 500;
+  }
+  .file-name-display {
+    margin-top: 0.75rem;
+    font-size: 0.9rem;
+    color: var(--roamly-text-medium);
+    text-align: center;
+    word-break: break-all;
+  }
+
+  /* --- Submit Button --- */
+  .btn-roamly {
+    background-color: var(--roamly-red);
+    border-color: var(--roamly-red);
+    color: #fff;
+    font-weight: 600;
+    padding: 0.85rem 1rem;
+    font-size: 1.1rem;
+    border-radius: var(--border-radius-sm);
+    transition: all 0.2s ease;
+    width: 100%;
+    margin-top: 1rem;
+  }
+  .btn-roamly:hover {
+    background-color: var(--roamly-dark-red);
+    border-color: var(--roamly-dark-red);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(var(--roamly-red-rgb), 0.3);
+  }
+
+</style>
+
+<div class="form-page-container">
+  <div class="col-12 mx-auto">
+    <div class="form-card">
+      <div class="form-card-body">
+        <div class="form-header">
+          <h3>
+            <i class="fa-solid fa-house-chimney"></i>Add New Property
           </h3>
-          <hr class="mb-4" />
-          <form method="POST" action="/listings" novalidate class="needs-validation" enctype="multipart/form-data">
-            <!-- Title -->
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Title</label>
-              <input name="listing[title]" type="text" required placeholder="Enter title" class="form-control form-control-lg">
-              <div class="valid-feedback">Title looks good!</div>
-            </div>
-            <!-- Description -->
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Description</label>
-              <textarea name="listing[description]" rows="3" required placeholder="Describe your listing..." class="form-control form-control-lg"></textarea>
-              <div class="invalid-feedback">Please enter a valid description.</div>
-            </div>
-            <!-- Image -->
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Image Upload</label>
-              <input name="listing[image]" type="file"class="form-control form-control-lg">
-            </div>
-            <!-- Price -->
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Price (₹)</label>
-              <input name="listing[price]" type="number" required placeholder="1200" class="form-control form-control-lg">
-              <div class="invalid-feedback">Please enter a valid price.</div>
-            </div>
-            <!-- Country / State / City Dropdowns -->
-            <div class="row">
-              <div class="col-md-4 mb-3">
-                <label class="form-label fw-semibold">Country</label>
-                <select id="country" name="listing[country]" class="form-select form-select-lg" required>
-                  <option value="" disabled selected>Select Country</option>
-                  <% countries.forEach(function(country) { %>
-                    <% if(country.name) { %>
-                      <option value="<%= country.name %>"><%= country.name %></option>
-                    <% } %>
-                  <% }); %>
-                </select>
-                <div class="invalid-feedback">Please select a country.</div>
-              </div>
-              <div class="col-md-4 mb-3">
-                <label class="form-label fw-semibold">State</label>
-                <select id="state" name="listing[state]" class="form-select form-select-lg" required disabled>
-                  <option value="" disabled selected>Select State</option>
-                </select>
-                <div class="invalid-feedback">Please select a state.</div>
-              </div>
-              <div class="col-md-4 mb-3">
-                <label class="form-label fw-semibold">City</label>
-                <select id="city" name="listing[city]" class="form-select form-select-lg" required disabled>
-                  <option value="" disabled selected>Select City</option>
-                </select>
-                <div class="invalid-feedback">Please select a city.</div>
-              </div>
-            </div>
-            <!-- Location -->
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Location</label>
-              <input name="listing[location]" type="text" required placeholder="Enter location" class="form-control form-control-lg">
-              <div class="invalid-feedback">Please enter a valid location.</div>
-            </div>
-            <!-- Category -->
-            <div class="mb-4">
-              <label class="form-label fw-semibold">Category</label>
-              <select name="listing[category]" class="form-select form-select-lg" required>
-                <option disabled selected>Select a category</option>
-                <option value="Arctic">Arctic</option>
-                <option value="Mountain">Mountain</option>
-                <option value="Castles">Castles</option>
-                <option value="Farms">Farms</option>
-                <option value="Camping">Camping</option>
-                <option value="Rooms">Rooms</option>
-                <option value="Iconic Cities">Iconic Cities</option>
-                <option value="Amazing pools">Amazing pools</option>
-                <option value="Boats">Boats</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-            <button type="submit" class="btn btn-dark btn-lg w-100 mt-4">Add Property</button>
-          </form>
+          <hr />
         </div>
+        
+        <form method="POST" action="/listings" novalidate class="needs-validation" enctype="multipart/form-data">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group-modern">
+                <label for="title" class="form-label">Title</label>
+                <input name="listing[title]" id="title" type="text" required placeholder="e.g., Cozy Beachfront Cottage" class="form-control">
+                <div class="valid-feedback">Title looks good!</div>
+                <div class="invalid-feedback">Please enter a title.</div>
+              </div>
+
+              <div class="form-group-modern">
+                <label for="description" class="form-label">Description</label>
+                <textarea name="listing[description]" id="description" rows="3" required placeholder="Describe your listing..." class="form-control"></textarea>
+                <div class="invalid-feedback">Please enter a valid description.</div>
+              </div>
+              
+              <div class="form-group-modern">
+                <label for="location" class="form-label">Location</label>
+                <input name="listing[location]" id="location" type="text" required placeholder="e.g., 123 Ocean Drive" class="form-control">
+                <div class="invalid-feedback">Please enter a valid location.</div>
+              </div>
+
+              <div class="form-group-modern">
+                <label for="price" class="form-label">Price (₹)</label>
+                <input name="listing[price]" id="price" type="number" required placeholder="1200" class="form-control">
+                <div class="invalid-feedback">Please enter a valid price.</div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group-modern">
+                <label class="form-label">Image Upload</label>
+                <input name="listing[image]" type="file" class="form-control d-none" id="image-upload" accept="image/*">
+                <label for="image-upload" class="file-upload-label">
+                  <i class="fa-solid fa-cloud-arrow-up"></i>
+                  <span>Click to upload image</span>
+                </label>
+                <div id="file-name-display" class="file-name-display"></div>
+                
+                
+                <div class="form-text">Image must be less than 2MB.</div>
+              </div>
+
+              <div class="form-group-modern">
+                <div class="row">
+                  <div class="col-12 mb-3">
+                    <label for="country" class="form-label">Country</label>
+                    <select id="country" name="listing[country]" class="form-select" required>
+                      <option value="" disabled selected>Select Country</option>
+                      <% countries.forEach(function(country) { %>
+                        <% if(country.name) { %>
+                          <option value="<%= country.name %>"><%= country.name %></option>
+                        <% } %>
+                      <% }); %>
+                    </select>
+                    <div class="invalid-feedback">Please select a country.</div>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="state" class="form-label">State</label>
+                    <select id="state" name="listing[state]" class="form-select" required disabled>
+                      <option value="" disabled selected>Select State</option>
+                    </select>
+                    <div class="invalid-feedback">Please select a state.</div>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="city" class="form-label">City</label>
+                    <select id="city" name="listing[city]" class="form-select" required disabled>
+                      <option value="" disabled selected>Select City</option>
+                    </select>
+                    <div class="invalid-feedback">Please select a city.</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="form-group-modern">
+                <label for="category" class="form-label">Category</label>
+                <select name="listing[category]" id="category" class="form-select" required>
+                  <option value="" disabled selected>Select a category</option>
+                  <option value="Arctic">Arctic</option>
+                  <option value="Mountain">Mountain</option>
+                  <option value="Castles">Castles</option>
+                  <option value="Farms">Farms</option>
+                  <option value="Camping">Camping</option>
+                  <option value="Rooms">Rooms</option>
+                  <option value="Iconic Cities">Iconic Cities</option>
+                  <option value="Amazing pools">Amazing pools</option>
+                  <option value="Boats">Boats</option>
+                  <option value="Other">Other</option>
+                </select>
+                <div class="invalid-feedback">Please select a category.</div>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-roamly">Add Property</button>
+        </form>
       </div>
     </div>
   </div>
+</div>
+
 <script>
+  // Image upload: name display, size check, and preview (2MB limit)
+  const fileInput = document.getElementById('image-upload');
+  const fileDisplay = document.getElementById('file-name-display');
+  const preview = document.getElementById('propertyImagePreview');
+
+  fileInput.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        alert("Image size must be less than 2MB.");
+        e.target.value = ""; // Clear file input
+        fileDisplay.textContent = '';
+        preview.src = ""; // Remove preview
+        return;
+      }
+      fileDisplay.textContent = `Selected file: ${file.name}`;
+      const reader = new FileReader();
+      reader.onload = function(){
+        if (reader.readyState === 2) {
+          preview.src = reader.result;
+        }
+      };
+      reader.readAsDataURL(file);
+    } else {
+      fileDisplay.textContent = '';
+      preview.src = "";
+    }
+  });
+</script>
+
+<script>
+  // Country/State/City dropdown logic (no changes made, it's correct)
   const countries = <%- JSON.stringify(countries) %>;
   document.addEventListener("DOMContentLoaded", function() {
     const countrySelect = document.getElementById("country");
@@ -137,7 +344,9 @@
     });
   });
 </script>
+
 <script>
+  // Bootstrap validation script (no changes made)
   (() => {
     'use strict';
     const forms = document.querySelectorAll('.needs-validation');
@@ -152,7 +361,9 @@
     });
   })();
 </script>
+
 <script>
+  // Script to enable disabled fields before submit (no changes made)
   document.querySelectorAll('form.needs-validation').forEach(form => {
     form.addEventListener('submit', function(e) {
       // Enable state and city before submit so their values are sent
@@ -161,5 +372,3 @@
     });
   });
 </script>
-</body>
-</html>

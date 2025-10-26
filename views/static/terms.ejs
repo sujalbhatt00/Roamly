@@ -1,0 +1,148 @@
+<% layout("layouts/boilerplate") %>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+
+  /* --- Roamly Design System Variables --- */
+  :root {
+    --roamly-red: #E54D42;
+    --roamly-dark-color: #222222;
+    --roamly-text-color: #333;
+    --roamly-text-medium: #717171;
+    --roamly-light-gray: #f8f9fa;
+    --roamly-border-gray: #e0e0e0;
+    --shadow-md: 0 5px 15px rgba(0,0,0,0.1);
+    --border-radius-lg: 16px;
+    --border-radius-sm: 8px;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--roamly-light-gray); /* Light page background */
+    color: var(--roamly-text-color);
+    line-height: 1.7;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+
+  .terms-container {
+    max-width: 800px; /* Good width for text */
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 3rem 3.5rem;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--roamly-border-gray);
+  }
+
+  .terms-heading {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--roamly-dark-color);
+    text-align: center;
+    margin-bottom: 2rem;
+    position: relative;
+    padding-bottom: 1rem;
+  }
+
+  /* Decorative underline for heading */
+  .terms-heading::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background-color: var(--roamly-red);
+    border-radius: 2px;
+  }
+
+  .terms-container p {
+    font-size: 1.1rem;
+    color: var(--roamly-text-medium);
+    margin-bottom: 1.5rem;
+  }
+
+  /* Style the terms list */
+  .terms-list {
+    list-style: none; /* Remove default bullets */
+    padding-left: 0; /* Remove default padding */
+    margin: 2rem 0;
+  }
+
+  .terms-list li {
+    font-size: 1.05rem;
+    color: var(--roamly-text-dark);
+    margin-bottom: 1rem;
+    padding-left: 2rem; /* Indent text */
+    position: relative; /* For positioning the pseudo-element */
+  }
+
+  /* Custom bullet point using ::before */
+  .terms-list li::before {
+    content: '•'; /* Standard bullet, but styled */
+    position: absolute;
+    left: 0;
+    top: -2px; /* Adjust vertical alignment slightly */
+    color: var(--roamly-red); /* Brand color for bullet */
+    font-weight: bold;
+    font-size: 1.5rem; /* Size of the bullet */
+    line-height: 1; /* Match line height */
+  }
+
+  .terms-container .contact-link { /* More specific class for the last paragraph */
+    font-size: 1rem;
+    text-align: center;
+    margin-top: 2rem;
+    margin-bottom: 0;
+  }
+
+  .terms-container a {
+    color: var(--roamly-red);
+    font-weight: 500;
+    text-decoration: none;
+    border-bottom: 1px dashed var(--roamly-red);
+    transition: all 0.2s ease;
+  }
+
+  .terms-container a:hover {
+    color: var(--roamly-dark-red);
+    border-bottom-style: solid;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .terms-container {
+      padding: 2rem 1.5rem;
+    }
+    .terms-heading {
+      font-size: 2rem;
+    }
+    .terms-container p, .terms-list li {
+      font-size: 1rem;
+    }
+     .terms-list li {
+        padding-left: 1.75rem; /* Adjust indent */
+    }
+    .terms-list li::before {
+        font-size: 1.4rem;
+    }
+  }
+
+</style>
+
+<div class="container terms-container">
+  <h2 class="terms-heading">Terms & Conditions 📜</h2>
+  <p>Welcome to Roamly! By accessing or using our website and services, you acknowledge and agree to comply with the following terms and conditions:</p>
+
+  <ul class="terms-list">
+    <li>**Booking Confirmation:** All property bookings made through Roamly are subject to availability and require confirmation from the host. A booking is not final until confirmed.</li>
+    <li>**Accurate Information:** Users are responsible for providing truthful and accurate information during registration, profile updates, and the booking process. Misrepresentation may lead to account suspension.</li>
+    <li>**Host-Guest Interactions:** Roamly acts as a platform to connect hosts and guests. We are not a party to booking agreements and are not responsible for resolving disputes that may arise between users.</li>
+    <li>**Cancellations & Refunds:** Cancellation policies, including eligibility for refunds, are set by individual property hosts and are displayed on the listing page. Please review these carefully before booking.</li>
+    <li>**Platform Use:** You agree not to misuse the Roamly platform. This includes, but is not limited to, fraudulent activities, harassment, spamming, or attempting to circumvent booking fees. Violation of these terms can result in account suspension or termination.</li>
+  </ul>
+
+  <p class="contact-link">For further clarification or if you have specific questions about these terms, please <a href="/contact">Contact us</a>.</p>
+</div>

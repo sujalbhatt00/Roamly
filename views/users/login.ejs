@@ -1,102 +1,138 @@
 <% layout("/layouts/boilerplate") %>
 
 <div class="login-wrapper d-flex justify-content-center align-items-center">
-  <div class="login-card shadow-lg p-4 rounded-4 bg-white">
+  <div class="login-card p-4 p-md-5 rounded-4 bg-glass shadow-lg">
     <div class="text-center mb-4">
-      <img src="/images/ROAMLY.png" alt="Logo" class="login-logo mb-3">
-      <h3 class="fw-bold mb-2">Welcome Back</h3>
-      <p class="text-muted">Log in to continue your journey with Roamly</p>
+      <img src="/images/ROAMLY.png" alt="Roamly Logo" class="login-logo mb-3">
+      <h2 class="fw-bold text-dark">Welcome Back</h2>
+      <p class="text-muted">Sign in to continue your journey with <span class="fw-semibold text-danger">Roamly</span></p>
     </div>
 
     <form action="/login" method="post" novalidate>
-      <div class="mb-3">
-        <label for="username" class="form-label fw-semibold">Username</label>
+      <div class="form-floating mb-3">
         <input 
           name="username"
           id="username"
           type="text"
           required
-          class="form-control form-control-lg rounded-3"
-          placeholder="Enter your username">
+          class="form-control rounded-3"
+          placeholder="Username">
+        <label for="username">Username</label>
       </div>
 
-      <div class="mb-3">
-        <label for="password" class="form-label fw-semibold">Password</label>
+      <div class="form-floating mb-4">
         <input 
           name="password"
           id="password"
           type="password"
           required
-          class="form-control form-control-lg rounded-3"
-          placeholder="Enter your password">
+          class="form-control rounded-3"
+          placeholder="Password">
+        <label for="password">Password</label>
       </div>
 
-      <button class="btn btn-danger w-100 py-2 rounded-3 mt-3 fw-semibold">
+      <button class="btn btn-danger w-100 py-2 rounded-3 fw-semibold">
         Log In
       </button>
 
-      <div class="text-center mt-3">
-        <p class="text-muted mb-0">Don’t have an account?
+      <div class="text-center mt-4">
+        <p class="text-muted mb-1">Don’t have an account? 
           <a href="/signup" class="text-danger fw-semibold text-decoration-none">Sign up</a>
         </p>
+        <a href="/forgot-password" class="text-secondary small text-decoration-none">Forgot Password?</a>
       </div>
     </form>
   </div>
 </div>
 
 <style>
-/* --- Page Background --- */
+/* --- Background --- */
 .login-wrapper {
   min-height: 100vh;
-  background: linear-gradient(135deg, #fefefe, #f7f7f7);
-  padding: 2rem;
+  background: linear-gradient(135deg, #f9f9f9, #fefefe);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Floating background shapes for depth */
+.login-wrapper::before, .login-wrapper::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.4;
+}
+.login-wrapper::before {
+  width: 300px; height: 300px;
+  background: #fe424d;
+  top: -80px; right: -80px;
+}
+.login-wrapper::after {
+  width: 250px; height: 250px;
+  background: #ffb6b9;
+  bottom: -60px; left: -60px;
 }
 
 /* --- Card --- */
+.bg-glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
 .login-card {
   width: 100%;
   max-width: 420px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: fadeInUp 0.6s ease-in-out;
 }
-.login-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* --- Logo --- */
 .login-logo {
-  height: 50px;
+  height: 55px;
   object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
 }
 
-/* --- Form Inputs --- */
-.form-control {
+/* --- Form Floating --- */
+.form-floating > .form-control {
+  background-color: #fff;
   border: 1px solid #ddd;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
-.form-control:focus {
+.form-floating > .form-control:focus {
   border-color: #fe424d;
   box-shadow: 0 0 0 0.25rem rgba(254, 66, 77, 0.2);
 }
 
 /* --- Button --- */
 .btn-danger {
-  background-color: #fe424d;
+  background: linear-gradient(90deg, #fe424d, #ff6b6b);
   border: none;
-  transition: background-color 0.2s, box-shadow 0.2s;
+  transition: all 0.25s ease;
 }
 .btn-danger:hover {
-  background-color: #e03e44;
-  box-shadow: 0 4px 12px rgba(254, 66, 77, 0.3);
+  background: linear-gradient(90deg, #ff6b6b, #fe424d);
+  box-shadow: 0 6px 16px rgba(254, 66, 77, 0.3);
+  transform: translateY(-2px);
+}
+
+/* --- Text Links --- */
+a.text-danger:hover, a.text-secondary:hover {
+  text-decoration: underline;
 }
 
 /* --- Responsive --- */
 @media (max-width: 576px) {
   .login-card {
     padding: 1.5rem;
+    margin: 0 1rem;
   }
   .login-logo {
-    height: 40px;
+    height: 45px;
   }
 }
 </style>

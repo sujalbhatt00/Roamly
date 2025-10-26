@@ -1,0 +1,147 @@
+<% layout("layouts/boilerplate") %>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+
+  /* --- Roamly Design System Variables --- */
+  :root {
+    --roamly-red: #E54D42;
+    --roamly-dark-color: #222222;
+    --roamly-text-color: #333;
+    --roamly-text-medium: #717171;
+    --roamly-light-gray: #f8f9fa;
+    --roamly-border-gray: #e0e0e0;
+    --shadow-md: 0 5px 15px rgba(0,0,0,0.1);
+    --border-radius-lg: 16px;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--roamly-light-gray); /* Light page background */
+    color: var(--roamly-text-color);
+    line-height: 1.7;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+
+  .contact-container {
+    max-width: 700px; /* Slightly smaller width for contact info */
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 3rem 3.5rem;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--roamly-border-gray);
+  }
+
+  .contact-heading {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--roamly-dark-color);
+    text-align: center;
+    margin-bottom: 2rem;
+    position: relative;
+    padding-bottom: 1rem;
+  }
+
+  /* Decorative underline for heading */
+  .contact-heading::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background-color: var(--roamly-red);
+    border-radius: 2px;
+  }
+
+  .contact-container p {
+    font-size: 1.1rem;
+    color: var(--roamly-text-medium);
+    margin-bottom: 1.5rem;
+    text-align: center; /* Center introductory text */
+  }
+
+  /* Style the contact list */
+  .contact-list {
+    list-style: none; /* Remove default bullets */
+    padding: 0;
+    margin: 2rem 0; /* Add vertical spacing */
+  }
+
+  .contact-list li {
+    font-size: 1.1rem;
+    color: var(--roamly-text-dark); /* Darker text for list items */
+    margin-bottom: 1rem; /* Space between items */
+    display: flex; /* Align icon and text */
+    align-items: center;
+    gap: 0.75rem; /* Space between icon and text */
+  }
+
+  .contact-list li i { /* Style icons */
+    color: var(--roamly-red); /* Brand color for icons */
+    font-size: 1.3rem; /* Slightly larger icons */
+    width: 25px; /* Fixed width for alignment */
+    text-align: center;
+  }
+
+  .contact-list a {
+    color: var(--roamly-red);
+    font-weight: 500;
+    text-decoration: none;
+    border-bottom: 1px dashed transparent; /* Start transparent */
+    transition: all 0.2s ease;
+  }
+
+  .contact-list a:hover {
+    color: var(--roamly-dark-red);
+    border-bottom-color: var(--roamly-dark-red); /* Dashed underline on hover */
+  }
+
+  /* Style the concluding paragraph */
+  .response-time-info {
+    font-size: 1rem; /* Slightly smaller */
+    color: var(--roamly-text-medium);
+    text-align: center;
+    margin-top: 2rem;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .contact-container {
+      padding: 2rem 1.5rem;
+    }
+    .contact-heading {
+      font-size: 2rem;
+    }
+    .contact-container p, .contact-list li {
+      font-size: 1rem;
+      text-align: left; /* Align text left on mobile */
+    }
+    .response-time-info {
+        font-size: 0.9rem;
+    }
+  }
+
+</style>
+
+<div class="container contact-container">
+  <h2 class="contact-heading">Contact Us 📨</h2>
+  <p>Have questions, feedback, or just want to say hello? We'd love to hear from you! Reach out through any of the channels below:</p>
+
+  <ul class="contact-list">
+    <li>
+      <i class="fa-solid fa-envelope fa-fw"></i> <span>Email: <a href="mailto:sujalbhatt500@gmail.com">sujalbhatt500@gmail.com</a></span>
+    </li>
+    <li>
+      <i class="fa-brands fa-instagram fa-fw"></i> <span>Instagram: <a href="https://www.instagram.com/sujalbhatt00" target="_blank" rel="noopener noreferrer">@sujalbhatt00</a></span>
+    </li>
+    <li>
+      <i class="fa-brands fa-linkedin fa-fw"></i> <span>LinkedIn: <a href="https://www.linkedin.com/in/sujal-b-139067249/" target="_blank" rel="noopener noreferrer">Sujal Bhatt</a></span>
+    </li>
+  </ul>
+
+  <p class="response-time-info">We typically respond within 24 business hours. ⏳</p>
+</div>

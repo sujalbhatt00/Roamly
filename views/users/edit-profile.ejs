@@ -1,65 +1,339 @@
 <% layout("/layouts/boilerplate") %>
+
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+  /* --- Roamly Design System Variables --- */
+  :root {
+    --roamly-red: #E54D42;
+    --roamly-red-rgb: 229, 77, 66;
+    --roamly-dark-color: #222222;
+    --roamly-text-color: #333;
+    --roamly-text-medium: #717171;
+    --roamly-light-gray: #f8f9fa;
+    --roamly-border-gray: #e0e0e0;
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.06);
+    --shadow-md: 0 5px 15px rgba(0,0,0,0.1);
+    --border-radius-sm: 8px;
+    --border-radius-lg: 16px;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--roamly-light-gray);
+    color: var(--roamly-text-color);
+    line-height: 1.6;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+
+  .profile-edit-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
   .profile-edit-card {
-    max-width: 500px;
-    margin: 2rem auto;
     background: #fff;
-    border-radius: 1.5rem;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.09);
-    padding: 2rem 2.5rem;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    border: none;
+    overflow: hidden;
+  }
+
+  .profile-edit-card-body {
+    padding: 2.5rem 3rem;
+  }
+
+  @media (max-width: 767.98px) {
+    .profile-edit-card-body {
+      padding: 2rem 1.5rem;
+    }
+  }
+
+  .form-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .form-header h3 {
+    font-weight: 700;
+    font-size: 2rem;
+    color: var(--roamly-dark-color);
+  }
+
+  /* --- Avatar Preview --- */
+  .avatar-preview-container {
+    text-align: center;
+    margin-bottom: 1.5rem;
   }
   .profile-avatar-preview {
-    width: 100px;
-    height: 100px;
+    width: 130px;
+    height: 130px;
     object-fit: cover;
     border-radius: 50%;
     margin-bottom: 1rem;
-    border: 2px solid #eee;
+    border: 4px solid #fff;
+    box-shadow: 0 0 0 1px var(--roamly-border-gray), var(--shadow-sm);
   }
-  .form-label {
-    font-weight: 500;
+
+  /* --- Modern Form Group --- */
+  .form-group-modern {
+    margin-bottom: 1.5rem;
   }
-  .btn-save {
-    background: #FF385C;
+
+  .form-group-modern .form-label {
+    font-weight: 600;
+    color: var(--roamly-dark-color);
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+
+  .form-group-modern .form-control {
+    border: 1px solid var(--roamly-border-gray);
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border-radius: var(--border-radius-sm);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .form-group-modern .form-control:focus {
+    outline: none;
+    border-color: var(--roamly-red);
+    box-shadow: 0 0 0 3px rgba(var(--roamly-red-rgb), 0.2);
+    z-index: 2;
+    position: relative;
+  }
+
+  /* Helper text */
+  .form-text {
+      font-size: 0.9rem;
+      color: var(--roamly-text-medium);
+      display: block;
+      margin-top: 0.25rem;
+  }
+  .required-indicator {
+      color: var(--roamly-red);
+  }
+
+  /* --- Password Section --- */
+  .password-section {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--roamly-border-gray);
+  }
+  .password-section-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--roamly-dark-color);
+      margin-bottom: 1rem;
+  }
+
+  /* --- Password Toggle Button --- */
+  /* Ensure input group doesn't wrap */
+  .input-group {
+      flex-wrap: nowrap !important; /* Prevent wrapping */
+  }
+  .input-group .form-control {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  .password-toggle-btn {
+    border-color: var(--roamly-border-gray);
+    background-color: #fff;
+    color: var(--roamly-text-medium);
+    border-left: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0.75rem;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    z-index: 1;
+    cursor: pointer; /* Ensure cursor changes */
+    height: calc(1.5em + 1.5rem + 2px); /* Match form-control height */
+  }
+  .password-toggle-btn:hover {
+      background-color: var(--roamly-light-gray);
+      color: var(--roamly-dark-color);
+  }
+  .password-toggle-btn i {
+    font-size: 1rem;
+  }
+  .input-group:focus-within .form-control,
+  .input-group:focus-within .password-toggle-btn {
+     border-color: var(--roamly-red);
+     box-shadow: 0 0 0 3px rgba(var(--roamly-red-rgb), 0.2);
+     z-index: 3;
+  }
+   .input-group:focus-within .password-toggle-btn {
+      box-shadow: none;
+   }
+   .input-group .form-control:focus + .password-toggle-btn {
+      border-left: 1px solid var(--roamly-red);
+      margin-left: -1px;
+   }
+   /* Ensure feedback appears correctly below input-group */
+   .input-group + .invalid-feedback {
+       display: block;
+   }
+
+
+  /* --- Submit Button --- */
+  .btn-roamly {
+    background-color: var(--roamly-red);
+    border-color: var(--roamly-red);
     color: #fff;
     font-weight: 600;
-    border-radius: 0.7rem;
-    padding: 0.5rem 1.5rem;
-    border: none;
-    transition: background 0.2s;
+    padding: 0.85rem 1rem;
+    font-size: 1.1rem;
+    border-radius: var(--border-radius-sm);
+    transition: all 0.2s ease;
+    width: 100%;
+    margin-top: 1rem;
   }
-  .btn-save:hover {
-    background: #E03E44;
+  .btn-roamly:hover {
+    background-color: var(--roamly-dark-red);
+    border-color: var(--roamly-dark-red);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(var(--roamly-red-rgb), 0.3);
   }
+
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  /* ...existing CSS unchanged... */
 </style>
-<div class="profile-edit-card">
-  <h2 class="mb-4 text-center fw-bold">Edit Profile</h2>
-  <form method="POST" enctype="multipart/form-data">
-    <div class="text-center">
-      <img src="<%= user.avatar || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png' %>" class="profile-avatar-preview" id="avatarPreview">
+
+<div class="profile-edit-container">
+  <div class="profile-edit-card">
+    <div class="profile-edit-card-body">
+      <div class="form-header">
+        <h3>Edit Profile</h3>
+      </div>
+
+      <form method="POST" action="/profile/edit" enctype="multipart/form-data" novalidate class="needs-validation">
+
+        <div class="avatar-preview-container">
+          <img src="<%= user.avatar || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png' %>" class="profile-avatar-preview" id="avatarPreview" alt="Current Avatar">
+        </div>
+        <div class="form-group-modern">
+          <label for="avatar-upload" class="form-label">Change Avatar</label>
+          <input type="file" class="form-control" name="avatar" id="avatar-upload" accept="image/*">
+          <div class="form-text">Image must be less than 1MB.</div>
+        </div>
+
+        <div class="form-group-modern">
+          <label for="username" class="form-label">Username</label>
+          <input type="text" class="form-control" name="username" id="username" value="<%= user.username %>" required>
+           <div class="invalid-feedback">Please enter a username.</div>
+        </div>
+        <div class="form-group-modern">
+          <label for="email" class="form-label">Email</label>
+          <input type="email" class="form-control" name="email" id="email" value="<%= user.email %>" required>
+          <div class="invalid-feedback">Please enter a valid email address.</div>
+        </div>
+
+        <div class="password-section">
+            <h5 class="password-section-title">Change Password (Optional)</h5>
+            <div class="form-group-modern">
+                <label for="newPassword" class="form-label">New Password</label>
+                <div class="input-group">
+                    <input type="password" class="form-control" name="newPassword" id="newPassword" placeholder="Leave blank to keep current password">
+                    <button class="btn password-toggle-btn" type="button" id="toggleNewPassword" aria-label="Toggle password visibility">
+                        <i class="fa-regular fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+             <div class="form-group-modern">
+                 <label for="currentPassword" class="form-label">
+                     Current Password <span class="required-indicator">*</span>
+                 </label>
+                 <div class="input-group">
+                     <input type="password" class="form-control" name="currentPassword" id="currentPassword" placeholder="Required to save changes" required>
+                     <button class="btn password-toggle-btn" type="button" id="toggleCurrentPassword" aria-label="Toggle password visibility">
+                        <i class="fa-regular fa-eye"></i>
+                    </button>
+                    </div>
+                 <div class="form-text">Enter your current password to confirm changes.</div>
+                 <div class="invalid-feedback">Current password is required to save changes.</div>
+             </div>
+        </div>
+
+        <div class="d-grid mt-4">
+          <button type="submit" class="btn btn-roamly">Save Changes</button>
+        </div>
+      </form>
     </div>
-    <div class="mb-3">
-      <label class="form-label">Change Avatar</label>
-      <input type="file" class="form-control" name="avatar" accept="image/*" onchange="previewAvatar(event)">
-    </div>
-    <div class="mb-3">
-      <label class="form-label">Username</label>
-      <input type="text" class="form-control" name="username" value="<%= user.username %>" required>
-    </div>
-    <div class="mb-3">
-      <label class="form-label">Email</label>
-      <input type="email" class="form-control" name="email" value="<%= user.email %>" required>
-    </div>
-    <div class="d-grid mt-4">
-      <button type="submit" class="btn btn-save">Save Changes</button>
-    </div>
-  </form>
+  </div>
 </div>
+
 <script>
+  // Avatar upload and preview with size check
+  document.getElementById('avatar-upload').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    const preview = document.getElementById('avatarPreview');
+    if (file && file.size > 1024 * 1024) {
+      alert("Image size must be less than 1MB.");
+      e.target.value = ""; // Clear file input
+      preview.src = "<%= user.avatar || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png' %>"; // Reset preview to current avatar
+      return;
+    }
+    // Only preview if file is valid
+    previewAvatar(e);
+  });
+
+  // Avatar Preview Script
   function previewAvatar(event) {
-    const [file] = event.target.files;
-    if (file) {
-      document.getElementById('avatarPreview').src = URL.createObjectURL(file);
+    const reader = new FileReader();
+    const preview = document.getElementById('avatarPreview');
+
+    reader.onload = function(){
+      if (reader.readyState === 2) {
+        preview.src = reader.result;
+      }
+    };
+
+    if (event.target.files[0]) {
+      reader.readAsDataURL(event.target.files[0]);
     }
   }
+
+  // --- Password Visibility Toggle ---
+  function setupPasswordToggle(inputId, buttonId) {
+    const passwordInput = document.getElementById(inputId);
+    const toggleButton = document.getElementById(buttonId);
+
+    if (!passwordInput || !toggleButton) return;
+    const icon = toggleButton.querySelector('i');
+    if (!icon) return;
+
+    toggleButton.addEventListener('click', function() {
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      icon.classList.toggle('fa-eye');
+      icon.classList.toggle('fa-eye-slash');
+    });
+  }
+
+  // --- Initialize Scripts on DOM Load ---
+  document.addEventListener("DOMContentLoaded", function() {
+    setupPasswordToggle('newPassword', 'toggleNewPassword');
+    setupPasswordToggle('currentPassword', 'toggleCurrentPassword');
+
+    // Bootstrap Validation Script
+    (() => {
+      'use strict';
+      const forms = document.querySelectorAll('.needs-validation');
+      Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+          if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+          form.classList.add('was-validated');
+        }, false);
+      });
+    })();
+  });
 </script>

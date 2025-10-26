@@ -1,0 +1,103 @@
+<% layout("layouts/boilerplate") %>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+
+  /* --- Roamly Design System Variables --- */
+  :root {
+    --roamly-red: #E54D42;
+    --roamly-dark-color: #222222;
+    --roamly-text-color: #333;
+    --roamly-text-medium: #717171;
+    --roamly-light-gray: #f8f9fa;
+    --roamly-border-gray: #e0e0e0;
+    --shadow-md: 0 5px 15px rgba(0,0,0,0.1);
+    --border-radius-lg: 16px;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--roamly-light-gray); /* Light page background */
+    color: var(--roamly-text-color);
+    line-height: 1.7; /* Increased line height for readability */
+    padding-top: 3rem; /* Add some space from the navbar */
+    padding-bottom: 3rem;
+  }
+
+  .about-container {
+    max-width: 800px; /* Optimal width for reading text */
+    margin: 0 auto; /* Center the container */
+    background-color: #fff; /* White card background */
+    padding: 3rem 3.5rem; /* Generous padding */
+    border-radius: var(--border-radius-lg); /* Rounded corners */
+    box-shadow: var(--shadow-md); /* Subtle shadow */
+    border: 1px solid var(--roamly-border-gray); /* Light border */
+  }
+
+  .about-heading {
+    font-size: 2.5rem; /* Larger heading */
+    font-weight: 700; /* Bold */
+    color: var(--roamly-dark-color);
+    text-align: center; /* Center heading */
+    margin-bottom: 2rem; /* Space below heading */
+    position: relative;
+    padding-bottom: 1rem; /* Space for the underline */
+  }
+
+  /* Decorative underline for heading */
+  .about-heading::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px; /* Width of the underline */
+    height: 4px; /* Thickness */
+    background-color: var(--roamly-red); /* Brand color underline */
+    border-radius: 2px;
+  }
+
+  .about-container p {
+    font-size: 1.1rem; /* Slightly larger text */
+    color: var(--roamly-text-medium); /* Use medium text color */
+    margin-bottom: 1.5rem; /* Consistent paragraph spacing */
+  }
+
+  .about-container p:last-of-type {
+    margin-bottom: 0; /* Remove margin from the last paragraph */
+  }
+
+  .about-container a {
+    color: var(--roamly-red);
+    font-weight: 500; /* Slightly bolder link */
+    text-decoration: none; /* Remove default underline */
+    border-bottom: 1px dashed var(--roamly-red); /* Subtle dashed underline */
+    transition: all 0.2s ease;
+  }
+
+  .about-container a:hover {
+    color: var(--roamly-dark-red);
+    border-bottom-style: solid; /* Solid underline on hover */
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .about-container {
+      padding: 2rem 1.5rem; /* Reduce padding on smaller screens */
+    }
+    .about-heading {
+      font-size: 2rem; /* Adjust heading size */
+    }
+    .about-container p {
+      font-size: 1rem; /* Adjust paragraph size */
+    }
+  }
+
+</style>
+
+<div class="container about-container">
+  <h2 class="about-heading">About Roamly 🗺️ (Owned By [Sujal Bhatt])</h2>
+  <p>Welcome to **Roamly**, your modern gateway to booking unique stays and unforgettable experiences across the globe! ✈️</p>
+  <p>Our core mission is to seamlessly connect adventurous travelers like you with incredible hosts and extraordinary properties. Whether it's a cozy cabin, a chic city apartment, or an exotic villa, we strive to make every journey memorable. ✨</p>
+  <p>Interested in learning more about our journey and the passionate team behind Roamly? Feel free to <a href="/contact">contact us</a>. We're also open to exciting partnership opportunities! </p>
+</div>

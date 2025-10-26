@@ -1,0 +1,146 @@
+<% layout("layouts/boilerplate") %>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+
+  /* --- Roamly Design System Variables --- */
+  :root {
+    --roamly-red: #E54D42;
+    --roamly-dark-color: #222222;
+    --roamly-text-color: #333;
+    --roamly-text-medium: #717171;
+    --roamly-light-gray: #f8f9fa;
+    --roamly-border-gray: #e0e0e0;
+    --shadow-md: 0 5px 15px rgba(0,0,0,0.1);
+    --border-radius-lg: 16px;
+    --border-radius-sm: 8px;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--roamly-light-gray); /* Light page background */
+    color: var(--roamly-text-color);
+    line-height: 1.7;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+
+  .policy-container {
+    max-width: 800px; /* Good width for text */
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 3rem 3.5rem;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--roamly-border-gray);
+  }
+
+  .policy-heading {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--roamly-dark-color);
+    text-align: center;
+    margin-bottom: 2rem;
+    position: relative;
+    padding-bottom: 1rem;
+  }
+
+  /* Decorative underline for heading */
+  .policy-heading::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background-color: var(--roamly-red);
+    border-radius: 2px;
+  }
+
+  .policy-container p {
+    font-size: 1.1rem;
+    color: var(--roamly-text-medium);
+    margin-bottom: 1.5rem;
+  }
+
+  /* Style the policy points list */
+  .policy-list {
+    list-style: none; /* Remove default bullets */
+    padding-left: 0; /* Remove default padding */
+    margin: 2rem 0;
+  }
+
+  .policy-list li {
+    font-size: 1.05rem; /* Slightly adjust size */
+    color: var(--roamly-text-dark);
+    margin-bottom: 1rem;
+    padding-left: 2rem; /* Indent text */
+    position: relative; /* For positioning the pseudo-element */
+  }
+
+  /* Custom bullet point using ::before */
+  .policy-list li::before {
+    content: '✓'; /* Checkmark icon */
+    position: absolute;
+    left: 0;
+    top: 1px; /* Adjust vertical alignment */
+    color: var(--roamly-red); /* Brand color for bullet */
+    font-weight: bold;
+    font-size: 1.2rem; /* Size of the checkmark */
+  }
+
+  .policy-container .contact-link { /* More specific class for the last paragraph */
+    font-size: 1rem; /* Slightly smaller for footer-like text */
+    text-align: center;
+    margin-top: 2rem;
+    margin-bottom: 0;
+  }
+
+  .policy-container a {
+    color: var(--roamly-red);
+    font-weight: 500;
+    text-decoration: none;
+    border-bottom: 1px dashed var(--roamly-red);
+    transition: all 0.2s ease;
+  }
+
+  .policy-container a:hover {
+    color: var(--roamly-dark-red);
+    border-bottom-style: solid;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .policy-container {
+      padding: 2rem 1.5rem;
+    }
+    .policy-heading {
+      font-size: 2rem;
+    }
+    .policy-container p, .policy-list li {
+      font-size: 1rem;
+    }
+     .policy-list li {
+        padding-left: 1.75rem; /* Adjust indent */
+    }
+    .policy-list li::before {
+        font-size: 1.1rem;
+    }
+  }
+
+</style>
+
+<div class="container policy-container">
+  <h2 class="policy-heading">Privacy Policy 🛡️</h2>
+  <p>Your privacy is critically important to us at Roamly. We are committed to protecting your personal data and ensuring transparency in how we handle it. Here’s how we collect and store your information securely:</p>
+
+  <ul class="policy-list">
+    <li>We collect necessary personal data, such as your name and email, primarily for account creation, managing bookings, and ensuring a smooth user experience.</li>
+    <li>Your personal data is treated with confidentiality and is **not shared** with third parties, except when legally required or essential for providing our services (like processing payments).</li>
+    <li>Like most websites, we use cookies to enhance functionality, remember your preferences, and improve your overall experience on our platform.</li>
+    <li>You have control over your data. You can request the deletion of your account and associated personal data at any time by contacting our support team.</li>
+  </ul>
+
+  <p class="contact-link">If you have any questions about this policy or your data, please <a href="/contact">Contact us</a>.</p>
+</div>

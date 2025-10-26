@@ -1,6 +1,7 @@
 const Listing = require("../models/listing.js");
 const fetch = require("node-fetch");
-const Booking = require("../models/booking.js"); 
+const Booking = require("../models/booking.js");
+const { cloudinary } = require("../cloudConfig.js"); 
 
 // Geocode location using MapTiler
 async function geocodeLocation(location) {
@@ -72,12 +73,23 @@ module.exports.showListing = async (req, res) => {
     return res.redirect("/listings");
   }
 
+  // Get active bookings and booked dates
+  const activeBookings = await Booking.find({ listing: id, status: "booked" });
+  const activeBookedDates = [];
+  activeBookings.forEach(booking => {
+    let start = new Date(booking.startDate);
+    let end = new Date(booking.endDate);
+    for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+      activeBookedDates.push(new Date(d).toISOString().split("T")[0]);
+    }
+  });
+
   res.render("listings/show.ejs", {
     listing,
     MAPTILER_API_KEY: process.env.MAPTILER_API_KEY,
+    activeBookedDates
   });
 };
-
 
 // --- CREATE LISTING ---
 module.exports.createListing = async (req, res) => {
@@ -137,7 +149,26 @@ module.exports.updateListing = async (req, res) => {
 // --- DELETE LISTING ---
 module.exports.deleteListing = async (req, res) => {
   const { id } = req.params;
+  const listing = await Listing.findById(id);
+  if (!listing) {
+    req.flash("error", "Listing not found!");
+    return res.redirect("/listings");
+  }
+
+  // Delete image from Cloudinary if exists
+  if (listing.image && listing.image.filename) {
+    await cloudinary.uploader.destroy(listing.image.filename);
+  }
+
+  // Delete all bookings for this listing
+  await Booking.deleteMany({ listing: id });
+
+  // Delete all reviews for this listing
+  await Review.deleteMany({ _id: { $in: listing.reviews } });
+
+  // Delete the listing itself
   await Listing.findByIdAndDelete(id);
-  req.flash("success", "Successfully deleted listing!");
+
+  req.flash("success", "Successfully deleted listing and all related bookings/reviews!");
   res.redirect("/listings");
 };

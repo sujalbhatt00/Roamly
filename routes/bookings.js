@@ -74,7 +74,6 @@ router.get("/my-bookings", isLoggedIn, wrapAsync(async (req, res) => {
   res.render("users/my-booking.ejs", { bookings });
 }));
 
-
 router.post("/delete/:bookingId", isLoggedIn, wrapAsync(async (req, res) => {
   const { bookingId } = req.params;
   const booking = await Booking.findById(bookingId).populate("listing");
@@ -88,10 +87,10 @@ router.post("/delete/:bookingId", isLoggedIn, wrapAsync(async (req, res) => {
     const end = new Date(booking.endDate);
     let datesToRemove = [];
     for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
-      datesToRemove.push(new Date(d).toISOString());
+      datesToRemove.push(d.toISOString().split("T")[0]);
     }
     booking.listing.bookedDates = booking.listing.bookedDates.filter(date =>
-      !datesToRemove.includes(new Date(date).toISOString())
+      !datesToRemove.includes(new Date(date).toISOString().split("T")[0])
     );
     await booking.listing.save();
   }

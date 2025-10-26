@@ -1,125 +1,159 @@
 <% layout("/layouts/boilerplate") %>
 
 <style>
-  /* Filter bar styling */
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+  /* --- Design System Variables --- */
+  :root {
+    --roamly-red: #E54D42;
+    --roamly-red-rgb: 229, 77, 66;
+    --roamly-dark-red: #c9302c;
+    --roamly-light-gray: #f8f9fa;
+    --roamly-border-gray: #e0e0e0;
+    --roamly-text-dark: #222222;
+    --roamly-text-medium: #717171;
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.06);
+    --shadow-md: 0 5px 15px rgba(0,0,0,0.1);
+    --border-radius-sm: 8px;
+    --border-radius: 12px;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: #fff;
+    color: var(--roamly-text-dark);
+  }
+
+  .page-container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  /* --- Sticky Filter Bar & Tax Toggle Container --- */
+  #header-sticky-container { /* Wraps filters and tax toggle */
+    position: sticky;
+    top: 80px; /* Height of your navbar */
+    background-color: #fff;
+    z-index: 100;
+    border-bottom: 1px solid var(--roamly-border-gray);
+    padding: 0 2rem; /* Consistent padding */
+  }
+
   #filters {
     display: flex;
     align-items: center;
-    gap: 1.8rem;
+    gap: 2.5rem;
     overflow-x: auto;
-    padding-bottom: 0.7rem;
-    margin-top: 1.5rem;
-    margin-bottom: 1.5rem;
+    padding: 1rem 0; /* Vertical padding */
+    margin: 0;
     scroll-behavior: smooth;
+    width: 100%;
   }
 
-  #filters::-webkit-scrollbar {
-    height: 6px;
-  }
-  #filters::-webkit-scrollbar-thumb {
-    background-color: #ccc;
-    border-radius: 3px;
-  }
+  #filters::-webkit-scrollbar { height: 4px; }
+  #filters::-webkit-scrollbar-thumb { background-color: #ccc; border-radius: 2px; }
 
   .filter {
     text-align: center;
     opacity: 0.7;
-    color: inherit;
+    color: var(--roamly-text-dark);
     text-decoration: none;
-    transition: opacity 0.2s;
+    transition: all 0.2s;
     flex: 0 0 auto;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid transparent;
   }
-
   .filter:hover {
     opacity: 1;
-    color: #d90429;
+    color: var(--roamly-text-dark);
+    border-bottom-color: var(--roamly-border-gray);
     cursor: pointer;
   }
+  .filter i { font-size: 1.5rem; }
+  .filter p { font-size: 0.8rem; margin: 0.3rem 0 0; font-weight: 500; white-space: nowrap; }
 
-  .filter p {
-    font-size: 0.8rem;
-    margin: 0.3rem 0 0;
-    font-weight: 600;
+  /* --- Tax Toggle (Centered Below Filters) --- */
+  .tax-toggle-container { /* Separate container for centering */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 1rem; /* Padding below toggle */
   }
-
-  /* Tax toggle styling */
   .tax-toggle {
-    border: 1px solid #ddd;
-    border-radius: 1rem;
-    padding: 0.8rem 1rem;
+    border: 1px solid var(--roamly-border-gray);
+    border-radius: var(--border-radius);
+    padding: 0.75rem 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
-    white-space: nowrap;
     background-color: #fff;
+    box-shadow: var(--shadow-sm);
+    width: fit-content; /* Size to content */
+  }
+  .tax-toggle .form-check-label { font-weight: 500; white-space: nowrap; }
+
+  /* --- Grid Container --- */
+  .listings-container {
+    padding: 2.5rem 2rem;
   }
 
-  @media (max-width: 768px) {
-    .tax-toggle {
-      width: 100%;
-      margin-top: 1rem;
-      justify-content: flex-start;
-    }
-  }
+  /* --- Airbnb-Style Card --- */
+  .listing-card { border: none; background: #fff; position: relative; }
+  .listing-link { text-decoration: none; color: inherit; }
+  .listing-link:hover .uniform-img { filter: brightness(0.95); }
 
-  .taxinfo {
-    display: none;
-  }
+  .img-ratio-box { position: relative; width: 100%; padding-top: 80%; overflow: hidden; border-radius: var(--border-radius); }
+  .uniform-img { position: absolute; width: 100%; height: 100%; object-fit: cover; top: 0; left: 0; transition: filter 0.2s ease; }
 
-  /* Card styling */
-  .listing-card {
-    border: 1px solid #eee;
-    border-radius: 1rem;
-    overflow: hidden;
-    transition: transform 0.2s;
-    background: #fff;
-    position: relative;
-  }
+  .wishlist-icon { position: absolute; top: 1rem; right: 1rem; z-index: 10; font-size: 1.5rem; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.5); cursor: pointer; }
 
-  .listing-card:hover {
-    transform: translateY(-4px);
-  }
-
-  .img-ratio-box {
-    position: relative;
-    width: 100%;
-    padding-top: 70%;
-    overflow: hidden;
-  }
-
-  .uniform-img {
+  /* --- UPDATED BADGE STYLE --- */
+  .user-booked-badge {
     position: absolute;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    top: 0;
-    left: 0;
-  }
-
-  .booked-badge {
-    position: absolute;
-    top: 0;
-    left: 0;
-    background-color: red;
+    top: 1rem;
+    left: 1rem;
+    background-color: #0d6efd; /* Blue for user's booking */
     color: white;
-    padding: 0.25rem 0.6rem;
-    font-weight: bold;
-    border-radius: 0 0.5rem 0.5rem 0;
+    padding: 0.3rem 0.7rem;
+    font-weight: 600;
+    border-radius: var(--border-radius-sm);
     z-index: 10;
+    font-size: 0.85rem;
   }
+
+  .card-body { padding: 1rem 0 0 0; }
+  .card-title { font-weight: 600; font-size: 1rem; margin-bottom: 0.25rem; color: var(--roamly-text-dark); }
+  .card-text { color: var(--roamly-text-medium); margin-bottom: 0.25rem; font-size: 0.95rem; }
+  .card-price { margin-top: 0.5rem; font-size: 1rem; }
+  .card-price strong { color: var(--roamly-text-dark); font-weight: 600; }
+  .taxinfo { font-weight: 400; color: var(--roamly-text-medium); font-size: 0.95rem; }
+
+  /* --- Empty State --- */
+  .empty-state { grid-column: 1 / -1; text-align: center; padding: 4rem 0; }
+  .empty-state h5 { font-size: 1.5rem; font-weight: 600; color: var(--roamly-text-dark); }
+  .empty-state p { color: var(--roamly-text-medium); margin-bottom: 0; }
+
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
+    .page-container, #header-sticky-container { padding: 0 1rem; }
+    .listings-container { padding: 2rem 1rem; }
+    #header-sticky-container { top: 64px; /* Mobile navbar height */ }
+    #filters { gap: 1.75rem; }
+    .tax-toggle { width: 100%; justify-content: flex-start; }
+  }
+
 </style>
 
-<!-- Category Filter + Tax Toggle -->
-<div class="container-fluid px-3">
-  <div id="filters" class="mb-2">
+<div id="header-sticky-container">
+  <div id="filters">
+    <a href="/listings" class="filter">
+      <div><i class="fa-solid fa-globe"></i></div>
+      <p>All Properties</p>
+    </a>
     <a href="/listings/category/Trending" class="filter">
       <div><i class="fa-solid fa-fire"></i></div>
       <p>Trending</p>
-    </a>
-    <a href="/listings" class="filter">
-      <div><i class="fa-solid fa-globe"></i></div>
-      <p>All Places</p>
     </a>
     <a href="/listings/category/Rooms" class="filter">
       <div><i class="fa-solid fa-bed"></i></div>
@@ -157,63 +191,65 @@
       <div><i class="fa-solid fa-ship"></i></div>
       <p>Boats</p>
     </a>
+  </div>
 
-    <div class="tax-toggle ms-auto">
+  <div class="tax-toggle-container"> <div class="tax-toggle">
       <div class="form-check-reverse form-switch m-0">
         <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
         <label class="form-check-label ms-2" for="flexSwitchCheckDefault">
-          Display total price after taxes
+          Display total price (incl. tax)
         </label>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Listings Grid -->
-<div class="container-fluid px-3">
-  <% if (allListing.length === 0) { %>
-    <div class="text-center text-muted my-5">No listings found for your search.</div>
-  <% } %>
-  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 listings-grid mt-3">
-    <% const today = new Date().toISOString().split("T")[0]; %>
+<div class="page-container listings-container">
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4 listings-grid">
+    <% if (allListing.length === 0) { %>
+      <div class="empty-state">
+        <h5>No listings found.</h5>
+        <p>Try adjusting your search or filters to find what you're looking for.</p>
+      </div>
+    <% } %>
+
+    <%# Loop through all listings %>
     <% for(let listing of allListing){ %>
-      <% const bookedFutureDates = listing.bookedDates?.filter(d => d >= today) || []; %>
-      <% const isBooked = bookedFutureDates.length > 0; %>
+      <%
+        // **UPDATED LOGIC**: Check if the CURRENT USER has booked THIS listing.
+        // 'userBookedListingIds' is a Set passed from your routes (listing.js).
+        // It only contains IDs if a user is logged in AND has bookings.
+        const isBookedByUser = typeof userBookedListingIds !== 'undefined' && userBookedListingIds.has(listing._id.toString());
+      %>
+
       <div class="col">
-        <a href="/listings/<%=listing._id%>" class="listing-link text-decoration-none">
+        <a href="/listings/<%=listing._id%>" class="listing-link">
           <div class="listing-card">
-            <% if(isBooked){ %>
-              <span class="booked-badge">Booked</span>
+
+            <i class="fa-regular fa-heart wishlist-icon"></i>
+
+            <% if(isBookedByUser){ %>
+              <span class="user-booked-badge">You Booked</span>
             <% } %>
+
             <div class="img-ratio-box">
-              <img 
+              <img
                 src="<%= listing.image?.url || 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop' %>"
-                class="card-img-top uniform-img" 
+                class="card-img-top uniform-img"
                 alt="<%=listing.title%>"
+                loading="lazy"
                 onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop';">
             </div>
+
             <div class="card-body">
-              <div class="d-flex justify-content-between align-items-start mb-1">
-                <span class="badge bg-light text-dark border">
-                  <i class="fa-solid fa-location-dot me-1"></i><%=listing.location%>, <%=listing.country%>
-                </span>
-                <span class="badge bg-info text-dark border ms-2"><%= listing.category %></span>
-              </div>
-              <h5 class="card-title"><%=listing.title%></h5>
-              <p class="mb-0">
-                <span class="badge bg-danger text-white">
-                  ₹<%= listing.price ? listing.price.toLocaleString("en-in") : "N/A" %>
-                </span> /night
-                <i class="taxinfo" style="font-size: 0.8rem;">&nbsp;+18% tax</i>
+              <h5 class="card-title"><%=listing.location%>, <%=listing.country%></h5>
+              <p class="card-text"><%=listing.title%></p>
+              <p class="card-price mb-0">
+                <strong>₹<%= listing.price ? listing.price.toLocaleString("en-in") : "N/A" %></strong> /night
+                <i class="taxinfo" style="display: none;">&nbsp;+ tax</i>
               </p>
-              <div class="mt-2">
-                <form method="GET" action="/listings/<%= listing._id %>">
-                  <button type="submit" class="btn btn-sm btn-outline-danger book-btn-sm" <%= isBooked ? "disabled" : "" %>>
-                    <%= isBooked ? "Booked" : "Book Now" %>
-                  </button>
-                </form>
-              </div>
             </div>
+
           </div>
         </a>
       </div>
@@ -222,10 +258,11 @@
 </div>
 
 <script>
+  // Keep the tax toggle script
   const toggle = document.getElementById('flexSwitchCheckDefault');
   toggle.addEventListener('click', () => {
     document.querySelectorAll('.taxinfo').forEach(info => {
-      info.style.display = (info.style.display === 'inline') ? 'none' : 'inline';
+      info.style.display = (info.style.display === 'inline-block') ? 'none' : 'inline-block';
     });
   });
 </script>

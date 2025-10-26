@@ -1,243 +1,509 @@
 <% layout("/layouts/boilerplate") %>
 
-<div class="container my-5">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-  <!-- PROPERTY IMAGE & TITLE -->
-  <div class="row mb-4">
-    <div class="col-lg-10 offset-lg-1">
-      <div class="rounded-4 overflow-hidden shadow-sm mb-3">
-         
-        <img 
-              src="<%= listing.image?.url || 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop' %>"
-                class="card-img-top uniform-img" 
-                 alt="Listing Image"
-             class="w-100"
-             style="height:500px; object-fit:cover;"
-               onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop'">
-            
-      </div>
+  /* --- Roamly Design System Variables --- */
+  :root {
+    --roamly-red: #E54D42;
+    --roamly-red-rgb: 229, 77, 66;
+    --roamly-dark-red: #c9302c;
+    --roamly-dark-color: #222222;
+    --roamly-text-color: #333;
+    --roamly-text-medium: #717171;
+    --roamly-border-gray: #e0e0e0;
+    --roamly-light-gray: #f8f9fa;
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.06);
+    --shadow-md: 0 5px 15px rgba(0,0,0,0.1);
+    --border-radius-sm: 8px;
+    --border-radius: 12px;
+  }
 
-      <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
-        <div>
-          <h1 class="fw-bold mb-1" style="font-size:2.5rem;"><%= listing.title %></h1>
-          <div class="d-flex align-items-center gap-2 text-muted">
-            <i class="fa-solid fa-location-dot text-danger"></i>
-            <span><%= listing.location %>, <%= listing.country %></span>
-          </div>
-        </div>
-        <div class="mt-3 mt-md-0 fs-4 fw-semibold text-danger">
-          ₹<%= listing.price ? listing.price.toLocaleString("en-in") : "N/A" %> / night
-        </div>
-      </div>
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: #fff;
+    color: var(--roamly-text-color);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  p { line-height: 1.6; color: var(--roamly-text-medium); }
+  a { color: var(--roamly-red); text-decoration: none; }
+  hr { border: 0; border-top: 1px solid var(--roamly-border-gray); margin: 32px 0; }
+
+  /* --- Base Button Styles --- */
+  .btn {
+    display: inline-block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 24px;
+    border-radius: var(--border-radius-sm);
+    text-decoration: none;
+    font-weight: 600;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    font-size: 1rem;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-danger { background-color: var(--roamly-red); color: #fff; border-color: var(--roamly-red); }
+  .btn-danger:hover { background-color: var(--roamly-dark-red); border-color: var(--roamly-dark-red); color: #fff; }
+  .btn-dark { background-color: var(--roamly-dark-color); color: #fff; border-color: var(--roamly-dark-color); }
+  .btn-dark:hover { background-color: #000; border-color: #000; color: #fff; }
+  .btn-danger-outline { border-color: var(--roamly-red); color: var(--roamly-red); background: #fff; }
+  .btn-danger-outline:hover { background-color: var(--roamly-red); color: #fff; }
+
+  /* --- Main Layout --- */
+  .page-container { max-width: 1100px; margin: 32px auto; padding: 0 20px; }
+
+  /* --- Header (Title, Location) --- */
+  .listing-header-main { margin-bottom: 24px; }
+  .listing-header-main h1 { font-size: 2.25rem; font-weight: 700; margin-bottom: 8px; color: var(--roamly-dark-color); }
+  .listing-location { display: flex; align-items: center; gap: 8px; color: var(--roamly-text-medium); font-size: 1.1rem; font-weight: 500; }
+  .listing-location i { font-size: 1rem; }
+
+  /* --- Image --- */
+  .listing-image-container { width: 100%; max-height: 450px; overflow: hidden; border-radius: var(--border-radius); margin-bottom: 32px; box-shadow: var(--shadow-sm); }
+  .listing-image-container img { width: 100%; height: 100%; object-fit: cover; }
+
+  /* --- Body Grid (2-Column) --- */
+  .listing-body-grid { display: grid; grid-template-columns: 1fr; gap: 30px; }
+  .listing-content { order: 2; }
+  .listing-sidebar { order: 1; }
+
+  /* --- Info Section --- */
+  .info-section { padding: 0; }
+  .info-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .owner-info { display: flex; align-items: center; gap: 12px; }
+  .owner-avatar { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; }
+  .owner-name { font-weight: 600; font-size: 1.1rem; color: var(--roamly-dark-color); }
+  .listing-description { margin-bottom: 24px; font-size: 1.1rem; color: var(--roamly-text-color); }
+  .listing-actions { display: flex; flex-direction: column; gap: 12px; }
+  .listing-actions form { display: contents; }
+
+  /* --- Booking Card --- */
+  .booking-card { border: 1px solid var(--roamly-border-gray); border-radius: var(--border-radius); padding: 24px; box-shadow: var(--shadow-md); background-color: #fff; }
+  .booking-price { font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; color: var(--roamly-dark-color); }
+  .booking-price span { font-size: 1rem; font-weight: 400; color: var(--roamly-text-medium); }
+  .booking-card .btn-danger { width: 100%; margin-top: 1rem; padding: 12px 24px; font-size: 1.1rem; }
+
+  /* --- Section Headings --- */
+  .section-heading { font-size: 1.75rem; font-weight: 700; margin-bottom: 24px; color: var(--roamly-dark-color); }
+
+  /* --- Reviews --- */
+  .review-list { display: flex; flex-direction: column; gap: 20px; }
+  .review-card { border: 1px solid var(--roamly-border-gray); padding: 20px; border-radius: var(--border-radius); box-shadow: var(--shadow-sm); }
+  .review-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .author-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; }
+  .author-info { flex-grow: 1; }
+  .author-name { font-weight: 600; color: var(--roamly-dark-color); }
+  .review-rating { color: #ffc107; font-size: 0.9rem; }
+  .review-date { font-size: 0.9rem; color: var(--roamly-text-medium); }
+  .review-comment { color: var(--roamly-text-color); margin-bottom: 0; }
+  .review-actions { margin-top: 1rem; text-align: right; } /* Align button right */
+
+  /* --- MODIFIED: Review Delete Button --- */
+  .btn-delete-review {
+    display: inline-flex; /* Use inline-flex for icon alignment */
+    align-items: center;
+    gap: 0.4em;
+    background: none;
+    border: none;
+    color: var(--roamly-text-medium); /* Subtle initial color */
+    padding: 6px 10px; /* Adjust padding */
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .btn-delete-review i {
+    font-size: 1em; /* Make icon match text size */
+  }
+  .btn-delete-review:hover {
+    background-color: var(--roamly-red); /* Red background on hover */
+    color: #fff; /* White text/icon on hover */
+    box-shadow: 0 2px 5px rgba(var(--roamly-red-rgb), 0.3);
+  }
+
+  /* --- Review Form --- */
+  .review-form-box { border: 1px solid var(--roamly-border-gray); padding: 24px; border-radius: var(--border-radius); background: var(--roamly-light-gray); }
+  .review-form-box .form-group { margin-bottom: 1rem; }
+  .review-form-box .form-label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
+  .star-rating { display: flex; flex-direction: row-reverse; justify-content: flex-end; gap: 2px; }
+  .star-rating input[type="radio"] { display: none; }
+  .star-rating label { font-size: 25px; color: #ccc; cursor: pointer; transition: color 0.2s, transform 0.2s; }
+  .star-rating input[type="radio"]:checked ~ label,
+  .star-rating label:hover,
+  .star-rating label:hover ~ label { color: #ffc107; }
+  .star-rating label:hover { transform: scale(1.1); }
+  .form-input { width: 100%; padding: 10px 12px; border: 1px solid var(--roamly-border-gray); border-radius: var(--border-radius-sm); font-size: 1rem; box-sizing: border-box; font-family: 'Inter', sans-serif; transition: border-color 0.2s, box-shadow 0.2s; }
+  .form-input:focus { outline: none; border-color: var(--roamly-red); box-shadow: 0 0 0 3px rgba(var(--roamly-red-rgb), 0.2); }
+  textarea.form-input { resize: vertical; min-height: 120px; }
+  .rating-error-message { color: var(--roamly-red); font-size: 0.9rem; display: none; margin-top: 8px; }
+
+  /* Login Prompt */
+  .login-prompt { text-align: center; padding: 24px; background: var(--roamly-light-gray); border-radius: var(--border-radius); border: 1px solid var(--roamly-border-gray); }
+  .login-prompt h5 { font-size: 1.2rem; font-weight: 600; color: var(--roamly-dark-color); }
+  .login-prompt a { font-weight: 600; }
+  .login-prompt .btn { margin: 10px auto 0; width: auto; max-width: 200px; }
+
+  /* --- Map --- */
+  .listing-map { height: 350px; width: 100%; border-radius: var(--border-radius); overflow: hidden; border: 1px solid var(--roamly-border-gray); }
+
+  /* --- Bootstrap Modal Overrides --- */
+  .modal-content { border-radius: var(--border-radius); border: none; }
+  .modal-header { border-bottom: 1px solid var(--roamly-border-gray); padding: 1rem 1.5rem; }
+  .modal-title { font-size: 1.5rem; font-weight: 700; color: var(--roamly-dark-color); }
+  .modal-body { padding: 1.5rem; }
+  .modal-footer { border-top: 1px solid var(--roamly-border-gray); padding: 1rem 1.5rem; background-color: var(--roamly-light-gray); }
+  #bookModal .form-label { font-weight: 600; margin-bottom: 0.75rem; display: block; color: var(--roamly-text-dark); }
+  #bookModal .form-input { margin-bottom: 1rem; }
+  .unavailable-dates-info { font-size: 0.9rem; color: var(--roamly-text-medium); margin-top: 0.5rem; padding: 0.75rem; background-color: var(--roamly-light-gray); border-radius: var(--border-radius-sm); border: 1px dashed var(--roamly-border-gray); }
+  .unavailable-dates-info strong { color: var(--roamly-dark-color); }
+  .modal-footer .btn-danger { padding: 10px 24px; font-size: 1rem; font-weight: 600; width: auto; display: inline-block; }
+
+  /* --- Flatpickr Integration --- */
+  .flatpickr-calendar { z-index: 1056; box-shadow: var(--shadow-md); border-radius: var(--border-radius-sm); border: 1px solid var(--roamly-border-gray); }
+
+  /* --- Responsive (Desktop) --- */
+  @media (min-width: 992px) {
+    .listing-header-main h1 { font-size: 2.75rem; }
+    .listing-image-container { max-height: 550px; }
+    .listing-body-grid { grid-template-columns: 2fr 1fr; gap: 50px; }
+    .listing-content { order: 1; }
+    .listing-sidebar { order: 2; position: sticky; top: 112px; }
+    .listing-actions { flex-direction: row; }
+    .btn { width: auto; }
+    .listing-actions form .btn, .listing-actions .btn { width: auto; }
+    .booking-card .btn { width: 100%; }
+  }
+
+  /* --- Responsive (Small Phone) --- */
+  @media (max-width: 600px) {
+    .listing-image-container { max-height: 300px; }
+    .listing-map { height: 250px; }
+    .info-section, .booking-card, .review-form-box { padding: 0; }
+    .booking-card { padding: 16px; }
+    .review-form-box { padding: 16px; }
+    .listing-header-main h1 { font-size: 2rem; }
+  }
+</style>
+
+
+<div class="page-container">
+
+  <header class="listing-header-main">
+    <h1><%= listing.title %></h1>
+    <div class="listing-location">
+      <i class="fa-solid fa-location-dot"></i>
+      <span><%= listing.location %>, <%= listing.country %></span>
     </div>
+  </header>
+
+  <div class="listing-image-container">
+    <img
+      src="<%= listing.image?.url || 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop' %>"
+      alt="Listing Image"
+      loading="lazy"
+      onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop';">
   </div>
 
-  <!-- OWNER + DESCRIPTION + ACTIONS -->
-  <div class="row mb-5">
-    <div class="col-lg-10 offset-lg-1">
-      <div class="p-4 bg-white rounded-4 shadow-sm">
-        <div class="d-flex align-items-center mb-3">
-          <img src="<%= listing.owner?.avatar || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png' %>"
-               alt="Owner"
-               class="rounded-circle me-3 shadow-sm"
-               style="width:55px; height:55px; object-fit:cover;">
-          <p class="mb-0 fw-semibold">Hosted by <%= listing.owner?.username || 'sujalbhatt' %></p>
+  <main class="listing-body-grid">
+
+    <div class="listing-content">
+
+      <section class="info-section">
+        <div class="info-header">
+          <div class="owner-info">
+            <img src="<%= listing.owner?.avatar || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png' %>"
+                 alt="Owner" class="owner-avatar">
+            <span class="owner-name">Hosted by <%= listing.owner?.username || 'Host' %></span>
+          </div>
         </div>
+        <p class="listing-description"><%= listing.description %></p>
 
-        <p class="text-muted mb-4"><%= listing.description %></p>
-
-        <div class="d-flex gap-3 flex-wrap">
+        <div class="listing-actions">
           <% if (currUser && listing.owner && (listing.owner._id.equals(currUser._id) || currUser.username === 'sujalbhatt')) { %>
-            <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark px-4">Edit</a>
-            <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE" class="d-inline">
-              <button type="submit" class="btn btn-outline-danger px-4">Delete</button>
+            <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark">Edit</a>
+            <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE" onsubmit="return confirm('Are you sure you want to delete this listing?');">
+              <button type="submit" class="btn btn-danger-outline">Delete</button>
             </form>
           <% } %>
-          <button class="btn btn-danger px-4" data-bs-toggle="modal" data-bs-target="#bookModal">Book Now</button>
         </div>
+      </section>
+
+      <hr>
+
+      <section class="review-section">
+        <h4 class="section-heading">Reviews</h4>
+        <% if (listing.reviews?.length > 0) { %>
+          <div class="review-list">
+            <% listing.reviews.forEach(review => { %>
+              <div class="review-card">
+                <div class="review-header">
+                  <img src="<%= review.author?.avatar || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png' %>"
+                       alt="Profile" class="author-avatar">
+                  <div class="author-info">
+                    <span class="author-name"><%= review.author?.username || 'Anonymous' %></span>
+                    <span class="review-rating">
+                      <% for(let i=1;i<=5;i++){ %>
+                        <% if(i<=review.rating){ %><i class="fas fa-star"></i>
+                        <% } else { %><i class="far fa-star"></i><% } %>
+                      <% } %>
+                    </span>
+                  </div>
+                  <small class="review-date"><%= new Date(review.createdAt).toLocaleDateString() %></small>
+                </div>
+                <p class="review-comment"><%= review.comment %></p>
+                <% if(currUser && review.author?._id && review.author._id.equals(currUser._id)) { %>
+                  <div class="review-actions">
+                    <form method="POST" action="/listings/<%=listing._id%>/reviews/<%=review._id%>?_method=DELETE" onsubmit="return confirm('Are you sure you want to delete this review?');">
+                      <button type="submit" class="btn-delete-review">
+                         <i class="fa-regular fa-trash-can"></i> Delete
+                      </button>
+                    </form>
+                  </div>
+                <% } %>
+              </div>
+            <% }) %>
+          </div>
+        <% } else { %>
+          <p>No reviews yet.</p>
+        <% } %>
+      </section>
+
+      <hr>
+
+      <section class="leave-review-section">
+        <% if(currUser) { %>
+          <div class="review-form-box">
+            <h4 class="section-heading" style="margin-bottom: 1rem;">Leave a Review</h4>
+            <form id="reviewForm" action="/listings/<%=listing._id%>/reviews" method="POST" novalidate class="needs-validation"> <div class="form-group">
+                <label class="form-label">Rating</label>
+                <div class="star-rating">
+                  <input type="radio" name="review[rating]" value="5" id="star5" required><label for="star5">★</label>
+                  <input type="radio" name="review[rating]" value="4" id="star4"><label for="star4">★</label>
+                  <input type="radio" name="review[rating]" value="3" id="star3"><label for="star3">★</label>
+                  <input type="radio" name="review[rating]" value="2" id="star2"><label for="star2">★</label>
+                  <input type="radio" name="review[rating]" value="1" id="star1"><label for="star1">★</label>
+                </div>
+                <div id="rating-error" class="rating-error-message">Please select a rating</div>
+              </div>
+              <div class="form-group">
+                <label for="comment" class="form-label">Comments</label>
+                <textarea class="form-input" name="review[comment]" id="comment" rows="4" required></textarea>
+                <div class="invalid-feedback">Please enter your comment.</div>
+              </div>
+              <button type="submit" class="btn btn-dark">Submit Review</button>
+            </form>
+          </div>
+        <% } else { %>
+          <div class="login-prompt">
+            <h5>Want to share your experience?</h5>
+            <p>Please <a href="/login?returnTo=/listings/<%= listing._id %>">log in</a> to leave a review.</p>
+            <a href="/login?returnTo=/listings/<%= listing._id %>" class="btn btn-danger">Login</a>
+          </div>
+        <% } %>
+      </section>
+
+      <hr>
+
+      <section class="map-section">
+        <h4 class="section-heading">Where you'll be</h4>
+        <div id="map" class="listing-map"></div>
+      </section>
+
+    </div>
+
+    <aside class="listing-sidebar">
+      <div class="booking-card">
+        <div class="booking-price">
+          ₹<%= listing.price ? listing.price.toLocaleString("en-in") : "N/A" %>
+          <span>/ night</span>
+        </div>
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#bookModal">
+          Book Now
+        </button>
       </div>
-    </div>
-  </div>
+    </aside>
 
-  <!-- BOOK NOW MODAL -->
-  <div class="modal fade" id="bookModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <form method="POST" action="/bookings/create/<%= listing._id %>">
-        <div class="modal-content rounded-4 shadow-lg">
-          <div class="modal-header border-0">
-            <h5 class="modal-title fw-bold">Book Your Stay</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <label class="form-label fw-semibold">Select Dates</label>
-            <input type="text" id="dateRange" class="form-control mb-3" required autocomplete="off" placeholder="Select a date range">
-            <input type="hidden" name="startDate" id="startDate">
-            <input type="hidden" name="endDate" id="endDate">
+  </main>
+</div>
 
-            <% if (listing.bookedDates?.length > 0) { %>
-              <div class="text-danger small">
-                <strong>Unavailable Dates:</strong>
-                <%= listing.bookedDates.map(d => new Date(d).toLocaleDateString()).join(", ") %>
-              </div>
-            <% } %>
-          </div>
-          <div class="modal-footer border-0">
-            <button type="submit" class="btn btn-danger w-100">Confirm Booking</button>
-          </div>
+<div class="modal fade" id="bookModal" tabindex="-1" aria-labelledby="bookModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <form method="POST" action="/bookings/create/<%= listing._id %>" id="bookingForm" class="needs-validation" novalidate>
+        <div class="modal-header">
+          <h5 class="modal-title" id="bookModalLabel">Book Your Stay</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-      </form>
-    </div>
-  </div>
+        <div class="modal-body">
+          <label for="dateRange" class="form-label">Select Dates</label>
+          <input type="text" id="dateRange" class="form-input" required autocomplete="off" placeholder="Select check-in and check-out dates">
+          <input type="hidden" name="startDate" id="startDate" required>
+          <input type="hidden" name="endDate" id="endDate" required>
+          <div class="invalid-feedback" id="dateRangeFeedback">Please select a valid date range.</div>
 
-  <!-- REVIEWS -->
-  <!-- REVIEWS -->
-<div class="row mt-5">
-  <div class="col-lg-8 offset-lg-2">
-    <hr>
-    <h4 class="fw-semibold mb-3">Reviews</h4>
-    <% if (listing.reviews?.length > 0) { %>
-      <% listing.reviews.forEach(review => { %>
-        <div class="card rounded-4 shadow-sm mb-3">
-          <div class="card-body">
-            <div class="d-flex align-items-center mb-2">
-              <img src="<%= review.author?.avatar || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png' %>"
-                   alt="Profile"
-                   class="rounded-circle me-3"
-                   style="width:50px; height:50px; object-fit:cover;">
-              <div>
-                <span class="fw-bold"><%= review.author?.username || 'Anonymous' %></span>
-                <span class="ms-2 text-warning">
-                  <% for(let i=1;i<=5;i++){ %>
-                    <% if(i<=review.rating){ %>
-                      <i class="fas fa-star"></i>
-                    <% } else { %>
-                      <i class="far fa-star"></i>
-                    <% } %>
-                  <% } %>
-                  <span class="ms-2 text-muted">(<%= review.rating %>/5)</span>
-                </span>
-              </div>
-              <small class="text-muted ms-auto"><%= new Date(review.createdAt).toLocaleDateString() %></small>
+          <% if (listing.bookedDates?.length > 0) {
+              const formattedBookedDates = listing.bookedDates.map(d => new Date(d).toLocaleDateString('en-CA')); // YYYY-MM-DD
+          %>
+            <div class="unavailable-dates-info">
+              <strong>Currently Unavailable:</strong><br>
+              <%
+                 let ranges = [];
+                 if (formattedBookedDates.length > 0) {
+                   formattedBookedDates.sort();
+                   let startRange = formattedBookedDates[0];
+                   let endRange = formattedBookedDates[0];
+                   for (let i = 1; i < formattedBookedDates.length; i++) {
+                     const currentDate = new Date(formattedBookedDates[i]);
+                     const previousDate = new Date(endRange);
+                     const nextDay = new Date(previousDate);
+                     nextDay.setDate(previousDate.getDate() + 1);
+                     if (currentDate.toISOString().split('T')[0] === nextDay.toISOString().split('T')[0]) {
+                       endRange = formattedBookedDates[i];
+                     } else {
+                       ranges.push(startRange === endRange ? new Date(startRange).toLocaleDateString() : `${new Date(startRange).toLocaleDateString()} - ${new Date(endRange).toLocaleDateString()}`);
+                       startRange = formattedBookedDates[i];
+                       endRange = formattedBookedDates[i];
+                     }
+                   }
+                   ranges.push(startRange === endRange ? new Date(startRange).toLocaleDateString() : `${new Date(startRange).toLocaleDateString()} - ${new Date(endRange).toLocaleDateString()}`);
+                 }
+              %>
+              <%- ranges.join('<br>') %>
             </div>
-            <p class="text-secondary mb-2"><%= review.comment %></p>
-            <% if(currUser && review.author?._id && review.author._id.equals(currUser._id)) { %>
-              <form method="POST" action="/listings/<%=listing._id%>/reviews/<%=review._id%>?_method=DELETE" class="d-inline">
-                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
-              </form>
-            <% } %>
-          </div>
+          <% } %>
         </div>
-      <% }) %>
-    <% } else { %>
-      <p class="text-muted">No reviews yet.</p>
-    <% } %>
-  </div>
-</div>
-
-<!-- LEAVE REVIEW -->
-<div class="row mt-4">
-  <div class="col-lg-8 offset-lg-2">
-    <% if(currUser) { %>
-      <hr>
-      <h4 class="fw-semibold mb-3">Leave a Review</h4>
-      <form id="reviewForm" action="/listings/<%=listing._id%>/reviews" method="POST" novalidate>
-        <div class="mb-3">
-          <label class="form-label fw-semibold">Rating</label>
-          <div class="star-rating d-flex flex-row-reverse justify-content-end gap-2">
-            <!-- Static star inputs (no EJS loop) -->
-            <input type="radio" name="review[rating]" value="5" id="star5" required>
-            <label for="star5" class="star" style="font-size:25px; cursor:pointer;">★</label>
-
-            <input type="radio" name="review[rating]" value="4" id="star4">
-            <label for="star4" class="star" style="font-size:25px; cursor:pointer;">★</label>
-
-            <input type="radio" name="review[rating]" value="3" id="star3">
-            <label for="star3" class="star" style="font-size:25px; cursor:pointer;">★</label>
-
-            <input type="radio" name="review[rating]" value="2" id="star2">
-            <label for="star2" class="star" style="font-size:25px; cursor:pointer;">★</label>
-
-            <input type="radio" name="review[rating]" value="1" id="star1">
-            <label for="star1" class="star" style="font-size:25px; cursor:pointer;">★</label>
-          </div>
-          <div id="rating-error" class="text-danger small" style="display:none;">Please select a rating</div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-danger">Confirm Booking</button>
         </div>
-        <div class="mb-3">
-          <label for="comment" class="form-label fw-semibold">Comments</label>
-          <textarea class="form-control" name="review[comment]" id="comment" rows="4" required></textarea>
-          <div class="invalid-feedback">Please enter your comment</div>
-        </div>
-        <button type="submit" class="btn btn-outline-dark w-100">Submit Review</button>
       </form>
-    <% } else { %>
-      <div class="text-center p-4 bg-light rounded-4 shadow-sm border">
-        <h5 class="fw-semibold mb-2">Want to share your experience?</h5>
-        <p class="text-muted mb-3">Please <a href="/login" class="text-danger fw-semibold">log in</a> to leave a review.</p>
-        <a href="/login" class="btn btn-danger w-50">Login</a>
-      </div>
-    <% } %>
-  </div>
-</div>
-
-
-  <!-- MAP -->
-  <div class="row mt-5">
-    <div class="col-lg-10 offset-lg-1">
-      <hr>
-      <h4 class="fw-semibold mb-3">Where you'll be</h4>
-      <div id="map" style="height:500px; border-radius:24px; overflow:hidden; box-shadow:0 4px 32px rgba(0,0,0,0.12);"></div>
     </div>
   </div>
 </div>
 
-<!-- FLATPICKR -->
+
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  // Booking datepicker
-  const bookedDates = <%- JSON.stringify(listing.bookedDates?.map(d=>new Date(d).toISOString().split("T")[0]) || []) %>;
-  flatpickr("#dateRange", {
+   
+  // --- Booking Datepicker ---
+  const startDateInput = document.getElementById("startDate");
+  const endDateInput = document.getElementById("endDate");
+  const dateRangeInput = document.getElementById("dateRange");
+  const dateRangeFeedback = document.getElementById("dateRangeFeedback");
+const bookedDates = <%- JSON.stringify(activeBookedDates) %>;
+
+  const fp = flatpickr("#dateRange", {
     mode: "range",
     minDate: "today",
     dateFormat: "Y-m-d",
     disable: bookedDates,
-    onChange: function(selectedDates){
-      if(selectedDates.length===2){
-        document.getElementById("startDate").value = selectedDates[0].toISOString().split("T")[0];
-        document.getElementById("endDate").value = selectedDates[1].toISOString().split("T")[0];
+    onChange: function(selectedDates, dateStr, instance) {
+      if (selectedDates.length === 2) {
+        const start = selectedDates[0];
+        const end = selectedDates[1];
+        startDateInput.value = start.toISOString().split("T")[0];
+        endDateInput.value = end.toISOString().split("T")[0];
+        dateRangeInput.value = `${startDateInput.value} to ${endDateInput.value}`;
+        dateRangeInput.classList.remove('is-invalid');
+        dateRangeFeedback.style.display = 'none';
+
+        let rangeIsValid = true;
+        for (let i = 0; i < bookedDates.length; i++) {
+           const bookedDate = new Date(bookedDates[i]);
+           if (bookedDate >= start && bookedDate <= end) {
+               rangeIsValid = false;
+               break;
+           }
+        }
+        if (!rangeIsValid) {
+           instance.clear();
+           startDateInput.value = "";
+           endDateInput.value = "";
+           dateRangeInput.value = "";
+           dateRangeInput.classList.add('is-invalid');
+           dateRangeFeedback.textContent = 'Selected range includes unavailable dates.';
+           dateRangeFeedback.style.display = 'block';
+        }
+      } else {
+        startDateInput.value = "";
+        endDateInput.value = "";
       }
     }
   });
 
-  // Review validation
+  // --- Review Form Validation ---
   const reviewForm = document.getElementById('reviewForm');
-  if(reviewForm){
+  if (reviewForm) {
+    // Add Bootstrap's needs-validation class if not already present
+    reviewForm.classList.add('needs-validation');
+
     const ratingError = document.getElementById('rating-error');
-    reviewForm.addEventListener('submit', function(e){
-      const selectedRating = document.querySelector('input[name="review[rating]"]:checked');
-      if(!selectedRating){
-        ratingError.style.display='block';
-        e.preventDefault(); e.stopPropagation();
-      } else ratingError.style.display='none';
+    reviewForm.addEventListener('submit', function(event) {
+      const selectedRating = reviewForm.querySelector('input[name="review[rating]"]:checked');
+      if (!selectedRating) {
+        ratingError.style.display = 'block';
+        // Need to prevent default here too if rating is required
+        event.preventDefault();
+        event.stopPropagation();
+      } else {
+        ratingError.style.display = 'none';
+      }
+
+      if (!reviewForm.checkValidity()) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
       reviewForm.classList.add('was-validated');
-    });
+    }, false);
   }
 
-  // MAP
+
+  // --- Booking Form Validation ---
+  const bookingForm = document.getElementById('bookingForm');
+  if (bookingForm) {
+      bookingForm.addEventListener('submit', function(event) {
+          if (!startDateInput.value || !endDateInput.value) {
+              dateRangeInput.classList.add('is-invalid');
+              dateRangeFeedback.textContent = 'Please select both check-in and check-out dates.';
+              dateRangeFeedback.style.display = 'block';
+              event.preventDefault();
+              event.stopPropagation();
+          } else {
+              dateRangeInput.classList.remove('is-invalid');
+              dateRangeFeedback.style.display = 'none';
+          }
+          if (!bookingForm.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+          bookingForm.classList.add('was-validated');
+      }, false);
+  }
+
+  // --- MapLibre Map ---
   const apiKey = "<%= MAPTILER_API_KEY %>";
-  if(typeof maplibregl !== 'undefined' && apiKey){
-    let center = [78.9629, 20.5937]; // default India
-    <% if(listing.geometry?.coordinates?.length===2){ %>
+  if (typeof maplibregl !== 'undefined' && apiKey) {
+    let center = [78.9629, 20.5937]; // Default India
+    <% if(listing.geometry?.coordinates?.length === 2){ %>
       center = [<%= listing.geometry.coordinates[0] %>, <%= listing.geometry.coordinates[1] %>];
     <% } %>
+
     const map = new maplibregl.Map({
       container: 'map',
       style: `https://api.maptiler.com/maps/streets/style.json?key=${apiKey}`,
-      center,
+      center: center,
       zoom: 12
     });
+
     map.addControl(new maplibregl.NavigationControl());
     new maplibregl.Marker().setLngLat(center).addTo(map);
   }

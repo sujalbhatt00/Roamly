@@ -1,0 +1,254 @@
+<% layout("/layouts/boilerplate") %>
+<%- include("../includes/flash") %>
+
+<style>
+  /* ==== Page Base ==== */
+  body {
+    background: linear-gradient(to bottom right, #f8f9fa, #f1f1f1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    margin: 0;
+    padding: 0;
+  }
+
+  .delete-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  /* ==== Card ==== */
+  .delete-card {
+    background: #fff;
+    width: 100%;
+    max-width: 430px;
+    padding: 40px 35px;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    transition: 0.3s ease;
+  }
+
+  .delete-card:hover {
+    box-shadow: 0 10px 30px rgba(255, 0, 0, 0.1);
+    transform: translateY(-3px);
+  }
+
+  /* ==== Icon ==== */
+  .warning-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    background-color: #fee2e2;
+    color: #dc2626;
+  }
+
+  .warning-icon svg {
+    width: 36px;
+    height: 36px;
+  }
+
+  /* ==== Header ==== */
+  .delete-title {
+    text-align: center;
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .delete-text {
+    text-align: center;
+    font-size: 15px;
+    color: #555;
+    line-height: 1.6;
+  }
+
+  .delete-text span {
+    color: #dc2626;
+    font-weight: bold;
+  }
+
+  /* ==== Form ==== */
+  form {
+    margin-top: 30px;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    font-size: 14px;
+    color: #444;
+  }
+
+  .input-group {
+    position: relative;
+  }
+
+  input[type="password"] {
+    width: 100%;
+    padding: 12px 40px 12px 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+    outline: none;
+    transition: border 0.3s, box-shadow 0.3s;
+  }
+
+  input[type="password"]:focus {
+    border-color: #dc2626;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+  }
+
+  /* ==== Toggle Button ==== */
+  #togglePassword {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    padding: 4px;
+  }
+
+  #togglePassword:hover {
+    color: #444;
+  }
+
+  /* ==== Button ==== */
+  .delete-btn {
+    display: block;
+    width: 100%;
+    background: linear-gradient(to right, #dc2626, #ef4444);
+    border: none;
+    color: #fff;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 25px;
+    transition: background 0.3s, transform 0.2s;
+  }
+
+  .delete-btn:hover {
+    background: linear-gradient(to right, #b91c1c, #dc2626);
+    transform: scale(1.02);
+  }
+
+  /* ==== Footer ==== */
+  .cancel-link {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #555;
+  }
+
+  .cancel-link a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .cancel-link a:hover {
+    text-decoration: underline;
+  }
+
+  /* ==== Responsive ==== */
+  @media (max-width: 480px) {
+    .delete-card {
+      padding: 30px 25px;
+    }
+    .delete-title {
+      font-size: 22px;
+    }
+  }
+</style>
+
+<div class="delete-container">
+  <div class="delete-card">
+
+    <!-- Warning Icon -->
+    <div class="warning-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 
+          1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 
+          0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+      </svg>
+    </div>
+
+    <!-- Header -->
+    <h2 class="delete-title">Delete Your Account</h2>
+    <p class="delete-text">
+      This action is <span>permanent</span> and cannot be undone.<br>
+      All your data, including trips and settings, will be permanently erased.
+    </p>
+
+    <!-- Form -->
+    <form method="POST" action="/profile/delete">
+      <label for="password">Enter your password to confirm:</label>
+      <div class="input-group">
+        <input type="password" name="password" id="password" placeholder="••••••••" required>
+        <button type="button" id="togglePassword">
+          <!-- Show Icon -->
+          <svg id="iconShow" xmlns="http://www.w3.org/2000/svg" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="20" height="20">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 
+              8.268 2.943 9.542 7-1.274 
+              4.057-5.064 7-9.542 7-4.477 
+              0-8.268-2.943-9.542-7z" />
+          </svg>
+          <!-- Hide Icon -->
+          <svg id="iconHide" xmlns="http://www.w3.org/2000/svg" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="20" height="20" class="hidden">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M13.875 18.825A10.05 10.05 0 0112 
+              19c-4.477 0-8.268-2.943-9.542-7 
+              1.274-4.057 5.064-7 
+              9.542-7 .847 0 1.669.105 
+              2.458.303M15 12a3 3 0 
+              11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M4.75 4.75l14.5 14.5" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Delete Button -->
+      <button type="submit" class="delete-btn">
+        Yes, Delete My Account
+      </button>
+    </form>
+
+    <!-- Footer -->
+    <div class="cancel-link">
+      <a href="/profile">Cancel and go back</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  const passwordInput = document.getElementById('password');
+  const toggleButton = document.getElementById('togglePassword');
+  const iconShow = document.getElementById('iconShow');
+  const iconHide = document.getElementById('iconHide');
+
+  toggleButton?.addEventListener('click', () => {
+    const type = passwordInput.type === 'password' ? 'text' : 'password';
+    passwordInput.type = type;
+    iconShow.classList.toggle('hidden');
+    iconHide.classList.toggle('hidden');
+  });
+</script>
