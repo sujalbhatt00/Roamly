@@ -156,9 +156,14 @@ a.text-danger:hover {
 
 /* --- Responsive --- */
 @media (max-width: 576px) {
+  .signup-wrapper {
+    padding: 1rem; /* 1. Reduced the outer padding */
+    align-items: flex-start !important; /* 2. Aligns card to top */
+    padding-top: 2rem; /* 3. Adds some space from the status bar */
+  }
   .signup-card {
-    padding: 1.5rem;
-    margin: 0 1rem;
+    padding: 2rem 1.5rem; /* More internal padding */
+    margin: 0; /* 4. Removed the side margins */
   }
   .signup-logo {
     height: 45px;
