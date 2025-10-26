@@ -155,6 +155,25 @@
     color: #fff;
   }
   
+  /* --- 5. Logout Link --- */
+  .logout-section {
+    padding: 1.5rem 2.5rem;
+    border-top: 1px solid var(--border-color);
+    background-color: var(--bg-light); /* Slightly different background */
+    text-align: center;
+  }
+  .logout-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+  }
+  .logout-link:hover {
+    color: var(--roamly-dark-red);
+    text-decoration: underline;
+  }
+  
   /* Media Query for smaller screens */
   @media (max-width: 600px) {
     .profile-card {
@@ -165,6 +184,9 @@
     }
     .profile-section {
       padding: 1.5rem;
+    }
+    .logout-section {
+      padding: 1.25rem 1.5rem;
     }
   }
 </style>
@@ -199,4 +221,9 @@
     <a href="/profile/edit" class="btn btn-primary-outline">Edit Profile</a>
     <a href="/profile/delete" class="btn btn-danger-outline">Delete Profile</a>
   </div>
+
+  <div class="logout-section">
+    <a href="/logout" class="logout-link">Log Out</a>
+  </div>
+
 </div>
