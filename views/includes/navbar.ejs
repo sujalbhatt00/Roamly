@@ -9,8 +9,8 @@
   <style>
     /* --- General Reset & Base Styles --- */
     :root {
-      --roamly-red: #E54D42; /* Updated Red */
-      --roamly-dark-red: #c9302c; /* Updated Dark Red */
+      --roamly-red: #E54D42;
+      --roamly-dark-red: #c9302c;
       --roamly-light-gray: #f8f9fa;
       --roamly-border-gray: #dddddd;
       --roamly-text-dark: #222222;
@@ -21,7 +21,7 @@
 
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Circular', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      background-color: white; /* Changed from #fff */
+      background-color: white;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       margin: 0;
@@ -35,7 +35,7 @@
       top: 0;
       z-index: 1050;
       width: 100%;
-      background-color: #ffffff; /* Changed back to white */
+      background-color: #ffffff;
       border-bottom: 1px solid #ebebeb;
       transition: box-shadow 0.3s ease;
       padding: 0;
@@ -66,17 +66,16 @@
 
     .roamly-logo {
       text-decoration: none;
-      font-size: 2rem !important; /* MODIFIED: Even Bigger logo */
-      font-weight: 900 !important; /* MODIFIED: Boldest */
-      color: var(--roamly-red) !important; /* MODIFIED: Ensure color */
-      letter-spacing: -0.03em; /* MODIFIED: Slightly tighter spacing */
+      font-size: 2rem !important;
+      font-weight: 900 !important;
+      color: var(--roamly-red) !important;
+      letter-spacing: -0.03em;
       white-space: nowrap;
-      line-height: 1; /* Adjust vertical alignment */
+      line-height: 1;
     }
     .roamly-logo:hover {
-       color: var(--roamly-red) !important; /* MODIFIED: Explicitly no hover color change */
+       color: var(--roamly-red) !important;
     }
-
 
     .explore-link {
       text-decoration: none;
@@ -252,16 +251,15 @@
     }
 
     .mobile-logo {
-      font-size: 1.3rem !important; /* MODIFIED: Bigger mobile logo */
-      font-weight: 900 !important; /* MODIFIED: Boldest */
+      font-size: 1.3rem !important;
+      font-weight: 900 !important;
       color: var(--roamly-red) !important;
       text-decoration: none;
       flex-shrink: 0;
       white-space: nowrap;
       letter-spacing: -0.03em;
-      line-height: 1; /* Adjust vertical alignment */
+      line-height: 1;
     }
-    
 
     .mobile-search-pill {
       flex-grow: 1;
@@ -292,134 +290,7 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-
-    /* --- Modern Hamburger Menu Icon --- */
-    .navbar-toggler {
-      border: none;
-      padding: 0; /* Remove padding */
-      font-size: 1.25rem;
-      line-height: 1;
-      background-color: transparent;
-      border-radius: 0.375rem;
-      transition: box-shadow 0.15s ease-in-out;
-      cursor: pointer;
-      flex-shrink: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      width: 26px; /* Slightly narrower */
-      height: 20px; /* Slightly shorter */
-      position: relative;
-    }
-
-    .navbar-toggler-icon { display: none; } /* Hide default icon */
-
-    .toggler-bar {
-      display: block;
-      width: 100%;
-      height: 2.5px; /* MODIFIED: Thinner bars */
-      background-color: var(--roamly-text-dark);
-      border-radius: 3px;
-      transition: all 0.3s ease-in-out;
-      transform-origin: center;
-    }
-
-    /* 'X' animation when menu is open */
-    .navbar-toggler[aria-expanded="true"] .toggler-bar:nth-child(1) {
-      transform: translateY(8.75px) rotate(45deg); /* Adjusted translation */
-    }
-    .navbar-toggler[aria-expanded="true"] .toggler-bar:nth-child(2) {
-      opacity: 0;
-      transform: scaleX(0); /* Add scale for smoother disappearance */
-    }
-    .navbar-toggler[aria-expanded="true"] .toggler-bar:nth-child(3) {
-      transform: translateY(-8.75px) rotate(-45deg); /* Adjusted translation */
-    }
-
-
-    /* --- Offcanvas Menu (Mobile) --- */
-    .offcanvas {
-      --bs-offcanvas-width: 280px;
-      background-color: #fff;
-      z-index: 1051;
-      border: none;
-    }
-    .offcanvas-header {
-      padding: 1rem 1.5rem;
-      border-bottom: 1px solid var(--roamly-border-gray);
-    }
-    .offcanvas-title {
-      color: var(--roamly-red);
-      font-size: 1.5rem;
-      font-weight: 700;
-    }
-    .offcanvas-body {
-      padding: 0; /* Remove default padding */
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      height: calc(100vh - 56.8px); /* Adjust based on header height */
-    }
-    .offcanvas-top-section, .offcanvas-bottom-section {
-        padding: 0.5rem 0;
-    }
-    .offcanvas-link {
-      display: block;
-      padding: 1rem 1.5rem;
-      color: var(--roamly-text-dark);
-      text-decoration: none;
-      font-size: 1.1rem;
-      font-weight: 500;
-      transition: background-color 0.2s ease, color 0.2s ease;
-    }
-    .offcanvas-link:hover {
-      background-color: var(--roamly-light-gray);
-      color: var(--roamly-red);
-    }
-    .offcanvas-divider {
-      border-top: 1px solid var(--roamly-border-gray);
-      margin: 0; /* Remove default margins */
-    }
-    /* Style for profile link at top */
-     .offcanvas-profile-link {
-       display: flex;
-       align-items: center;
-       gap: 12px;
-       font-weight: 600;
-       color: var(--roamly-text-dark);
-       padding: 1rem 1.5rem; /* Match other links */
-       transition: background-color 0.2s ease, color 0.2s ease;
-     }
-     .offcanvas-profile-link:hover {
-       background-color: var(--roamly-light-gray);
-     }
-     .offcanvas-profile-link .auth-user-avatar {
-       width: 40px;
-       height: 40px;
-     }
-
-
-    /* --- Blur Overlay --- */
-    .blur-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: 1040;
-      background-color: rgba(0, 0, 0, 0.1);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.3s ease, visibility 0.3s ease;
-    }
-
-    .blur-overlay.active {
-      opacity: 1;
-      visibility: visible;
-    }
-
+    
     /* --- Responsive Adjustments --- */
     @media (max-width: 1200px) {
       .navbar-desktop-content {
@@ -459,6 +330,10 @@
       .navbar-mobile-content {
         display: flex;
       }
+      /* --- NEW: Add padding to body so tab bar doesn't cover content --- */
+      body {
+        padding-bottom: 70px; /* Adjust to match tab bar height */
+      }
     }
 
     @media (max-width: 767.98px) {
@@ -471,20 +346,17 @@
         padding: 8px 12px;
       }
       .mobile-search-pill i {
-        font-size: 0.6rem;
+        font-size: 0.9rem; /* Corrected from 0.6rem */
       }
       .mobile-search-pill span {
         font-size: 0.8rem;
-      }
-      .offcanvas {
-        --bs-offcanvas-width: 250px;
+        /* --- Hiding text on all phones for a cleaner look --- */
+        display: none; 
       }
     }
 
     @media (max-width: 420px) {
-      .mobile-search-pill span {
-        display: none; /* Hide search text on very small screens */
-      }
+      /* This rule is now covered by the 767px rule */
     }
 
     /* --- Search Suggestions Box --- */
@@ -562,6 +434,46 @@
       border: 1px solid var(--roamly-border-gray);
     }
 
+    /* --- NEW: Bottom Tab Bar Styles --- */
+    .bottom-tab-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 70px; /* Adjust height as needed */
+      background-color: #ffffff;
+      border-top: 1px solid #ebebeb;
+      box-shadow: 0 -1px 8px var(--roamly-shadow-light);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 1045; /* Below navbar, above content */
+    }
+    .tab-link {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-grow: 1;
+      text-decoration: none;
+      color: var(--roamly-text-medium);
+      font-size: 0.75rem; /* Small text */
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+    .tab-link i {
+      font-size: 1.35rem; /* Icon size */
+      margin-bottom: 4px;
+    }
+    .tab-link span {
+      line-height: 1;
+    }
+    .tab-link:hover,
+    .tab-link.active { /* You can add logic to set 'active' class */
+      color: var(--roamly-red);
+    }
+    /* --- End of New Styles --- */
+
   </style>
 </head>
 <body>
@@ -590,14 +502,11 @@
             <a class="auth-text-link" href="/login">Login</a>
           <% } else { %>
 
-            <!-- === ADMIN LINK (DESKTOP) === -->
             <% if (currUser && currUser.username === "sujalbhatt") { %>
               <a class="auth-text-link" href="/admin" title="Admin">
                 <i class="fa-solid fa-user-shield" style="margin-right: 4px;"></i>Admin
               </a>
             <% } %>
-            <!-- === END ADMIN LINK === -->
-
             <a class="auth-text-link" href="/bookings/my-bookings">My Bookings</a>
             <a class="auth-text-link" href="/logout">Logout</a>
 
@@ -615,7 +524,6 @@
       </div>
     </div>
 
-    <!-- === MOBILE NAVBAR === -->
     <div class="d-lg-none w-100">
       <div class="navbar-mobile-content">
         <a class="mobile-logo" href="/listings"><b>ROAMLY</b></a>
@@ -625,66 +533,51 @@
           <span>Search destinations</span>
         </div>
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation" onclick="toggleBlur()">
-          <span class="toggler-bar"></span>
-          <span class="toggler-bar"></span>
-          <span class="toggler-bar"></span>
-        </button>
-      </div>
+        </div>
     </div>
   </nav>
 
-  <!-- === MOBILE OFFCANVAS MENU === -->
-  <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel" data-bs-scroll="true">
-    <div class="offcanvas-header">
-      <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu</h5>
-      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" onclick="toggleBlur()"></button>
-    </div>
+  <nav class="bottom-tab-bar d-lg-none">
+    
+    <a href="/listings" class="tab-link active"> <i class="fa-solid fa-magnifying-glass"></i>
+      <span>Explore</span>
+    </a>
+    
+    <a href="/listings/new" class="tab-link">
+      <i class="fa-solid fa-house-chimney-medical"></i>
+      <span>Host</span>
+    </a>
 
-    <div class="offcanvas-body">
-      <div class="offcanvas-top-section">
-        <% if(currUser){ %>
-          <a class="offcanvas-profile-link" href="/profile">
-            <span class="auth-user-avatar">
-              <% if (currUser.avatar) { %>
-                <img src="<%= currUser.avatar %>" alt="Profile">
-              <% } else { %>
-                <i class="fa fa-user"></i>
-              <% } %>
-            </span>
-            <%= currUser.username %>
-          </a>
+    <% if(currUser) { %>
+      <a href="/bookings/my-bookings" class="tab-link">
+        <i class="fa-solid fa-suitcase"></i>
+        <span>Bookings</span>
+      </a>
+      
+      <% if (currUser.username === "sujalbhatt") { %>
+        <a href="/admin" class="tab-link">
+          <i class="fa-solid fa-user-shield"></i>
+          <span>Admin</span>
+        </a>
+      <% } else { %>
+        <a href="/profile" class="tab-link">
+          <i class="fa-solid fa-user-circle"></i>
+          <span>Profile</span>
+        </a>
+      <% } %>
 
-          <!-- === ADMIN LINK (MOBILE) === -->
-          <% if (currUser && currUser.username === "sujalbhatt") { %>
-            <a class="offcanvas-link" href="/admin">
-              <i class="fa-solid fa-user-shield" style="width: 20px; text-align: center; margin-right: 8px;"></i> Admin
-            </a>
-          <% } %>
-          <!-- === END ADMIN LINK === -->
+    <% } else { %>
+      <a href="/signup" class="tab-link">
+        <i class="fa-solid fa-user-plus"></i>
+        <span>Sign Up</span>
+      </a>
 
-          <a class="offcanvas-link" href="/bookings/my-bookings">My Bookings</a>
-        <% } else { %>
-          <a class="offcanvas-link" href="/signup" style="font-weight: 600;">Sign Up</a>
-          <a class="offcanvas-link" href="/login">Login</a>
-        <% } %>
-
-        <div class="offcanvas-divider"></div>
-
-        <a class="offcanvas-link" href="/listings">Explore</a>
-        <a class="offcanvas-link" href="/listings/new">Add new property</a>
-      </div>
-
-      <div class="offcanvas-bottom-section">
-        <% if(currUser){ %>
-          <div class="offcanvas-divider"></div>
-          <a class="offcanvas-link" href="/logout">Logout</a>
-        <% } %>
-      </div>
-    </div>
-  </div>
-
-  <!-- === MOBILE SEARCH MODAL === -->
+      <a href="/login" class="tab-link">
+        <i class="fa-solid fa-user-circle"></i>
+        <span>Login</span>
+      </a>
+    <% } %>
+  </nav>
   <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-fullscreen-sm-down">
       <div class="modal-content search-modal-content">
@@ -701,14 +594,12 @@
     </div>
   </div>
 
-  <div class="blur-overlay" id="blur-overlay"></div>
-
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
     document.addEventListener("DOMContentLoaded", function() {
 
-      // --- 1. SEARCH SUGGESTION LOGIC ---
+      // --- 1. SEARCH SUGGESTION LOGIC (Unchanged) ---
       function setupSearchSuggestions(inputId, containerSelector) {
         const input = document.getElementById(inputId);
         if (!input) return;
@@ -796,34 +687,9 @@
       setupSearchSuggestions("navbar-search-input", ".navbar-search-col");
       setupSearchSuggestions("mobile-search-input", "#mobile-search-form-container");
 
-      // --- 2. BLUR OVERLAY FOR MOBILE ---
-      window.toggleBlur = function() {
-        document.getElementById('blur-overlay').classList.toggle('active');
-      }
+      // --- 2. BLUR OVERLAY SCRIPT (REMOVED) ---
 
-      const offcanvas = document.getElementById('offcanvasNavbar');
-      if (offcanvas) {
-        offcanvas.addEventListener('hidden.bs.offcanvas', () => {
-          document.getElementById('blur-overlay').classList.remove('active');
-          // Reset hamburger state if offcanvas is closed by clicking outside
-          const toggler = document.querySelector('.navbar-toggler[data-bs-target="#offcanvasNavbar"]');
-          if (toggler && toggler.getAttribute('aria-expanded') === 'true') {
-             toggler.setAttribute('aria-expanded', 'false');
-          }
-        });
-        // Ensure hamburger state matches offcanvas state when toggled directly
-         offcanvas.addEventListener('shown.bs.offcanvas', () => {
-           const toggler = document.querySelector('.navbar-toggler[data-bs-target="#offcanvasNavbar"]');
-           if (toggler) toggler.setAttribute('aria-expanded', 'true');
-         });
-         offcanvas.addEventListener('hide.bs.offcanvas', () => {
-           const toggler = document.querySelector('.navbar-toggler[data-bs-target="#offcanvasNavbar"]');
-           if (toggler) toggler.setAttribute('aria-expanded', 'false');
-         });
-      }
-
-
-      // --- 3. NAVBAR SCROLL EFFECT ---
+      // --- 3. NAVBAR SCROLL EFFECT (Unchanged) ---
       const navbar = document.querySelector('.navbar');
       if (navbar) {
         window.addEventListener('scroll', () => {
