@@ -1,511 +1,659 @@
 <% layout("/layouts/boilerplate") %>
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-  /* --- Roamly Design System Variables --- */
-  :root {
-    --roamly-red: #E54D42;
-    --roamly-red-rgb: 229, 77, 66;
-    --roamly-dark-red: #c9302c;
-    --roamly-dark-color: #222222;
-    --roamly-text-color: #333;
-    --roamly-text-medium: #717171;
-    --roamly-border-gray: #e0e0e0;
-    --roamly-light-gray: #f8f9fa;
-    --shadow-sm: 0 2px 4px rgba(0,0,0,0.06);
-    --shadow-md: 0 5px 15px rgba(0,0,0,0.1);
-    --border-radius-sm: 8px;
-    --border-radius: 12px;
-  }
+  /* --- Airbnb-Inspired Theme Variables --- */
+  :root {
+    --roamly-red: #E54D42;
+    --roamly-red-rgb: 229, 77, 66;
+    --roamly-dark-red: #c9302c;
+    --roamly-dark-color: #222222;
+    --roamly-text-color: #484848; /* Softer text */
+    --roamly-text-medium: #717171;
+    --roamly-border-gray: #EBEBEB; /* Lighter border */
+    --roamly-light-gray: #F7F7F7; /* Lighter background */
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06); /* Softer shadow */
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+    --border-radius-sm: 8px;
+    --border-radius: 12px;
+  }
 
-  body {
-    font-family: 'Inter', sans-serif;
-    background-color: #fff;
-    color: var(--roamly-text-color);
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: #fff; /* White background */
+    color: var(--roamly-text-color);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
-  p { line-height: 1.6; color: var(--roamly-text-medium); }
-  a { color: var(--roamly-red); text-decoration: none; }
-  hr { border: 0; border-top: 1px solid var(--roamly-border-gray); margin: 32px 0; }
+  p { line-height: 1.7; color: var(--roamly-text-color); } /* Slightly increased line height */
+  a { color: var(--roamly-dark-color); text-decoration: none; transition: color 0.2s ease; }
+  a:hover { color: var(--roamly-red); text-decoration: underline; }
+  hr { border: 0; border-top: 1px solid var(--roamly-border-gray); margin: 40px 0; } /* More spacing */
 
-  /* --- Base Button Styles --- */
-  .btn {
-    display: inline-block;
-    width: 100%;
-    box-sizing: border-box;
-    padding: 12px 24px;
-    border-radius: var(--border-radius-sm);
-    text-decoration: none;
-    font-weight: 600;
-    border: 1px solid transparent;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    text-align: center;
-    font-size: 1rem;
-  }
-  .btn:active { transform: scale(0.98); }
-  .btn-danger { background-color: var(--roamly-red); color: #fff; border-color: var(--roamly-red); }
-  .btn-danger:hover { background-color: var(--roamly-dark-red); border-color: var(--roamly-dark-red); color: #fff; }
-  .btn-dark { background-color: var(--roamly-dark-color); color: #fff; border-color: var(--roamly-dark-color); }
-  .btn-dark:hover { background-color: #000; border-color: #000; color: #fff; }
-  .btn-danger-outline { border-color: var(--roamly-red); color: var(--roamly-red); background: #fff; }
-  .btn-danger-outline:hover { background-color: var(--roamly-red); color: #fff; }
+  /* --- Base Button Styles --- */
+  .btn {
+    display: inline-block;
+    width: 100%; /* Default to full width for mobile */
+    box-sizing: border-box;
+    padding: 14px 28px; /* Slightly larger */
+    border-radius: var(--border-radius-sm);
+    text-decoration: none;
+    font-weight: 600;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    font-size: 1rem;
+  }
+  .btn:active { transform: scale(0.98); }
 
-  /* --- Main Layout --- */
-  .page-container { max-width: 1100px; margin: 32px auto; padding: 0 20px; }
+  /* Airbnb-style Primary Button (Red Gradient) */
+  .btn-danger {
+     background: linear-gradient(90deg, #E61E4D 0%, #E31C5F 50%, #D70466 100%);
+     color: #fff;
+     border: none;
+  }
+  .btn-danger:hover {
+     background: linear-gradient(90deg, #E31C5F 0%, #D70466 50%, #BD1E59 100%);
+     color: #fff;
+     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
 
-  /* --- Header (Title, Location) --- */
-  .listing-header-main { margin-bottom: 24px; }
-  .listing-header-main h1 { font-size: 2.25rem; font-weight: 700; margin-bottom: 8px; color: var(--roamly-dark-color); }
-  .listing-location { display: flex; align-items: center; gap: 8px; color: var(--roamly-text-medium); font-size: 1.1rem; font-weight: 500; }
-  .listing-location i { font-size: 1rem; }
+  /* Dark Button (for Edit) */
+  .btn-dark { background-color: var(--roamly-dark-color); color: #fff; border-color: var(--roamly-dark-color); }
+  .btn-dark:hover { background-color: #000; border-color: #000; color: #fff; }
 
-  /* --- Image --- */
-  .listing-image-container { width: 100%; max-height: 450px; overflow: hidden; border-radius: var(--border-radius); margin-bottom: 32px; box-shadow: var(--shadow-sm); }
-  .listing-image-container img { width: 100%; height: 100%; object-fit: cover; }
+  /* Outline/Secondary Button */
+  .btn-outline { border: 1px solid var(--roamly-dark-color); color: var(--roamly-dark-color); background: #fff; }
+  .btn-outline:hover { background-color: var(--roamly-dark-color); color: #fff; }
 
-  /* --- Body Grid (2-Column) --- */
-  .listing-body-grid { display: grid; grid-template-columns: 1fr; gap: 30px; }
-  .listing-content { order: 2; }
-  .listing-sidebar { order: 1; }
+  /* Outline Danger Button (for Delete) */
+  .btn-danger-outline { border: 1px solid var(--roamly-dark-red); color: var(--roamly-dark-red); background: #fff; }
+  .btn-danger-outline:hover { background-color: var(--roamly-dark-red); color: #fff; }
 
-  /* --- Info Section --- */
-  .info-section { padding: 0; }
-  .info-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-  .owner-info { display: flex; align-items: center; gap: 12px; }
-  .owner-avatar { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; }
-  .owner-name { font-weight: 600; font-size: 1.1rem; color: var(--roamly-dark-color); }
-  .listing-description { margin-bottom: 24px; font-size: 1.1rem; color: var(--roamly-text-color); }
-  .listing-actions { display: flex; flex-direction: column; gap: 12px; }
-  .listing-actions form { display: contents; }
 
-  /* --- Booking Card --- */
-  .booking-card { border: 1px solid var(--roamly-border-gray); border-radius: var(--border-radius); padding: 24px; box-shadow: var(--shadow-md); background-color: #fff; }
-  .booking-price { font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; color: var(--roamly-dark-color); }
-  .booking-price span { font-size: 1rem; font-weight: 400; color: var(--roamly-text-medium); }
-  .booking-card .btn-danger { width: 100%; margin-top: 1rem; padding: 12px 24px; font-size: 1.1rem; }
+  /* --- Main Layout --- */
+  .page-container { max-width: 1120px; margin: 40px auto; padding: 0 24px; } /* Slightly wider, more padding */
 
-  /* --- Section Headings --- */
-  .section-heading { font-size: 1.75rem; font-weight: 700; margin-bottom: 24px; color: var(--roamly-dark-color); }
+  /* --- Header (Title, Location) --- */
+  .listing-header-main { margin-bottom: 24px; border-bottom: 1px solid var(--roamly-border-gray); padding-bottom: 24px;}
+  .listing-header-main h1 { font-size: 26px; font-weight: 600; margin-bottom: 8px; color: var(--roamly-dark-color); } /* Airbnb uses smaller h1 */
+  .listing-location { display: flex; align-items: center; gap: 8px; color: var(--roamly-text-medium); font-size: 1rem; font-weight: 400; }
+  .listing-location i { font-size: 0.9rem; }
 
-  /* --- Reviews --- */
-  .review-list { display: flex; flex-direction: column; gap: 20px; }
-  .review-card { border: 1px solid var(--roamly-border-gray); padding: 20px; border-radius: var(--border-radius); box-shadow: var(--shadow-sm); }
-  .review-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-  .author-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; }
-  .author-info { flex-grow: 1; }
-  .author-name { font-weight: 600; color: var(--roamly-dark-color); }
-  .review-rating { color: #ffc107; font-size: 0.9rem; }
-  .review-date { font-size: 0.9rem; color: var(--roamly-text-medium); }
-  .review-comment { color: var(--roamly-text-color); margin-bottom: 0; }
-  .review-actions { margin-top: 1rem; text-align: right; } /* Align button right */
+  /* --- Image --- */
+  .listing-image-container { width: 100%; max-height: 500px; overflow: hidden; border-radius: var(--border-radius); margin-bottom: 40px; } /* Slightly more margin */
+  .listing-image-container img { width: 100%; height: 100%; object-fit: cover; display: block; } /* display: block removes bottom space */
 
-  /* --- MODIFIED: Review Delete Button --- */
-  .btn-delete-review {
-    display: inline-flex; /* Use inline-flex for icon alignment */
-    align-items: center;
-    gap: 0.4em;
-    background: none;
-    border: none;
-    color: var(--roamly-text-medium); /* Subtle initial color */
-    padding: 6px 10px; /* Adjust padding */
-    font-size: 0.9rem;
-    font-weight: 500;
-    border-radius: var(--border-radius-sm);
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-  .btn-delete-review i {
-    font-size: 1em; /* Make icon match text size */
-  }
-  .btn-delete-review:hover {
-    background-color: var(--roamly-red); /* Red background on hover */
-    color: #fff; /* White text/icon on hover */
-    box-shadow: 0 2px 5px rgba(var(--roamly-red-rgb), 0.3);
-  }
+  /* --- Body Grid (2-Column) --- */
+  .listing-body-grid { display: grid; grid-template-columns: 1fr; gap: 40px 80px; } /* Increased gap */
+  .listing-content { order: 1; }
+  .listing-sidebar { order: 2; }
 
-  /* --- Review Form --- */
-  .review-form-box { border: 1px solid var(--roamly-border-gray); padding: 24px; border-radius: var(--border-radius); background: var(--roamly-light-gray); }
-  .review-form-box .form-group { margin-bottom: 1rem; }
-  .review-form-box .form-label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
-  .star-rating { display: flex; flex-direction: row-reverse; justify-content: flex-end; gap: 2px; }
-  .star-rating input[type="radio"] { display: none; }
-  .star-rating label { font-size: 25px; color: #ccc; cursor: pointer; transition: color 0.2s, transform 0.2s; }
-  .star-rating input[type="radio"]:checked ~ label,
-  .star-rating label:hover,
-  .star-rating label:hover ~ label { color: #ffc107; }
-  .star-rating label:hover { transform: scale(1.1); }
-  .form-input { width: 100%; padding: 10px 12px; border: 1px solid var(--roamly-border-gray); border-radius: var(--border-radius-sm); font-size: 1rem; box-sizing: border-box; font-family: 'Inter', sans-serif; transition: border-color 0.2s, box-shadow 0.2s; }
-  .form-input:focus { outline: none; border-color: var(--roamly-red); box-shadow: 0 0 0 3px rgba(var(--roamly-red-rgb), 0.2); }
-  textarea.form-input { resize: vertical; min-height: 120px; }
-  .rating-error-message { color: var(--roamly-red); font-size: 0.9rem; display: none; margin-top: 8px; }
+  /* --- Info Section --- */
+  .info-section { padding: 0; }
+  .info-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--roamly-border-gray); }
+  .owner-info { display: flex; align-items: center; gap: 16px; }
+  .owner-avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; }
+  .owner-name { font-weight: 600; font-size: 1.15rem; color: var(--roamly-dark-color); }
+  .listing-description { margin: 24px 0; font-size: 1rem; line-height: 1.7; }
+  .listing-actions { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; }
+  .listing-actions form { display: contents; }
 
-  /* Login Prompt */
-  .login-prompt { text-align: center; padding: 24px; background: var(--roamly-light-gray); border-radius: var(--border-radius); border: 1px solid var(--roamly-border-gray); }
-  .login-prompt h5 { font-size: 1.2rem; font-weight: 600; color: var(--roamly-dark-color); }
-  .login-prompt a { font-weight: 600; }
-  .login-prompt .btn { margin: 10px auto 0; width: auto; max-width: 200px; }
+  /* --- Booking Card --- */
+  .booking-card {
+    border: 1px solid var(--roamly-border-gray);
+    border-radius: var(--border-radius);
+    padding: 24px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12); /* Airbnb-like shadow */
+    background-color: #fff;
+    position: sticky; /* Make it sticky on desktop */
+    top: 104px; /* Adjust based on navbar height */
+  }
+  .booking-price { font-size: 1.4rem; font-weight: 600; margin-bottom: 16px; color: var(--roamly-dark-color); display: flex; align-items: baseline; gap: 4px;}
+  .booking-price span { font-size: 1rem; font-weight: 400; color: var(--roamly-text-color); }
+  .booking-card .btn-danger { width: 100%; margin-top: 1.5rem; }
+  .booking-card-host-message { /* Style for the host message */
+    text-align: center;
+    padding: 1.5rem 1rem;
+    font-size: 0.95rem;
+    color: var(--roamly-text-medium);
+  }
 
-  /* --- Map --- */
-  .listing-map { height: 350px; width: 100%; border-radius: var(--border-radius); overflow: hidden; border: 1px solid var(--roamly-border-gray); }
 
-  /* --- Bootstrap Modal Overrides --- */
-  .modal-content { border-radius: var(--border-radius); border: none; }
-  .modal-header { border-bottom: 1px solid var(--roamly-border-gray); padding: 1rem 1.5rem; }
-  .modal-title { font-size: 1.5rem; font-weight: 700; color: var(--roamly-dark-color); }
-  .modal-body { padding: 1.5rem; }
-  .modal-footer { border-top: 1px solid var(--roamly-border-gray); padding: 1rem 1.5rem; background-color: var(--roamly-light-gray); }
-  #bookModal .form-label { font-weight: 600; margin-bottom: 0.75rem; display: block; color: var(--roamly-text-dark); }
-  #bookModal .form-input { margin-bottom: 1rem; }
-  .unavailable-dates-info { font-size: 0.9rem; color: var(--roamly-text-medium); margin-top: 0.5rem; padding: 0.75rem; background-color: var(--roamly-light-gray); border-radius: var(--border-radius-sm); border: 1px dashed var(--roamly-border-gray); }
-  .unavailable-dates-info strong { color: var(--roamly-dark-color); }
-  .modal-footer .btn-danger { padding: 10px 24px; font-size: 1rem; font-weight: 600; width: auto; display: inline-block; }
+  /* --- Section Headings --- */
+  .section-heading { font-size: 1.4rem; font-weight: 600; margin-bottom: 24px; color: var(--roamly-dark-color); padding-bottom: 16px; border-bottom: 1px solid var(--roamly-border-gray);}
 
-  /* --- Flatpickr Integration --- */
-  .flatpickr-calendar { z-index: 1056; box-shadow: var(--shadow-md); border-radius: var(--border-radius-sm); border: 1px solid var(--roamly-border-gray); }
+  /* --- Reviews --- */
+  .review-list { display: flex; flex-direction: column; gap: 28px; } /* More gap */
+  .review-card { padding: 0; border: none; box-shadow: none; background: none; } /* Removed card styling */
+  .review-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .author-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; } /* Smaller avatar */
+  .author-info { flex-grow: 1; }
+  .author-name { font-weight: 600; font-size: 1rem; color: var(--roamly-dark-color); }
+  .review-rating { color: var(--roamly-red); font-size: 0.8rem; display: flex; align-items: center; gap: 2px;} /* Changed color, smaller */
+  .review-rating i { font-size: 0.75rem; }
+  .review-date { font-size: 0.85rem; color: var(--roamly-text-medium); }
+  .review-comment { color: var(--roamly-text-color); margin-bottom: 0; line-height: 1.7; } /* Improved line height */
+  .review-actions { margin-top: 0.75rem; text-align: left; } /* Align left, less margin */
 
-  /* --- Responsive (Desktop) --- */
-  @media (min-width: 992px) {
-    .listing-header-main h1 { font-size: 2.75rem; }
-    .listing-image-container { max-height: 550px; }
-    .listing-body-grid { grid-template-columns: 2fr 1fr; gap: 50px; }
-    .listing-content { order: 1; }
-    .listing-sidebar { order: 2; position: sticky; top: 112px; }
-    .listing-actions { flex-direction: row; }
-    .btn { width: auto; }
-    .listing-actions form .btn, .listing-actions .btn { width: auto; }
-    .booking-card .btn { width: 100%; }
-  }
+  /* Review Delete Button - More subtle */
+  .btn-delete-review {
+    display: inline-flex; align-items: center; gap: 0.4em;
+    background: none; border: none; color: var(--roamly-text-medium);
+    padding: 4px 0; font-size: 0.85rem; font-weight: 500;
+    border-radius: var(--border-radius-sm); cursor: pointer; transition: all 0.2s ease;
+  }
+  .btn-delete-review i { font-size: 0.9em; }
+  .btn-delete-review:hover { color: var(--roamly-red); text-decoration: underline; }
 
-  /* --- Responsive (Small Phone) --- */
-  @media (max-width: 600px) {
-    .listing-image-container { max-height: 300px; }
-    .listing-map { height: 250px; }
-    .info-section, .booking-card, .review-form-box { padding: 0; }
-    .booking-card { padding: 16px; }
-    .review-form-box { padding: 16px; }
-    .listing-header-main h1 { font-size: 2rem; }
-  }
+  /* --- Review Form --- */
+  .review-form-box { border-top: 1px solid var(--roamly-border-gray); padding-top: 24px; background: none; border-radius: 0; margin-top: 28px; }
+  .review-form-box .form-group { margin-bottom: 1.5rem; }
+  .review-form-box .form-label { display: block; font-weight: 500; margin-bottom: 0.5rem; font-size: 1rem; color: var(--roamly-dark-color);}
+  .star-rating { display: flex; flex-direction: row-reverse; justify-content: flex-end; gap: 2px; }
+  .star-rating input[type="radio"] { display: none; }
+  .star-rating label { font-size: 28px; color: #ddd; cursor: pointer; transition: color 0.2s, transform 0.2s; } /* Larger stars */
+  .star-rating input[type="radio"]:checked ~ label,
+  .star-rating label:hover,
+  .star-rating label:hover ~ label { color: var(--roamly-red); } /* Use brand color */
+  .star-rating label:hover { transform: scale(1.1); }
+  .form-input { width: 100%; padding: 12px 14px; border: 1px solid #ccc; border-radius: var(--border-radius-sm); font-size: 1rem; box-sizing: border-box; font-family: 'Inter', sans-serif; transition: border-color 0.2s, box-shadow 0.2s; }
+  .form-input:focus { outline: none; border-color: var(--roamly-dark-color); box-shadow: 0 0 0 1px var(--roamly-dark-color); } /* Subtle focus */
+  textarea.form-input { resize: vertical; min-height: 120px; }
+  .rating-error-message { color: var(--roamly-red); font-size: 0.9rem; display: none; margin-top: 8px; }
+
+  /* Login Prompt */
+  .login-prompt { text-align: left; padding: 24px 0; background: none; border-radius: 0; border-top: 1px solid var(--roamly-border-gray); margin-top: 28px; }
+  .login-prompt h5 { font-size: 1.1rem; font-weight: 600; color: var(--roamly-dark-color); margin-bottom: 8px; }
+  .login-prompt p { margin-bottom: 1rem; }
+  .login-prompt a { font-weight: 600; text-decoration: underline; }
+  .login-prompt .btn { margin-top: 0; width: auto; max-width: 200px; display: inline-block; }
+
+  /* --- Map --- */
+  .listing-map { height: 400px; width: 100%; border-radius: var(--border-radius); overflow: hidden; } /* Removed border */
+
+  /* --- Bootstrap Modal Overrides --- */
+  .modal-content { border-radius: var(--border-radius); border: none; box-shadow: 0 8px 28px rgba(0,0,0,0.28); } /* Airbnb-like shadow */
+  .modal-header { border-bottom: 1px solid var(--roamly-border-gray); padding: 1rem 1.5rem; }
+  .modal-title { font-size: 1.1rem; font-weight: 700; color: var(--roamly-dark-color); }
+  .modal-body { padding: 1.5rem; }
+  .modal-footer { border-top: 1px solid var(--roamly-border-gray); padding: 1rem 1.5rem; background-color: #fff; } /* White footer */
+  #bookModal .form-label { font-weight: 600; margin-bottom: 0.75rem; display: block; color: var(--roamly-dark-color); }
+  #bookModal .form-input { margin-bottom: 1rem; }
+  #dateRange {
+      cursor: pointer; /* Indicate it's clickable */
+      background-color: #fff; /* Ensure white background */
+  }
+  .unavailable-dates-info { font-size: 0.85rem; color: var(--roamly-text-medium); margin-top: 1rem; padding: 0.75rem; background-color: var(--roamly-light-gray); border-radius: var(--border-radius-sm); border: 1px solid var(--roamly-border-gray); }
+  .unavailable-dates-info strong { color: var(--roamly-dark-color); }
+  .modal-footer .btn { padding: 10px 24px; font-size: 1rem; font-weight: 600; width: auto; display: inline-block; }
+  .modal-footer .btn-secondary { background-color: var(--roamly-light-gray); color: var(--roamly-dark-color); border: none; }
+  .modal-footer .btn-secondary:hover { background-color: #eee; }
+
+
+  /* --- Flatpickr Integration - Airbnb Style --- */
+  .flatpickr-calendar {
+    z-index: 1056 !important; /* Ensure it's above modal */
+    box-shadow: var(--shadow-md);
+    border-radius: var(--border-radius); /* Use consistent radius */
+    border: 1px solid var(--roamly-border-gray);
+    background: #fff;
+    width: auto; /* Allow auto width */
+    font-family: 'Inter', sans-serif;
+  }
+  .flatpickr-months .flatpickr-month {
+      background: #fff;
+      color: var(--roamly-dark-color);
+  }
+  .flatpickr-months .flatpickr-prev-month,
+  .flatpickr-months .flatpickr-next-month {
+      fill: var(--roamly-dark-color); /* Arrow color */
+  }
+  .flatpickr-weekdays { background: #fff; }
+  span.flatpickr-weekday {
+      color: var(--roamly-text-medium);
+      font-weight: 500; /* Slightly bolder weekdays */
+      font-size: 0.75rem;
+  }
+  .flatpickr-day {
+      border: 1px solid transparent; /* Prepare for focus ring */
+      color: var(--roamly-text-color);
+      font-weight: 400;
+  }
+  .flatpickr-day.today {
+      border-color: var(--roamly-border-gray); /* Subtle today indicator */
+      color: var(--roamly-dark-color);
+  }
+  .flatpickr-day:hover {
+      background: var(--roamly-light-gray);
+      border-color: transparent;
+  }
+  .flatpickr-day.selected,
+  .flatpickr-day.startRange,
+  .flatpickr-day.endRange,
+  .flatpickr-day.selected:focus,
+  .flatpickr-day.startRange:focus,
+  .flatpickr-day.endRange:focus,
+  .flatpickr-day.selected:hover,
+  .flatpickr-day.startRange:hover,
+  .flatpickr-day.endRange:hover {
+      background: var(--roamly-dark-color); /* Use dark color for selection */
+      border-color: var(--roamly-dark-color);
+      color: #fff;
+      outline: none;
+      box-shadow: none;
+  }
+  .flatpickr-day.inRange {
+      background: var(--roamly-light-gray); /* Lighter range color */
+      box-shadow: none;
+      border-color: transparent;
+      color: var(--roamly-dark-color);
+  }
+  .flatpickr-day.flatpickr-disabled,
+  .flatpickr-day.flatpickr-disabled:hover {
+      background: none;
+      color: #ccc; /* Lighter disabled color */
+      cursor: default;
+      text-decoration: line-through;
+  }
+  .flatpickr-day:focus { /* Focus style */
+      outline: none;
+      background: var(--roamly-light-gray);
+      border-color: var(--roamly-dark-color);
+      box-shadow: none;
+  }
+
+
+  /* --- Responsive --- */
+  @media (min-width: 992px) {
+    .listing-header-main h1 { font-size: 32px; } /* Larger on desktop */
+    .listing-image-container { max-height: 560px; }
+    .listing-body-grid { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 60px 100px; } /* Adjust grid ratio and gap */
+    .listing-content { order: 1; }
+    .listing-sidebar { order: 2; } /* Sidebar sticky handled by .booking-card style */
+    .listing-actions { flex-direction: row; }
+    .btn { width: auto; } /* Buttons auto-width on desktop */
+    .listing-actions form .btn, .listing-actions .btn { width: auto; }
+    .booking-card .btn { width: 100%; } /* Booking button stays full width */
+  }
+
+  @media (max-width: 768px) { /* Tablet adjustments */
+     .listing-body-grid { gap: 40px; }
+     .listing-map { height: 300px; }
+     .review-list { gap: 24px; }
+     .page-container { padding: 0 16px; margin: 32px auto;} /* Less padding */
+  }
+
+  @media (max-width: 600px) { /* Small Phone Adjustments */
+    .listing-image-container { max-height: 300px; border-radius: 0; margin-left: -16px; margin-right: -16px; } /* Full width image */
+    .listing-header-main { padding-bottom: 16px; margin-bottom: 16px; }
+    .listing-header-main h1 { font-size: 22px; }
+    .listing-map { height: 250px; }
+    .info-section { padding: 0; }
+    .booking-card { padding: 20px; box-shadow: var(--shadow-sm); } /* Less shadow on mobile */
+    .review-form-box { padding: 0; border-top: none; }
+    .login-prompt { padding: 24px 0; border-top: none; }
+    .review-section, .leave-review-section, .map-section { margin-top: 32px; }
+    hr { margin: 32px 0; }
+  }
 </style>
 
 
 <div class="page-container">
 
-  <header class="listing-header-main">
-    <h1><%= listing.title %></h1>
-    <div class="listing-location">
-      <i class="fa-solid fa-location-dot"></i>
-      <span><%= listing.location %>, <%= listing.country %></span>
-    </div>
-  </header>
+  <header class="listing-header-main">
+    <h1><%= listing.title %></h1>
+    <div class="listing-location">
+      <i class="fa-solid fa-location-dot"></i>
+      <span><%= listing.location %>, <%= listing.country %></span>
+      </div>
+  </header>
 
-  <div class="listing-image-container">
-    <img
-      src="<%= listing.image?.url || 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop' %>"
-      alt="Listing Image"
-      loading="lazy"
-      onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop';">
-  </div>
+  <div class="listing-image-container">
+    <img
+      src="<%= listing.image?.url || 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=1200&h=800&fit=crop' %>" alt="Listing Image"
+      loading="lazy"
+      onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=1200&h=800&fit=crop';">
+  </div>
 
-  <main class="listing-body-grid">
+  <main class="listing-body-grid">
 
-    <div class="listing-content">
+    <div class="listing-content">
 
-      <section class="info-section">
-        <div class="info-header">
-          <div class="owner-info">
-            <img src="<%= listing.owner?.avatar || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png' %>"
-                 alt="Owner" class="owner-avatar">
-            <span class="owner-name">Hosted by <%= listing.owner?.username || 'Host' %></span>
-          </div>
-        </div>
-        <p class="listing-description"><%= listing.description %></p>
+      <section class="info-section">
+        <div class="info-header">
+          <div class="owner-info">
+             <span class="owner-name">Hosted by <%= listing.owner?.username || 'Host' %></span>
+             </div>
+          <img src="<%= listing.owner?.avatar || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png' %>"
+               alt="Owner" class="owner-avatar">
+        </div>
+        <p class="listing-description"><%- listing.description.replace(/\n/g, '<br>') %></p> <div class="listing-actions">
+          <% if (currUser && listing.owner && (listing.owner._id.equals(currUser._id) || currUser.username === 'sujalbhatt')) { %>
+            <a href="/listings/<%= listing._id %>/edit" class="btn btn-outline">Edit</a>
+            <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE" onsubmit="return confirm('Are you sure you want to delete this listing?');">
+              <button type="submit" class="btn btn-danger-outline">Delete</button>
+            </form>
+          <% } %>
+        </div>
+      </section>
 
-        <div class="listing-actions">
-          <% if (currUser && listing.owner && (listing.owner._id.equals(currUser._id) || currUser.username === 'sujalbhatt')) { %>
-            <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark">Edit</a>
-            <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE" onsubmit="return confirm('Are you sure you want to delete this listing?');">
-              <button type="submit" class="btn btn-danger-outline">Delete</button>
-            </form>
-          <% } %>
-        </div>
-      </section>
+      <hr>
 
-      <hr>
+      <section class="review-section">
+        <h4 class="section-heading"><i class="fas fa-star" style="color: var(--roamly-red); margin-right: 8px;"></i> Reviews (<%= listing.reviews?.length || 0 %>)</h4>
+        <% if (listing.reviews?.length > 0) { %>
+          <div class="review-list">
+            <% listing.reviews.forEach(review => { %>
+              <div class="review-card">
+                <div class="review-header">
+                  <img src="<%= review.author?.avatar || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png' %>"
+                       alt="Profile" class="author-avatar">
+                  <div class="author-info">
+                    <span class="author-name"><%= review.author?.username || 'Anonymous' %></span>
+                     <small class="review-date"><%= new Date(review.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) %></small>
+                  </div>
+                   <span class="review-rating" title="<%= review.rating %> out of 5 stars">
+                      <% for(let i=1;i<=review.rating;i++){ %><i class="fas fa-star"></i><% } %><% for(let i=review.rating + 1;i<=5;i++){ %><i class="far fa-star"></i><% } %>
+                    </span>
+                </div>
+                <p class="review-comment"><%= review.comment %></p>
+                <% if(currUser && review.author?._id && review.author._id.equals(currUser._id)) { %>
+                  <div class="review-actions">
+                    <form method="POST" action="/listings/<%=listing._id%>/reviews/<%=review._id%>?_method=DELETE" onsubmit="return confirm('Are you sure you want to delete this review?');">
+                      <button type="submit" class="btn-delete-review">
+                         <i class="fa-regular fa-trash-can"></i> Delete
+                      </button>
+                    </form>
+                  </div>
+                <% } %>
+              </div>
+            <% }) %>
+          </div>
+        <% } else { %>
+          <p>No reviews yet. Be the first to leave one!</p>
+        <% } %>
+      </section>
 
-      <section class="review-section">
-        <h4 class="section-heading">Reviews</h4>
-        <% if (listing.reviews?.length > 0) { %>
-          <div class="review-list">
-            <% listing.reviews.forEach(review => { %>
-              <div class="review-card">
-                <div class="review-header">
-                  <img src="<%= review.author?.avatar || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png' %>"
-                       alt="Profile" class="author-avatar">
-                  <div class="author-info">
-                    <span class="author-name"><%= review.author?.username || 'Anonymous' %></span>
-                    <span class="review-rating">
-                      <% for(let i=1;i<=5;i++){ %>
-                        <% if(i<=review.rating){ %><i class="fas fa-star"></i>
-                        <% } else { %><i class="far fa-star"></i><% } %>
-                      <% } %>
-                    </span>
-                  </div>
-                  <small class="review-date"><%= new Date(review.createdAt).toLocaleDateString() %></small>
-                </div>
-                <p class="review-comment"><%= review.comment %></p>
-                <% if(currUser && review.author?._id && review.author._id.equals(currUser._id)) { %>
-                  <div class="review-actions">
-                    <form method="POST" action="/listings/<%=listing._id%>/reviews/<%=review._id%>?_method=DELETE" onsubmit="return confirm('Are you sure you want to delete this review?');">
-                      <button type="submit" class="btn-delete-review">
-                         <i class="fa-regular fa-trash-can"></i> Delete
-                      </button>
-                    </form>
-                  </div>
-                <% } %>
-              </div>
-            <% }) %>
-          </div>
-        <% } else { %>
-          <p>No reviews yet.</p>
-        <% } %>
-      </section>
+      <section class="leave-review-section">
+         <% if(currUser) { %>
+           <div class="review-form-box">
+             <h4 class="section-heading" style="border-bottom: none; margin-bottom: 1.5rem;">Leave a Review</h4>
+             <form id="reviewForm" action="/listings/<%=listing._id%>/reviews" method="POST" novalidate class="needs-validation">
+                <div class="form-group">
+                  <label class="form-label">Your Rating</label>
+                  <div class="star-rating">
+                    <input type="radio" name="review[rating]" value="5" id="star5" required><label for="star5" title="5 stars">★</label>
+                    <input type="radio" name="review[rating]" value="4" id="star4"><label for="star4" title="4 stars">★</label>
+                    <input type="radio" name="review[rating]" value="3" id="star3"><label for="star3" title="3 stars">★</label>
+                    <input type="radio" name="review[rating]" value="2" id="star2"><label for="star2" title="2 stars">★</label>
+                    <input type="radio" name="review[rating]" value="1" id="star1"><label for="star1" title="1 star">★</label>
+                  </div>
+                  <div id="rating-error" class="rating-error-message">Please select a rating</div>
+                </div>
+                <div class="form-group">
+                  <label for="comment" class="form-label">Your Review</label>
+                  <textarea class="form-input" name="review[comment]" id="comment" rows="5" required placeholder="Share details of your own experience at this place..."></textarea>
+                  <div class="invalid-feedback">Please enter your comment.</div>
+                </div>
+                <button type="submit" class="btn btn-dark" style="width: auto;">Submit Review</button>
+             </form>
+           </div>
+         <% } else { %>
+           <div class="login-prompt">
+             <h5>Want to share your experience?</h5>
+             <p>Please <a href="/login?returnTo=/listings/<%= listing._id %>">log in</a> to leave a review.</p>
+             <a href="/login?returnTo=/listings/<%= listing._id %>" class="btn btn-danger">Login</a>
+           </div>
+         <% } %>
+      </section>
 
-      <hr>
+      <hr>
 
-      <section class="leave-review-section">
-        <% if(currUser) { %>
-          <div class="review-form-box">
-            <h4 class="section-heading" style="margin-bottom: 1rem;">Leave a Review</h4>
-            <form id="reviewForm" action="/listings/<%=listing._id%>/reviews" method="POST" novalidate class="needs-validation"> <div class="form-group">
-                <label class="form-label">Rating</label>
-                <div class="star-rating">
-                  <input type="radio" name="review[rating]" value="5" id="star5" required><label for="star5">★</label>
-                  <input type="radio" name="review[rating]" value="4" id="star4"><label for="star4">★</label>
-                  <input type="radio" name="review[rating]" value="3" id="star3"><label for="star3">★</label>
-                  <input type="radio" name="review[rating]" value="2" id="star2"><label for="star2">★</label>
-                  <input type="radio" name="review[rating]" value="1" id="star1"><label for="star1">★</label>
-                </div>
-                <div id="rating-error" class="rating-error-message">Please select a rating</div>
-              </div>
-              <div class="form-group">
-                <label for="comment" class="form-label">Comments</label>
-                <textarea class="form-input" name="review[comment]" id="comment" rows="4" required></textarea>
-                <div class="invalid-feedback">Please enter your comment.</div>
-              </div>
-              <button type="submit" class="btn btn-dark">Submit Review</button>
-            </form>
-          </div>
-        <% } else { %>
-          <div class="login-prompt">
-            <h5>Want to share your experience?</h5>
-            <p>Please <a href="/login?returnTo=/listings/<%= listing._id %>">log in</a> to leave a review.</p>
-            <a href="/login?returnTo=/listings/<%= listing._id %>" class="btn btn-danger">Login</a>
-          </div>
-        <% } %>
-      </section>
+      <section class="map-section">
+        <h4 class="section-heading">Where you'll be</h4>
+        <div id="map" class="listing-map"></div>
+      </section>
 
-      <hr>
+    </div> <aside class="listing-sidebar">
+      <div class="booking-card">
+        <div class="booking-price">
+          ₹<%= listing.price ? listing.price.toLocaleString("en-in") : "N/A" %>
+          <span>/ night</span>
+        </div>
 
-      <section class="map-section">
-        <h4 class="section-heading">Where you'll be</h4>
-        <div id="map" class="listing-map"></div>
-      </section>
+        <% if (!currUser) { %>
+            <a href="/login?returnTo=/listings/<%= listing._id %>" class="btn btn-danger">Login to Book</a>
+        <% } else if (listing.owner && listing.owner._id.equals(currUser._id)) { %>
+            <div class="booking-card-host-message">You are the host of this listing.</div>
+        <% } else { %>
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#bookModal">
+                Book Now
+            </button>
+        <% } %>
 
-    </div>
+      </div>
+    </aside>
 
-    <aside class="listing-sidebar">
-      <div class="booking-card">
-        <div class="booking-price">
-          ₹<%= listing.price ? listing.price.toLocaleString("en-in") : "N/A" %>
-          <span>/ night</span>
-        </div>
-        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#bookModal">
-          Book Now
-        </button>
-      </div>
-    </aside>
-
-  </main>
+  </main>
 </div>
 
 <div class="modal fade" id="bookModal" tabindex="-1" aria-labelledby="bookModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <form method="POST" action="/bookings/create/<%= listing._id %>" id="bookingForm" class="needs-validation" novalidate>
-        <div class="modal-header">
-          <h5 class="modal-title" id="bookModalLabel">Book Your Stay</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <label for="dateRange" class="form-label">Select Dates</label>
-          <input type="text" id="dateRange" class="form-input" required autocomplete="off" placeholder="Select check-in and check-out dates">
-          <input type="hidden" name="startDate" id="startDate" required>
-          <input type="hidden" name="endDate" id="endDate" required>
-          <div class="invalid-feedback" id="dateRangeFeedback">Please select a valid date range.</div>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <form method="POST" action="/bookings/create/<%= listing._id %>" id="bookingForm" class="needs-validation" novalidate>
+        <div class="modal-header">
+          <h5 class="modal-title" id="bookModalLabel">Select Dates</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <label for="dateRange" class="form-label">Check-in & Check-out</label>
+          <input type="text" id="dateRange" class="form-input" required autocomplete="off" placeholder="Select your dates">
+          <input type="hidden" name="startDate" id="startDate" required>
+          <input type="hidden" name="endDate" id="endDate" required>
+          <div class="invalid-feedback" id="dateRangeFeedback">Please select a valid date range.</div>
 
-          <% if (listing.bookedDates?.length > 0) {
-              const formattedBookedDates = listing.bookedDates.map(d => new Date(d).toLocaleDateString('en-CA')); // YYYY-MM-DD
-          %>
-            <div class="unavailable-dates-info">
-              <strong>Currently Unavailable:</strong><br>
-              <%
-                 let ranges = [];
-                 if (formattedBookedDates.length > 0) {
-                   formattedBookedDates.sort();
-                   let startRange = formattedBookedDates[0];
-                   let endRange = formattedBookedDates[0];
-                   for (let i = 1; i < formattedBookedDates.length; i++) {
-                     const currentDate = new Date(formattedBookedDates[i]);
-                     const previousDate = new Date(endRange);
-                     const nextDay = new Date(previousDate);
-                     nextDay.setDate(previousDate.getDate() + 1);
-                     if (currentDate.toISOString().split('T')[0] === nextDay.toISOString().split('T')[0]) {
-                       endRange = formattedBookedDates[i];
-                     } else {
-                       ranges.push(startRange === endRange ? new Date(startRange).toLocaleDateString() : `${new Date(startRange).toLocaleDateString()} - ${new Date(endRange).toLocaleDateString()}`);
-                       startRange = formattedBookedDates[i];
-                       endRange = formattedBookedDates[i];
-                     }
-                   }
-                   ranges.push(startRange === endRange ? new Date(startRange).toLocaleDateString() : `${new Date(startRange).toLocaleDateString()} - ${new Date(endRange).toLocaleDateString()}`);
-                 }
-              %>
-              <%- ranges.join('<br>') %>
-            </div>
-          <% } %>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-danger">Confirm Booking</button>
-        </div>
-      </form>
-    </div>
-  </div>
+          <%
+             // Prepare formatted unavailable date ranges for display
+             let unavailableRanges = [];
+             if (activeBookedDates && activeBookedDates.length > 0) {
+                 const sortedDates = activeBookedDates.map(d => new Date(d)).sort((a, b) => a - b);
+                 let startRange = sortedDates[0];
+                 let endRange = sortedDates[0];
+                 for (let i = 1; i < sortedDates.length; i++) {
+                     const currentDate = sortedDates[i];
+                     const previousDate = endRange;
+                     const nextDay = new Date(previousDate);
+                     nextDay.setDate(previousDate.getDate() + 1);
+                     if (currentDate.toDateString() === nextDay.toDateString()) {
+                         endRange = currentDate;
+                     } else {
+                         unavailableRanges.push(startRange.toDateString() === endRange.toDateString() ? startRange.toLocaleDateString() : `${startRange.toLocaleDateString()} - ${endRange.toLocaleDateString()}`);
+                         startRange = currentDate;
+                         endRange = currentDate;
+                     }
+                 }
+                 unavailableRanges.push(startRange.toDateString() === endRange.toDateString() ? startRange.toLocaleDateString() : `${startRange.toLocaleDateString()} - ${endRange.toLocaleDateString()}`);
+             }
+          %>
+          <% if (unavailableRanges.length > 0) { %>
+            <div class="unavailable-dates-info">
+              <strong>Currently Unavailable:</strong><br>
+              <%- unavailableRanges.join('<br>') %>
+            </div>
+          <% } %>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-danger">Confirm Booking</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
-
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-   
-  // --- Booking Datepicker ---
-  const startDateInput = document.getElementById("startDate");
-  const endDateInput = document.getElementById("endDate");
-  const dateRangeInput = document.getElementById("dateRange");
-  const dateRangeFeedback = document.getElementById("dateRangeFeedback");
-const bookedDates = <%- JSON.stringify(activeBookedDates) %>;
 
-  const fp = flatpickr("#dateRange", {
-    mode: "range",
-    minDate: "today",
-    dateFormat: "Y-m-d",
-    disable: bookedDates,
-    onChange: function(selectedDates, dateStr, instance) {
-      if (selectedDates.length === 2) {
-        const start = selectedDates[0];
-        const end = selectedDates[1];
-        startDateInput.value = start.toISOString().split("T")[0];
-        endDateInput.value = end.toISOString().split("T")[0];
-        dateRangeInput.value = `${startDateInput.value} to ${endDateInput.value}`;
-        dateRangeInput.classList.remove('is-invalid');
-        dateRangeFeedback.style.display = 'none';
+  // --- Booking Datepicker ---
+  const startDateInput = document.getElementById("startDate");
+  const endDateInput = document.getElementById("endDate");
+  const dateRangeInput = document.getElementById("dateRange");
+  const dateRangeFeedback = document.getElementById("dateRangeFeedback");
+  // Ensure activeBookedDates is defined, even if empty
+  const bookedDates = <%- JSON.stringify(activeBookedDates || []) %>;
 
-        let rangeIsValid = true;
-        for (let i = 0; i < bookedDates.length; i++) {
-           const bookedDate = new Date(bookedDates[i]);
-           if (bookedDate >= start && bookedDate <= end) {
-               rangeIsValid = false;
-               break;
-           }
-        }
-        if (!rangeIsValid) {
-           instance.clear();
-           startDateInput.value = "";
-           endDateInput.value = "";
-           dateRangeInput.value = "";
-           dateRangeInput.classList.add('is-invalid');
-           dateRangeFeedback.textContent = 'Selected range includes unavailable dates.';
-           dateRangeFeedback.style.display = 'block';
-        }
-      } else {
-        startDateInput.value = "";
-        endDateInput.value = "";
-      }
-    }
-  });
+  if(dateRangeInput) { // Only initialize if the element exists
+      const fp = flatpickr("#dateRange", {
+        mode: "range",
+        minDate: "today",
+        dateFormat: "Y-m-d",
+        disable: bookedDates,
+        // Make calendar more mobile friendly
+        static: true, // Keep calendar open within modal on mobile
+        monthSelectorType: 'static', // Simpler month navigation
+        onChange: function(selectedDates, dateStr, instance) {
+          if (selectedDates.length === 2) {
+            const start = selectedDates[0];
+            const end = selectedDates[1];
+            startDateInput.value = start.toISOString().split("T")[0];
+            endDateInput.value = end.toISOString().split("T")[0];
+            // Format for user display (optional, can keep YYYY-MM-DD if preferred)
+            dateRangeInput.value = `${start.toLocaleDateString()} - ${end.toLocaleDateString()}`;
 
-  // --- Review Form Validation ---
-  const reviewForm = document.getElementById('reviewForm');
-  if (reviewForm) {
-    // Add Bootstrap's needs-validation class if not already present
-    reviewForm.classList.add('needs-validation');
+            dateRangeInput.classList.remove('is-invalid');
+            dateRangeFeedback.style.display = 'none';
 
-    const ratingError = document.getElementById('rating-error');
-    reviewForm.addEventListener('submit', function(event) {
-      const selectedRating = reviewForm.querySelector('input[name="review[rating]"]:checked');
-      if (!selectedRating) {
-        ratingError.style.display = 'block';
-        // Need to prevent default here too if rating is required
-        event.preventDefault();
-        event.stopPropagation();
-      } else {
-        ratingError.style.display = 'none';
-      }
+            // Check if selected range includes any disabled date
+            let rangeIsValid = true;
+            for (let i = 0; i < bookedDates.length; i++) {
+                const bookedDate = new Date(bookedDates[i] + "T00:00:00"); // Ensure UTC comparison
+                const checkStart = new Date(start.toDateString()); // Compare dates only
+                const checkEnd = new Date(end.toDateString());
 
-      if (!reviewForm.checkValidity()) {
-        event.preventDefault();
-        event.stopPropagation();
-      }
-      reviewForm.classList.add('was-validated');
-    }, false);
-  }
+                if (bookedDate >= checkStart && bookedDate <= checkEnd) {
+                    rangeIsValid = false;
+                    break;
+                }
+            }
+            if (!rangeIsValid) {
+                instance.clear(); // Clear selection
+                startDateInput.value = "";
+                endDateInput.value = "";
+                dateRangeInput.value = ""; // Clear display input
+                dateRangeInput.classList.add('is-invalid');
+                dateRangeFeedback.textContent = 'Selected range includes unavailable dates.';
+                dateRangeFeedback.style.display = 'block';
+            }
+          } else {
+            // Clear hidden inputs if range is not complete
+            startDateInput.value = "";
+            endDateInput.value = "";
+          }
+        },
+        // --- Added for better mobile UX ---
+        onReady: function(selectedDates, dateStr, instance) {
+          // Add inputmode="none" to prevent mobile keyboard from popping up
+          instance.input.setAttribute('inputmode', 'none');
+        }
+      });
+  } // End if(dateRangeInput)
 
+  // --- Review Form Validation ---
+  const reviewForm = document.getElementById('reviewForm');
+  if (reviewForm) {
+    reviewForm.classList.add('needs-validation'); // Ensure class is present
 
-  // --- Booking Form Validation ---
-  const bookingForm = document.getElementById('bookingForm');
-  if (bookingForm) {
-      bookingForm.addEventListener('submit', function(event) {
-          if (!startDateInput.value || !endDateInput.value) {
-              dateRangeInput.classList.add('is-invalid');
-              dateRangeFeedback.textContent = 'Please select both check-in and check-out dates.';
-              dateRangeFeedback.style.display = 'block';
-              event.preventDefault();
-              event.stopPropagation();
-          } else {
-              dateRangeInput.classList.remove('is-invalid');
-              dateRangeFeedback.style.display = 'none';
-          }
-          if (!bookingForm.checkValidity()) {
-            event.preventDefault();
-            event.stopPropagation();
-          }
-          bookingForm.classList.add('was-validated');
-      }, false);
-  }
+    const ratingError = document.getElementById('rating-error');
+    reviewForm.addEventListener('submit', function(event) {
+      // Rating Validation
+      const selectedRating = reviewForm.querySelector('input[name="review[rating]"]:checked');
+      if (!selectedRating) {
+        ratingError.style.display = 'block';
+        event.preventDefault();
+        event.stopPropagation();
+      } else {
+        ratingError.style.display = 'none';
+      }
 
-  // --- MapLibre Map ---
-  const apiKey = "<%= MAPTILER_API_KEY %>";
-  if (typeof maplibregl !== 'undefined' && apiKey) {
-    let center = [78.9629, 20.5937]; // Default India
-    <% if(listing.geometry?.coordinates?.length === 2){ %>
-      center = [<%= listing.geometry.coordinates[0] %>, <%= listing.geometry.coordinates[1] %>];
-    <% } %>
+      // Bootstrap Validation for other fields
+      if (!reviewForm.checkValidity()) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      reviewForm.classList.add('was-validated');
+    }, false);
+  } // End if(reviewForm)
 
-    const map = new maplibregl.Map({
-      container: 'map',
-      style: `https://api.maptiler.com/maps/streets/style.json?key=${apiKey}`,
-      center: center,
-      zoom: 12
-    });
+  // --- Booking Form Validation ---
+  const bookingForm = document.getElementById('bookingForm');
+  if (bookingForm && dateRangeInput) { // Check if elements exist
+      bookingForm.addEventListener('submit', function(event) {
+          // Date Range Validation
+          if (!startDateInput.value || !endDateInput.value) {
+              dateRangeInput.classList.add('is-invalid');
+              dateRangeFeedback.textContent = 'Please select both check-in and check-out dates.';
+              dateRangeFeedback.style.display = 'block';
+              event.preventDefault();
+              event.stopPropagation();
+          } else {
+              dateRangeInput.classList.remove('is-invalid');
+              dateRangeFeedback.style.display = 'none';
+          }
 
-    map.addControl(new maplibregl.NavigationControl());
-    new maplibregl.Marker().setLngLat(center).addTo(map);
-  }
+          // Bootstrap Validation
+          if (!bookingForm.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+          bookingForm.classList.add('was-validated');
+      }, false);
+  } // End if(bookingForm)
+
+  // --- MapLibre Map ---
+  const apiKey = "<%= typeof MAPTILER_API_KEY !== 'undefined' ? MAPTILER_API_KEY : '' %>"; // Ensure API Key exists
+  const mapElement = document.getElementById('map');
+
+  if (mapElement && typeof maplibregl !== 'undefined' && apiKey) {
+    let center = [78.9629, 20.5937]; // Default India
+    <% if(listing.geometry?.coordinates?.length === 2){ %>
+      center = [<%= listing.geometry.coordinates[0] %>, <%= listing.geometry.coordinates[1] %>];
+    <% } %>
+
+    try {
+        const map = new maplibregl.Map({
+          container: 'map',
+          style: `https://api.maptiler.com/maps/streets-v2/style.json?key=${apiKey}`, // Updated style
+          center: center,
+          zoom: 11 // Slightly more zoomed out initially
+        });
+
+        // Add controls
+        map.addControl(new maplibregl.NavigationControl(), 'top-right');
+        map.addControl(new maplibregl.FullscreenControl());
+
+        // Add marker
+        new maplibregl.Marker({ color: "#E54D42" }) // Use brand color for marker
+            .setLngLat(center)
+            .setPopup(new maplibregl.Popup({ offset: 25 }) // Add a popup with title
+            .setHTML(`<h6>${listing.title || 'Location'}</h6><p>${listing.location || ''}</p>`))
+            .addTo(map);
+
+    } catch (error) {
+        console.error("Map initialization error:", error);
+        mapElement.innerHTML = "<p>Error loading map.</p>"; // Fallback message
+    }
+
+  } else if (mapElement && !apiKey) {
+       mapElement.innerHTML = "<p>Map requires an API key.</p>";
+  } else if (mapElement) {
+       mapElement.innerHTML = "<p>Loading map...</p>"; // Placeholder if map library hasn't loaded yet
+  } // End if(mapElement...)
 });
-</script> 
+</script>
