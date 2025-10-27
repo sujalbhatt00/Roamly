@@ -13,7 +13,6 @@
         --border-color: #f1f3f5; /* Lighter border color for separation */
         --bg-light: #f8f9fa; /* Page background */
         --shadow-sm: 0 4px 12px rgba(0,0,0,0.08); /* Slightly richer shadow */
-        --shadow-md: 0 10px 30px rgba(0,0,0,0.15);
         --border-radius-sm: 8px;
         --border-radius: 20px; /* Modern, large radius */
     }
@@ -21,60 +20,72 @@
     /* === General Body & Container === */
     body {
         font-family: 'Inter', sans-serif;
-        background-color: var(--bg-light); 
+        background-color: var(--bg-light);
         color: var(--text-color);
         line-height: 1.6;
-        padding: 1.5rem 1rem; /* Reduced top/bottom padding, generous side padding */
+        padding: 1rem 0; /* Optimized for full width on mobile */
     }
 
     .profile-card {
-        max-width: 500px; /* Slightly narrower max width for focus */
-        margin: 0 auto; 
+        max-width: 500px;
+        margin: 0 1rem; /* Added horizontal margin for safety on small devices */
         background: #fff;
         border-radius: var(--border-radius);
-        box-shadow: var(--shadow-sm); /* Use a softer shadow for the card */
-        border: 1px solid var(--border-color); /* Subtle border for definition */
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border-color);
         animation: fadeIn 0.5s ease-out;
     }
-    
+
     @keyframes fadeIn {
         from { opacity: 0; transform: translateY(10px); }
         to { opacity: 1; transform: translateY(0); }
     }
+    
+    /* Ensure the card takes full width on extra small screens */
+    @media (max-width: 520px) {
+        .profile-card {
+            margin: 0 0.75rem;
+            border-radius: 0; /* Optional: Make full width without border radius for a native app feel */
+        }
+        body {
+            padding: 0;
+        }
+    }
+
 
     /* === 1. Profile Header (Avatar, Name, Email) === */
     .profile-header {
         text-align: center;
-        padding: 2.5rem 1.5rem 2rem;
-        background-color: #fff; /* Ensure background is white */
+        padding: 2rem 1rem 1.5rem; /* Reduced vertical padding */
+        background-color: #fff;
         border-bottom: 1px solid var(--border-color);
     }
 
     .profile-avatar {
-        width: 100px; /* Slightly smaller avatar */
-        height: 100px;
+        width: 90px; /* Slightly smaller for mobile compactness */
+        height: 90px;
         object-fit: cover;
         border-radius: 50%;
         margin-bottom: 0.75rem;
-        border: 3px solid var(--primary-color); /* Accent border color */
-        box-shadow: 0 0 0 4px rgba(var(--primary-rgb), 0.2); /* Ring effect */
+        border: 3px solid var(--primary-color);
+        box-shadow: 0 0 0 4px rgba(var(--primary-rgb), 0.2);
     }
 
     .profile-header h3 {
         font-weight: 700;
-        font-size: 1.6rem; /* Adjusted font size */
+        font-size: 1.5rem; /* Adjusted font size for mobile */
         color: var(--dark-color);
         margin-bottom: 0.25rem;
     }
 
     .profile-header .email {
-        font-size: 0.95rem;
+        font-size: 0.9rem; /* Slightly smaller email text */
         color: var(--text-muted);
     }
 
     /* === 2. Reusable Section Styling === */
     .profile-section {
-        padding: 1.75rem 1.5rem; /* Consistent padding, good for mobile */
+        padding: 1.5rem 1.25rem; /* Reduced padding for mobile */
         border-bottom: 1px solid var(--border-color);
     }
     .profile-card > .profile-section:last-of-type {
@@ -83,9 +94,9 @@
 
     .profile-section h5 {
         font-weight: 600;
-        font-size: 1.1rem;
+        font-size: 1.05rem;
         color: var(--dark-color);
-        margin-bottom: 1rem; /* Slightly reduced margin */
+        margin-bottom: 0.75rem; /* Reduced margin */
     }
 
     /* === 3. Details List (Modernized) === */
@@ -99,8 +110,8 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        font-size: 1rem;
-        padding: 0.75rem 0;
+        font-size: 0.95rem; /* Reduced list item font size */
+        padding: 0.6rem 0; /* Reduced list item padding */
         border-bottom: 1px solid var(--border-color);
     }
     .details-list li:last-child {
@@ -109,19 +120,23 @@
 
     .details-list li span {
         color: var(--text-muted);
-        font-size: 0.95rem;
+        font-size: 0.9rem;
+        min-width: 40%; /* Ensure the label has space */
     }
     .details-list li strong {
         color: var(--dark-color);
-        font-weight: 500; /* Slightly lighter weight for data */
+        font-weight: 500;
         text-align: right;
+        max-width: 60%; /* Allow data to take more space */
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
-    /* === 4. Actions (Buttons) - Use Flex for Mobile Stack/Wrap === */
+    /* === 4. Actions (Buttons) - Mobile-First Flex === */
     .profile-actions {
         display: flex;
-        flex-direction: column; /* Stack vertically on small screens */
-        gap: 0.75rem; 
+        flex-direction: column; /* Stack vertically by default (mobile-first) */
+        gap: 0.75rem;
     }
     
     .profile-actions form {
@@ -134,16 +149,16 @@
             justify-content: space-between;
         }
         .profile-actions .btn {
-            flex-grow: 1; /* Distribute space evenly */
-            max-width: calc(33% - 8px); /* Account for gap */
+            flex-grow: 1;
+            max-width: calc(33% - 8px);
         }
     }
 
 
     /* --- Button Styles --- */
     .btn {
-        display: block; /* Ensure full width on mobile */
-        padding: 0.75rem 1rem;
+        display: block;
+        padding: 0.8rem 1rem; /* Slightly taller buttons for easier mobile tapping */
         border-radius: var(--border-radius-sm);
         text-decoration: none;
         font-weight: 600;
@@ -151,7 +166,7 @@
         cursor: pointer;
         transition: all 0.2s ease;
         text-align: center;
-        font-size: 0.9rem;
+        font-size: 0.95rem; /* Slightly larger font size for buttons */
     }
     .btn:active {
         transform: scale(0.98);
@@ -181,59 +196,59 @@
     
     /* === 5. Logout Link === */
     .logout-section {
-        padding: 1.5rem 1.5rem;
-        border-top: none; /* Already handled by section border-bottom */
-        background-color: var(--bg-light); 
+        padding: 1.25rem 1.25rem; /* Reduced padding */
+        border-top: none;
+        background-color: var(--bg-light);
         text-align: center;
-        border-bottom-left-radius: var(--border-radius); /* Rounded corners for the bottom section */
+        border-bottom-left-radius: var(--border-radius);
         border-bottom-right-radius: var(--border-radius);
     }
     .logout-link {
         color: var(--primary-color);
         text-decoration: none;
         font-weight: 600;
-        font-size: 1rem;
+        font-size: 0.95rem; /* Consistent smaller size */
         transition: color 0.2s ease, text-decoration 0.2s ease;
     }
     .logout-link:hover {
-        color: #b03a31; /* Darker red on hover */
+        color: #b03a31;
         text-decoration: underline;
     }
 </style>
 
 <div class="profile-card">
-  <div class="profile-header">
-    <img src="<%= user.avatar || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png' %>" class="profile-avatar" alt="User Avatar">
-    <h3 class="mb-1"><%= user.username %></h3>
-    <p class="email mb-0"><%= user.email %></p>
-  </div>
-  
-  <div class="profile-section">
-    <h5>Account Details</h5>
-    <ul class="details-list">
-      <li>
-        <span>Username</span>
-        <strong><%= user.username %></strong>
-      </li>
-      <li>
-        <span>Email</span>
-        <strong><%= user.email %></strong>
-      </li>
-      <li>
-        <span>Joined</span>
-        <strong><%= user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "N/A" %></strong>
-      </li>
-    </ul>
-  </div>
+    <div class="profile-header">
+        <img src="<%= user.avatar || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png' %>" class="profile-avatar" alt="User Avatar">
+        <h3 class="mb-1"><%= user.username %></h3>
+        <p class="email mb-0"><%= user.email %></p>
+    </div>
+    
+    <div class="profile-section">
+        <h5>Account Details</h5>
+        <ul class="details-list">
+            <li>
+                <span>Username</span>
+                <strong><%= user.username %></strong>
+            </li>
+            <li>
+                <span>Email</span>
+                <strong><%= user.email %></strong>
+            </li>
+            <li>
+                <span>Joined</span>
+                <strong><%= user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "N/A" %></strong>
+            </li>
+        </ul>
+    </div>
 
-  <div class="profile-section profile-actions">
-    <a href="/bookings/my-bookings" class="btn btn-primary-outline">My Bookings</a>
-    <a href="/profile/edit" class="btn btn-primary-outline">Edit Profile</a>
-        <a href="/profile/delete" class="btn btn-danger-outline">Delete Profile</a>
-  </div>
+    <div class="profile-section profile-actions">
+        <a href="/bookings/my-bookings" class="btn btn-primary-outline">My Bookings</a>
+        <a href="/profile/edit" class="btn btn-primary-outline">Edit Profile</a>
+        <a href="/profile/delete" class="btn btn-danger-outline">Delete Profile</a>
+    </div>
 
-  <div class="logout-section">
-    <a href="/logout" class="logout-link">Log Out</a>
-  </div>
+    <div class="logout-section">
+        <a href="/logout" class="logout-link">Log Out</a>
+    </div>
 
 </div>
