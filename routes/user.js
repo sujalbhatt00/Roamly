@@ -3,11 +3,10 @@ const router = express.Router();
 const User = require("../models/user.js");
 const passport = require("passport");
 const wrapAsync = require("../utils/wrapAsync.js");
-const { saveRedirectUrl } = require("../middleware.js");
+const {saveRedirectUrl} = require("../middleware.js");
 const { cloudinary } = require("../cloudConfig.js");
 const Listing = require("../models/listing.js");
-const userController = require("../controller/users.js");
-const { safeSendMail, transporter } = require("../controller/users.js"); // use safeSendMail
+const userController = require("../controller/users.js")
 const multer = require("multer");
 const { storage } = require("../cloudConfig.js");
 const upload = multer({
@@ -16,7 +15,6 @@ const upload = multer({
 });
 const otpGenerator = require("otp-generator");
 
-// Edit profile form
 router.get("/profile/edit", (req, res) => {
   if (!req.isAuthenticated()) {
     req.flash("error", "You must be logged in.");
@@ -24,8 +22,8 @@ router.get("/profile/edit", (req, res) => {
   }
   res.render("users/edit-profile.ejs", { user: req.user });
 });
+// ...existing code...
 
-// Profile edit handler
 router.post("/profile/edit", upload.single("avatar"), async (req, res) => {
   if (!req.isAuthenticated()) {
     req.flash("error", "You must be logged in.");
@@ -82,9 +80,10 @@ router.post("/profile/edit", upload.single("avatar"), async (req, res) => {
   });
 });
 
-// OTP verify routes (controller)
+
 router.get("/verify-otp", userController.renderOtpForm);
 router.post("/verify-otp", wrapAsync(userController.verifyOtp));
+
 
 // Multer error handler for file size
 router.use((err, req, res, next) => {
@@ -95,16 +94,15 @@ router.use((err, req, res, next) => {
   next(err);
 });
 
-// Signup & login routes use controller
 router.route("/signup")
-  .get(userController.renderSignupForm)
-  .post(wrapAsync(userController.signup));
+.get(userController.renderSignupForm )
+.post(wrapAsync(userController.signup))
+
 
 router.route("/login")
-  .get(saveRedirectUrl, userController.renderLoginForm)
-  .post(saveRedirectUrl, passport.authenticate("local", { failureRedirect: "/login", failureFlash: true }), userController.Login);
+.get(saveRedirectUrl, userController.renderLoginForm)
+.post(saveRedirectUrl, passport.authenticate("local",{failureRedirect: "/login", failureFlash: true}), userController.Login)
 
-// Profile view
 router.get("/profile", (req, res) => {
   if (!req.isAuthenticated()) {
     req.flash("error", "You must be logged in to view your profile.");
@@ -113,12 +111,13 @@ router.get("/profile", (req, res) => {
   res.render("users/profile.ejs", { user: req.user });
 });
 
-// Forgot password form
+
+// Show forgot password form
 router.get("/forgot-password", (req, res) => {
   res.render("users/forgot-password.ejs");
 });
 
-// Handle forgot password submission - send OTP using safeSendMail
+// Handle forgot password form submission
 router.post("/forgot-password", wrapAsync(async (req, res) => {
   const { email } = req.body;
   const user = await User.findOne({ email });
@@ -128,34 +127,29 @@ router.post("/forgot-password", wrapAsync(async (req, res) => {
   }
 
   // Generate OTP for password reset
-  const otp = otpGenerator.generate(6, { upperCase: false, specialChars: false, alphabets: false, digits: true });
+ const otp = otpGenerator.generate(6, { upperCase: false, specialChars: false, alphabets: false, digits: true });
   user.otp = otp;
   user.otpExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
   await user.save();
 
-  // Send OTP email via safeSendMail
-  const sendResult = await safeSendMail({
+  // Send OTP email
+  await transporter.sendMail({
+    from: process.env.OTP_EMAIL,
     to: email,
     subject: "Roamly Password Reset OTP",
     text: `Your password reset code is: ${otp}\n\nEnter this code on the website to reset your password.`
   });
 
-  if (!sendResult.ok) {
-    console.error("Forgot-password email send failed:", sendResult.error || sendResult);
-    req.flash("error", "Unable to send password reset email. Please try again later.");
-    return res.redirect("/forgot-password");
-  }
-
   req.flash("success", "Password reset code sent to your email.");
   res.redirect(`/reset-password?email=${encodeURIComponent(email)}`);
 }));
 
-// Reset password form
+// Show reset password form
 router.get("/reset-password", (req, res) => {
   res.render("users/reset-password.ejs", { email: req.query.email });
 });
 
-// Reset password handler
+// Handle reset password form submission
 router.post("/reset-password", wrapAsync(async (req, res) => {
   const { email, otp, newPassword } = req.body;
   const user = await User.findOne({ email });
@@ -181,6 +175,8 @@ router.post("/reset-password", wrapAsync(async (req, res) => {
   res.redirect("/login");
 }));
 
+
+
 // Resend OTP for password reset
 router.post("/resend-otp", wrapAsync(async (req, res) => {
   const { email } = req.body;
@@ -194,27 +190,20 @@ router.post("/resend-otp", wrapAsync(async (req, res) => {
   user.otp = otp;
   user.otpExpires = Date.now() + 10 * 60 * 1000;
   await user.save();
-
-  const sendResult = await safeSendMail({
+  await transporter.sendMail({
+    from: process.env.OTP_EMAIL,
     to: email,
     subject: "Roamly Email Verification OTP",
     text: `Your new verification code is: ${otp}\n\nEnter this code on the website to verify your email.`
   });
-
-  if (!sendResult.ok) {
-    console.error("Resend-OTP email send failed:", sendResult.error || sendResult);
-    req.flash("error", "Unable to send OTP. Please try again later.");
-    return res.redirect(`/verify-otp?email=${encodeURIComponent(email)}`);
-  }
-
   req.flash("success", "A new OTP has been sent to your email.");
   res.redirect(`/verify-otp?email=${encodeURIComponent(email)}`);
 }));
 
-// Logout
-router.get("/logout", userController.Logout);
 
-// Delete confirmation form
+// logout 
+router.get("/logout", userController.Logout);
+// Show delete confirmation form
 router.get("/profile/delete", (req, res) => {
   if (!req.isAuthenticated()) {
     req.flash("error", "You must be logged in.");
@@ -223,6 +212,7 @@ router.get("/profile/delete", (req, res) => {
   res.render("users/delete-confirm.ejs");
 });
 
+//handle delete profile
 // Handle delete profile
 router.post("/profile/delete", async (req, res, next) => {
   try {
@@ -269,9 +259,12 @@ router.post("/profile/delete", async (req, res, next) => {
       res.redirect("/signup");
     });
   } catch (err) {
-    console.error("Delete profile error:", err);
+    console.error("Delete profile error:", err); // <-- Add this line
     next(err);
   }
 });
 
 module.exports = router;
+
+
+ 

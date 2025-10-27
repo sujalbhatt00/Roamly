@@ -2,7 +2,6 @@
   "engines": {
     "node": "v22.17.1"
   },
-
   "name": "Roamly",
   "version": "1.0.0",
   "main": "index.js",
@@ -24,6 +23,7 @@
     "express": "^5.1.0",
     "express-session": "^1.18.2",
     "geocode": "^0.0.3",
+    "googleapis": "^164.1.0",
     "joi": "^18.0.1",
     "method-override": "^3.0.0",
     "mongoose": "^8.18.0",
@@ -32,6 +32,7 @@
     "node-fetch": "^2.7.0",
     "nodemailer": "^7.0.10",
     "nodemon": "^3.1.10",
+    "open": "^10.2.0",
     "otp-generator": "^4.0.1",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
