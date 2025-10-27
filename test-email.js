@@ -23,4 +23,8 @@ const nodemailer = require('nodemailer');
     console.error('SMTP test error:', err);
     process.exit(1);
   }
+<<<<<<< HEAD
 })();
+=======
+})();
+>>>>>>> my-fix-otp

@@ -6,7 +6,7 @@ const fetch = require("node-fetch");
 require('dotenv').config({ path: '../.env' });
 
 
-const MONGO_URL = 'mongodb://127.0.0.1:27017/wanderlust';
+const MONGO_URL =  "mongodb://127.0.0.1:27017/wanderlust";
 
 // Geocoding function
 async function geocodeLocation(location) {

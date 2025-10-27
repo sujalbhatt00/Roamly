@@ -8,7 +8,10 @@ const { cloudinary } = require("../cloudConfig.js");
 const Listing = require("../models/listing.js");
 const userController = require("../controller/users.js")
 const multer = require("multer");
+<<<<<<< HEAD
 
+=======
+>>>>>>> my-fix-otp
 const { storage } = require("../cloudConfig.js");
 const upload = multer({
   storage,
