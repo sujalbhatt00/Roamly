@@ -1,167 +1,277 @@
-const User = require("../models/user");
-const nodemailer = require("nodemailer");
+const express = require("express");
+const router = express.Router();
+const User = require("../models/user.js");
+const passport = require("passport");
+const wrapAsync = require("../utils/wrapAsync.js");
+const { saveRedirectUrl } = require("../middleware.js");
+const { cloudinary } = require("../cloudConfig.js");
+const Listing = require("../models/listing.js");
+const userController = require("../controller/users.js");
+const { safeSendMail, transporter } = require("../controller/users.js"); // use safeSendMail
+const multer = require("multer");
+const { storage } = require("../cloudConfig.js");
+const upload = multer({
+  storage,
+  limits: { fileSize: 1024 * 1024 } // 1MB limit
+});
 const otpGenerator = require("otp-generator");
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.OTP_EMAIL,
-    pass: process.env.OTP_EMAIL_PASS
+// Edit profile form
+router.get("/profile/edit", (req, res) => {
+  if (!req.isAuthenticated()) {
+    req.flash("error", "You must be logged in.");
+    return res.redirect("/login");
   }
+  res.render("users/edit-profile.ejs", { user: req.user });
 });
 
-// Export transporter for use in routes/user.js
-module.exports.transporter = transporter;
-
-module.exports.renderSignupForm = (req, res) => {
-  res.render("users/signup.ejs");
-};
-
-// Render OTP verification form
-module.exports.renderOtpForm = (req, res) => {
-  res.render("users/verify-otp.ejs", { email: req.query.email, error: null });
-};
-
-// Handle signup and send OTP
-module.exports.signup = async (req, res) => {
-  try {
-    const { username, password, email } = req.body;
-    if (!email || !email.trim()) {
-      req.flash("error", "Email is required.");
-      return res.redirect("/signup");
-    }
-    // Simple email regex validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      req.flash("error", "Please enter a valid email address.");
-      return res.redirect("/signup");
-    }
-    // Password length and complexity validation
-    if (!password || password.length < 5) {
-      req.flash("error", "Password must be at least 5 characters.");
-      return res.redirect("/signup");
-    }
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
-    if (!passwordRegex.test(password)) {
-      req.flash("error", "Password must contain at least one uppercase letter, one lowercase letter, and one number.");
-      return res.redirect("/signup");
-    }
-    // Check for unique username and email
-    const existingUser = await User.findOne({ $or: [{ username }, { email }] });
-    if (existingUser) {
-      if (existingUser.username === username) {
-        req.flash("error", "Username already taken.");
-      } else {
-        req.flash("error", "Email already registered.");
-      }
-      return res.redirect("/signup");
-    }
-
-    // Generate numeric OTP only
-   const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const otpExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
-
-    // Create user with OTP fields
-   const newUser = new User({ username, email, otp, otpExpires, isVerified: false });
-    const registeredUser = await User.register(newUser, password);
-
-    // Send longer OTP email
-    await transporter.sendMail({
-      from: process.env.OTP_EMAIL,
-      to: email,
-      subject: "Roamly Email Verification OTP",
-      text: `Hello ${username},
-
-Welcome to Roamly! We're excited to have you join our travel community.
-
-To complete your registration, please enter the following 6-digit verification code on the website:
-
-${otp}
-
-This code is valid for 10 minutes. If you did not request this, you can safely ignore this email.
-
-Thank you for choosing Roamly!
-The Roamly Team`
-    });
-
-    req.flash("success", "OTP sent to your email. Please verify.");
-    res.redirect(`/verify-otp?email=${encodeURIComponent(email)}`);
-  } catch (e) {
-    req.flash("error", e.message);
-    res.redirect("/signup");
+// Profile edit handler
+router.post("/profile/edit", upload.single("avatar"), async (req, res) => {
+  if (!req.isAuthenticated()) {
+    req.flash("error", "You must be logged in.");
+    return res.redirect("/login");
   }
-};
+  const { username, email, currentPassword, newPassword } = req.body;
+  let avatar = req.user.avatar;
+  if (req.file) {
+    avatar = req.file.path;
+  }
 
-// Add this to your controller/users.js
+  // Validate current password
+  const user = await User.findById(req.user._id);
+  if (!await user.authenticate(currentPassword)) {
+    req.flash("error", "Current password is incorrect.");
+    return res.redirect("/profile/edit");
+  }
 
-module.exports.sendResetOtp = async (req, res) => {
+  // Check for unique username/email (if changed)
+  if (username !== user.username) {
+    const existingUser = await User.findOne({ username });
+    if (existingUser) {
+      req.flash("error", "Username already taken.");
+      return res.redirect("/profile/edit");
+    }
+  }
+  if (email !== user.email) {
+    const existingEmail = await User.findOne({ email });
+    if (existingEmail) {
+      req.flash("error", "Email already registered.");
+      return res.redirect("/profile/edit");
+    }
+  }
+
+  // Update username, email, avatar
+  user.username = username;
+  user.email = email;
+  user.avatar = avatar;
+
+  // Update password if provided
+  if (newPassword && newPassword.trim().length > 0) {
+    await user.setPassword(newPassword);
+  }
+
+  await user.save();
+  // Re-login user to update session
+  req.login(user, function(err) {
+    if (err) {
+      req.flash("error", "Profile updated, but session error. Please log in again.");
+      return res.redirect("/login");
+    }
+    req.flash("success", "Profile updated!");
+    res.redirect("/profile");
+  });
+});
+
+// OTP verify routes (controller)
+router.get("/verify-otp", userController.renderOtpForm);
+router.post("/verify-otp", wrapAsync(userController.verifyOtp));
+
+// Multer error handler for file size
+router.use((err, req, res, next) => {
+  if (err.code === "LIMIT_FILE_SIZE") {
+    req.flash("error", "Image size must be less than 1MB.");
+    return res.redirect("/profile/edit");
+  }
+  next(err);
+});
+
+// Signup & login routes use controller
+router.route("/signup")
+  .get(userController.renderSignupForm)
+  .post(wrapAsync(userController.signup));
+
+router.route("/login")
+  .get(saveRedirectUrl, userController.renderLoginForm)
+  .post(saveRedirectUrl, passport.authenticate("local", { failureRedirect: "/login", failureFlash: true }), userController.Login);
+
+// Profile view
+router.get("/profile", (req, res) => {
+  if (!req.isAuthenticated()) {
+    req.flash("error", "You must be logged in to view your profile.");
+    return res.redirect("/login");
+  }
+  res.render("users/profile.ejs", { user: req.user });
+});
+
+// Forgot password form
+router.get("/forgot-password", (req, res) => {
+  res.render("users/forgot-password.ejs");
+});
+
+// Handle forgot password submission - send OTP using safeSendMail
+router.post("/forgot-password", wrapAsync(async (req, res) => {
   const { email } = req.body;
   const user = await User.findOne({ email });
   if (!user) {
-    req.flash("error", "No user found with that email.");
+    req.flash("error", "No account found with that email.");
     return res.redirect("/forgot-password");
   }
-  // Generate numeric OTP
+
+  // Generate OTP for password reset
+  const otp = otpGenerator.generate(6, { upperCase: false, specialChars: false, alphabets: false, digits: true });
+  user.otp = otp;
+  user.otpExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
+  await user.save();
+
+  // Send OTP email via safeSendMail
+  const sendResult = await safeSendMail({
+    to: email,
+    subject: "Roamly Password Reset OTP",
+    text: `Your password reset code is: ${otp}\n\nEnter this code on the website to reset your password.`
+  });
+
+  if (!sendResult.ok) {
+    console.error("Forgot-password email send failed:", sendResult.error || sendResult);
+    req.flash("error", "Unable to send password reset email. Please try again later.");
+    return res.redirect("/forgot-password");
+  }
+
+  req.flash("success", "Password reset code sent to your email.");
+  res.redirect(`/reset-password?email=${encodeURIComponent(email)}`);
+}));
+
+// Reset password form
+router.get("/reset-password", (req, res) => {
+  res.render("users/reset-password.ejs", { email: req.query.email });
+});
+
+// Reset password handler
+router.post("/reset-password", wrapAsync(async (req, res) => {
+  const { email, otp, newPassword } = req.body;
+  const user = await User.findOne({ email });
+  // Password validation
+  if (!newPassword || newPassword.length < 5) {
+    req.flash("error", "Password must be at least 5 characters.");
+    return res.redirect(`/reset-password?email=${encodeURIComponent(email)}`);
+  }
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
+  if (!passwordRegex.test(newPassword)) {
+    req.flash("error", "Password must contain at least one uppercase letter, one lowercase letter, and one number.");
+    return res.redirect(`/reset-password?email=${encodeURIComponent(email)}`);
+  }
+  if (!user || user.otp !== otp || user.otpExpires < Date.now()) {
+    req.flash("error", "Invalid or expired OTP.");
+    return res.redirect(`/reset-password?email=${encodeURIComponent(email)}`);
+  }
+  await user.setPassword(newPassword);
+  user.otp = undefined;
+  user.otpExpires = undefined;
+  await user.save();
+  req.flash("success", "Password reset successful! You can now log in.");
+  res.redirect("/login");
+}));
+
+// Resend OTP for password reset
+router.post("/resend-otp", wrapAsync(async (req, res) => {
+  const { email } = req.body;
+  const user = await User.findOne({ email });
+  if (!user) {
+    req.flash("error", "No account found with that email.");
+    return res.redirect("/signup");
+  }
+  // Generate new numeric OTP
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
   user.otp = otp;
   user.otpExpires = Date.now() + 10 * 60 * 1000;
   await user.save();
 
-  await transporter.sendMail({
-    from: process.env.OTP_EMAIL,
+  const sendResult = await safeSendMail({
     to: email,
-    subject: "Roamly Password Reset OTP",
-    text: `Your password reset code is: ${otp}\n\nThis code is valid for 10 minutes.`
+    subject: "Roamly Email Verification OTP",
+    text: `Your new verification code is: ${otp}\n\nEnter this code on the website to verify your email.`
   });
 
-  req.flash("success", "OTP sent to your email.");
-  res.redirect(`/reset-password?email=${encodeURIComponent(email)}`);
-};
-
-
-
-
-// Handle OTP verification
-module.exports.verifyOtp = async (req, res) => {
-  const { email, otp } = req.body;
-  const user = await User.findOne({ email });
-  if (!user) {
-    req.flash("error", "User not found.");
-    return res.redirect("/signup");
+  if (!sendResult.ok) {
+    console.error("Resend-OTP email send failed:", sendResult.error || sendResult);
+    req.flash("error", "Unable to send OTP. Please try again later.");
+    return res.redirect(`/verify-otp?email=${encodeURIComponent(email)}`);
   }
-  // Compare OTP as strings
-  if (String(user.otp) !== String(otp) || user.otpExpires < Date.now()) {
-    return res.render("users/verify-otp.ejs", { email, error: "Invalid or expired OTP. Please try again." });
+
+  req.flash("success", "A new OTP has been sent to your email.");
+  res.redirect(`/verify-otp?email=${encodeURIComponent(email)}`);
+}));
+
+// Logout
+router.get("/logout", userController.Logout);
+
+// Delete confirmation form
+router.get("/profile/delete", (req, res) => {
+  if (!req.isAuthenticated()) {
+    req.flash("error", "You must be logged in.");
+    return res.redirect("/login");
   }
-  // OTP correct, activate user
-  user.otp = undefined;
-  user.otpExpires = undefined;
-  await user.save();
-  req.login(user, (err) => {
-    if (err) return res.redirect("/login");
-    req.flash("success", "Email verified! Welcome to Roamly.");
-    res.redirect("/listings");
-  });
-};
+  res.render("users/delete-confirm.ejs");
+});
 
-
-module.exports.renderLoginForm = (req, res) => {
-  res.render("users/login.ejs");
-};
-
-module.exports.Login = async (req, res) => {
-  req.flash("success", "Welcome back to Roamly!");
-  let redirectUrl = req.session.redirectUrl || "/listings";
-  delete req.session.redirectUrl;
-  res.redirect(redirectUrl);
-};
-
-module.exports.Logout = (req, res) => {
-  req.logout((err) => {
-    if (err) {
-      return next(err);
+// Handle delete profile
+router.post("/profile/delete", async (req, res, next) => {
+  try {
+    if (!req.isAuthenticated()) {
+      req.flash("error", "You must be logged in.");
+      return res.redirect("/login");
     }
-    req.flash("success", "You are logged out!");
-    res.redirect("/listings");
-  });
-};
+    const userId = req.user._id;
+    const { password } = req.body;
+    const user = await User.findById(userId);
+
+    // Defensive: Check if user exists
+    if (!user) {
+      req.flash("error", "User not found.");
+      return res.redirect("/profile");
+    }
+
+    // Verify password before deleting
+    const isValid = await user.authenticate(password);
+    if (!isValid.user) {
+      req.flash("error", "Incorrect password.");
+      return res.redirect("/profile/delete");
+    }
+
+    // Delete all listings owned by the user (and their images)
+    const listings = await Listing.find({ owner: userId });
+    for (let listing of listings) {
+      if (listing.image && listing.image.filename) {
+        await cloudinary.uploader.destroy(listing.image.filename);
+      }
+      await Listing.findByIdAndDelete(listing._id);
+    }
+
+    // Delete avatar from Cloudinary if exists
+    if (req.user.avatar && req.user.avatar.includes("cloudinary.com")) {
+      const filename = req.user.avatar.split("/").pop().split(".")[0];
+      await cloudinary.uploader.destroy(filename);
+    }
+
+    // Delete user and log out
+    await req.user.deleteOne();
+    req.logout(() => {
+      req.flash("success", "Your profile has been deleted.");
+      res.redirect("/signup");
+    });
+  } catch (err) {
+    console.error("Delete profile error:", err);
+    next(err);
+  }
+});
+
+module.exports = router;
