@@ -1,271 +1,223 @@
-const express = require("express");
-const router = express.Router();
-const User = require("../models/user.js");
-const passport = require("passport");
-const wrapAsync = require("../utils/wrapAsync.js");
-const {saveRedirectUrl} = require("../middleware.js");
-const { cloudinary } = require("../cloudConfig.js");
-const Listing = require("../models/listing.js");
-const userController = require("../controller/users.js")
-const multer = require("multer");
-const { transporter } = require("../controller/users.js");
-const { storage } = require("../cloudConfig.js");
-const upload = multer({
-  storage,
-  limits: { fileSize: 1024 * 1024 } // 1MB limit
-});
+const User = require("../models/user");
+const nodemailer = require("nodemailer");
 const otpGenerator = require("otp-generator");
 
-router.get("/profile/edit", (req, res) => {
-  if (!req.isAuthenticated()) {
-    req.flash("error", "You must be logged in.");
-    return res.redirect("/login");
-  }
-  res.render("users/edit-profile.ejs", { user: req.user });
+// Primary Gmail transporter (Google App Password)
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.OTP_EMAIL,
+    pass: process.env.OTP_EMAIL_PASS
+  },
+  tls: { rejectUnauthorized: false }
 });
-// ...existing code...
 
-router.post("/profile/edit", upload.single("avatar"), async (req, res) => {
-  if (!req.isAuthenticated()) {
-    req.flash("error", "You must be logged in.");
-    return res.redirect("/login");
-  }
-  const { username, email, currentPassword, newPassword } = req.body;
-  let avatar = req.user.avatar;
-  if (req.file) {
-    avatar = req.file.path;
-  }
+// Optional SendGrid fallback (set SENDGRID_API_KEY in env)
+const sendgridTransport = process.env.SENDGRID_API_KEY
+  ? nodemailer.createTransport({
+      host: "smtp.sendgrid.net",
+      port: 587,
+      secure: false,
+      auth: { user: "apikey", pass: process.env.SENDGRID_API_KEY }
+    })
+  : null;
 
-  // Validate current password
-  const user = await User.findById(req.user._id);
-  if (!await user.authenticate(currentPassword)) {
-    req.flash("error", "Current password is incorrect.");
-    return res.redirect("/profile/edit");
-  }
-
-  // Check for unique username/email (if changed)
-  if (username !== user.username) {
-    const existingUser = await User.findOne({ username });
-    if (existingUser) {
-      req.flash("error", "Username already taken.");
-      return res.redirect("/profile/edit");
-    }
-  }
-  if (email !== user.email) {
-    const existingEmail = await User.findOne({ email });
-    if (existingEmail) {
-      req.flash("error", "Email already registered.");
-      return res.redirect("/profile/edit");
-    }
-  }
-
-  // Update username, email, avatar
-  user.username = username;
-  user.email = email;
-  user.avatar = avatar;
-
-  // Update password if provided
-  if (newPassword && newPassword.trim().length > 0) {
-    await user.setPassword(newPassword);
-  }
-
-  await user.save();
-  // Re-login user to update session
-  req.login(user, function(err) {
-    if (err) {
-      req.flash("error", "Profile updated, but session error. Please log in again.");
-      return res.redirect("/login");
-    }
-    req.flash("success", "Profile updated!");
-    res.redirect("/profile");
+// Verify transporters at startup so errors appear in logs
+transporter.verify((err) => {
+  if (err) console.error("SMTP verify failed (Gmail):", err);
+  else console.log("SMTP transporter ready (Gmail)");
+});
+if (sendgridTransport) {
+  sendgridTransport.verify((err) => {
+    if (err) console.error("SMTP verify failed (SendGrid):", err);
+    else console.log("SMTP transporter ready (SendGrid)");
   });
-});
+}
 
-
-router.get("/verify-otp", userController.renderOtpForm);
-router.post("/verify-otp", wrapAsync(userController.verifyOtp));
-
-
-// Multer error handler for file size
-router.use((err, req, res, next) => {
-  if (err.code === "LIMIT_FILE_SIZE") {
-    req.flash("error", "Image size must be less than 1MB.");
-    return res.redirect("/profile/edit");
+// Safe send wrapper: try primary, then fallback
+async function safeSendMail({ to, subject, text, html }) {
+  const mailOptions = { from: process.env.OTP_EMAIL, to, subject, text, html };
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Email sent (Gmail):", info?.messageId || info?.response);
+    return { ok: true, provider: "gmail", info };
+  } catch (primaryErr) {
+    console.error("Primary sendMail error (Gmail):", primaryErr);
+    if (sendgridTransport) {
+      try {
+        const info = await sendgridTransport.sendMail(mailOptions);
+        console.log("Email sent (SendGrid):", info?.messageId || info?.response);
+        return { ok: true, provider: "sendgrid", info };
+      } catch (sgErr) {
+        console.error("SendGrid sendMail error:", sgErr);
+        return { ok: false, error: sgErr };
+      }
+    }
+    return { ok: false, error: primaryErr };
   }
-  next(err);
-});
+}
 
-router.route("/signup")
-.get(userController.renderSignupForm )
-.post(wrapAsync(userController.signup))
+// Controller actions
 
+// Render signup form
+async function renderSignupForm(req, res) {
+  res.render("users/signup.ejs");
+}
 
-router.route("/login")
-.get(saveRedirectUrl, userController.renderLoginForm)
-.post(saveRedirectUrl, passport.authenticate("local",{failureRedirect: "/login", failureFlash: true}), userController.Login)
+// Handle signup: register user, generate OTP, send email
+async function signup(req, res, next) {
+  try {
+    const { username, email, password } = req.body;
+    if (!username || !email || !password) {
+      req.flash("error", "All fields are required.");
+      return res.redirect("/signup");
+    }
 
-router.get("/profile", (req, res) => {
-  if (!req.isAuthenticated()) {
-    req.flash("error", "You must be logged in to view your profile.");
-    return res.redirect("/login");
-  }
-  res.render("users/profile.ejs", { user: req.user });
-});
+    // Check if user/email exists
+    const existing = await User.findOne({ $or: [{ username }, { email }] });
+    if (existing) {
+      req.flash("error", "Username or email already taken.");
+      return res.redirect("/signup");
+    }
 
+    // Create user and register with passport-local-mongoose (if used)
+    let user;
+    if (typeof User.register === "function") {
+      const newUser = new User({ username, email, isVerified: false });
+      user = await User.register(newUser, password); // may throw
+    } else {
+      // fallback (if passport plugin not present)
+      user = new User({ username, email, isVerified: false });
+      user.password = password; // NOTE: insecure fallback; prefer passport-local-mongoose
+      await user.save();
+    }
 
-// Show forgot password form
-router.get("/forgot-password", (req, res) => {
-  res.render("users/forgot-password.ejs");
-});
+    // Generate numeric OTP
+    const otp = otpGenerator.generate(6, {
+      upperCase: false,
+      specialChars: false,
+      alphabets: false,
+      digits: true
+    });
 
-// Handle forgot password form submission
-router.post("/forgot-password", wrapAsync(async (req, res) => {
-  const { email } = req.body;
-  const user = await User.findOne({ email });
-  if (!user) {
-    req.flash("error", "No account found with that email.");
-    return res.redirect("/forgot-password");
-  }
+    user.otp = otp;
+    user.otpExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
+    await user.save();
 
-  // Generate OTP for password reset
- const otp = otpGenerator.generate(6, { upperCase: false, specialChars: false, alphabets: false, digits: true });
-  user.otp = otp;
-  user.otpExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
-  await user.save();
+    // Send OTP email
+    const sendResult = await safeSendMail({
+      to: email,
+      subject: "Roamly Email Verification OTP",
+      text: `Your verification code is: ${otp}\n\nThis code expires in 10 minutes.`
+    });
 
-  // Send OTP email
-  await transporter.sendMail({
-    from: process.env.OTP_EMAIL,
-    to: email,
-    subject: "Roamly Password Reset OTP",
-    text: `Your password reset code is: ${otp}\n\nEnter this code on the website to reset your password.`
-  });
+    if (!sendResult.ok) {
+      // rollback created user to avoid orphan accounts
+      try {
+        await User.deleteOne({ _id: user._id });
+      } catch (e) {
+        console.error("Rollback delete user failed:", e);
+      }
+      req.flash("error", "Unable to send verification email. Try again later.");
+      return res.redirect("/signup");
+    }
 
-  req.flash("success", "Password reset code sent to your email.");
-  res.redirect(`/reset-password?email=${encodeURIComponent(email)}`);
-}));
-
-// Show reset password form
-router.get("/reset-password", (req, res) => {
-  res.render("users/reset-password.ejs", { email: req.query.email });
-});
-
-// Handle reset password form submission
-router.post("/reset-password", wrapAsync(async (req, res) => {
-  const { email, otp, newPassword } = req.body;
-  const user = await User.findOne({ email });
-  // Password validation
-  if (!newPassword || newPassword.length < 5) {
-    req.flash("error", "Password must be at least 5 characters.");
-    return res.redirect(`/reset-password?email=${encodeURIComponent(email)}`);
-  }
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
-  if (!passwordRegex.test(newPassword)) {
-    req.flash("error", "Password must contain at least one uppercase letter, one lowercase letter, and one number.");
-    return res.redirect(`/reset-password?email=${encodeURIComponent(email)}`);
-  }
-  if (!user || user.otp !== otp || user.otpExpires < Date.now()) {
-    req.flash("error", "Invalid or expired OTP.");
-    return res.redirect(`/reset-password?email=${encodeURIComponent(email)}`);
-  }
-  await user.setPassword(newPassword);
-  user.otp = undefined;
-  user.otpExpires = undefined;
-  await user.save();
-  req.flash("success", "Password reset successful! You can now log in.");
-  res.redirect("/login");
-}));
-
-
-
-// Resend OTP for password reset
-router.post("/resend-otp", wrapAsync(async (req, res) => {
-  const { email } = req.body;
-  const user = await User.findOne({ email });
-  if (!user) {
-    req.flash("error", "No account found with that email.");
+    req.flash("success", "Verification code sent. Check your email.");
+    return res.redirect(`/verify-otp?email=${encodeURIComponent(email)}`);
+  } catch (err) {
+    console.error("Signup error:", err);
+    req.flash("error", "Signup failed. Try again.");
     return res.redirect("/signup");
   }
-  // Generate new numeric OTP
-  const otp = Math.floor(100000 + Math.random() * 900000).toString();
-  user.otp = otp;
-  user.otpExpires = Date.now() + 10 * 60 * 1000;
-  await user.save();
-  await transporter.sendMail({
-    from: process.env.OTP_EMAIL,
-    to: email,
-    subject: "Roamly Email Verification OTP",
-    text: `Your new verification code is: ${otp}\n\nEnter this code on the website to verify your email.`
-  });
-  req.flash("success", "A new OTP has been sent to your email.");
-  res.redirect(`/verify-otp?email=${encodeURIComponent(email)}`);
-}));
+}
 
+// Render login form
+async function renderLoginForm(req, res) {
+  res.render("users/login.ejs");
+}
 
-// logout 
-router.get("/logout", userController.Logout);
-// Show delete confirmation form
-router.get("/profile/delete", (req, res) => {
-  if (!req.isAuthenticated()) {
-    req.flash("error", "You must be logged in.");
-    return res.redirect("/login");
-  }
-  res.render("users/delete-confirm.ejs");
-});
-
-//handle delete profile
-// Handle delete profile
-router.post("/profile/delete", async (req, res, next) => {
+// Login post handler (called after passport.authenticate)
+async function Login(req, res) {
   try {
-    if (!req.isAuthenticated()) {
-      req.flash("error", "You must be logged in.");
-      return res.redirect("/login");
-    }
-    const userId = req.user._id;
-    const { password } = req.body;
-    const user = await User.findById(userId);
+    const redirectUrl = req.session.returnTo || "/";
+    delete req.session.returnTo;
+    req.flash("success", "Welcome back!");
+    return res.redirect(redirectUrl);
+  } catch (err) {
+    console.error("Login redirect error:", err);
+    return res.redirect("/");
+  }
+}
 
-    // Defensive: Check if user exists
+// Render OTP verification form
+async function renderOtpForm(req, res) {
+  const email = req.query.email || "";
+  res.render("users/verify-otp.ejs", { email });
+}
+
+// Verify OTP (for signup & password reset flows)
+async function verifyOtp(req, res, next) {
+  try {
+    const { email, otp } = req.body;
+    if (!email || !otp) {
+      req.flash("error", "Email and OTP are required.");
+      return res.redirect("/verify-otp");
+    }
+
+    const user = await User.findOne({ email });
     if (!user) {
-      req.flash("error", "User not found.");
-      return res.redirect("/profile");
+      req.flash("error", "No account found for that email.");
+      return res.redirect("/signup");
     }
 
-    // Verify password before deleting
-    const isValid = await user.authenticate(password);
-    if (!isValid.user) {
-      req.flash("error", "Incorrect password.");
-      return res.redirect("/profile/delete");
+    if (!user.otp || !user.otpExpires || user.otp !== otp || user.otpExpires < Date.now()) {
+      req.flash("error", "Invalid or expired OTP.");
+      return res.redirect(`/verify-otp?email=${encodeURIComponent(email)}`);
     }
 
-    // Delete all listings owned by the user (and their images)
-    const listings = await Listing.find({ owner: userId });
-    for (let listing of listings) {
-      if (listing.image && listing.image.filename) {
-        await cloudinary.uploader.destroy(listing.image.filename);
+    // Mark verified and clear OTP
+    user.isVerified = true;
+    user.otp = undefined;
+    user.otpExpires = undefined;
+    await user.save();
+
+    // Optionally log in the user after verification
+    req.login(user, (err) => {
+      if (err) {
+        console.error("Login after OTP error:", err);
+        req.flash("success", "Email verified. Please login.");
+        return res.redirect("/login");
       }
-      await Listing.findByIdAndDelete(listing._id);
-    }
-
-    // Delete avatar from Cloudinary if exists
-    if (req.user.avatar && req.user.avatar.includes("cloudinary.com")) {
-      const filename = req.user.avatar.split("/").pop().split(".")[0];
-      await cloudinary.uploader.destroy(filename);
-    }
-
-    // Delete user and log out
-    await req.user.deleteOne();
-    req.logout(() => {
-      req.flash("success", "Your profile has been deleted.");
-      res.redirect("/signup");
+      req.flash("success", "Email verified. Welcome!");
+      return res.redirect("/");
     });
   } catch (err) {
-    console.error("Delete profile error:", err); // <-- Add this line
-    next(err);
+    console.error("verifyOtp error:", err);
+    req.flash("error", "Verification failed. Try again.");
+    return res.redirect("/verify-otp");
   }
-});
+}
 
-module.exports = router;
+// Logout handler
+function Logout(req, res, next) {
+  req.logout((err) => {
+    if (err) {
+      console.error("Logout error:", err);
+      return next(err);
+    }
+    req.flash("success", "You have been logged out.");
+    res.redirect("/");
+  });
+}
 
-
- 
+module.exports = {
+  renderSignupForm,
+  signup,
+  renderLoginForm,
+  Login,
+  renderOtpForm,
+  verifyOtp,
+  Logout,
+  safeSendMail,
+  transporter
+};
