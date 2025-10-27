@@ -1,7 +1,9 @@
+// ...existing code...
 const Listing = require("../models/listing.js");
 const fetch = require("node-fetch");
 const Booking = require("../models/booking.js");
-const { cloudinary } = require("../cloudConfig.js"); 
+const Review = require("../models/review.js");
+const { cloudinary } = require("../cloudConfig.js");
 
 // Geocode location using MapTiler
 async function geocodeLocation(location) {
@@ -122,16 +124,30 @@ module.exports.updateListing = async (req, res) => {
   console.log("REQ.BODY:", req.body);
   try {
     const { id } = req.params;
-    const listing = await Listing.findByIdAndUpdate(id, { ...req.body.listing });
+    // return the updated document
+    const listing = await Listing.findByIdAndUpdate(id, { ...req.body.listing }, { new: true, runValidators: true });
+
+    if (!listing) {
+      req.flash("error", "Listing not found!");
+      return res.redirect("/listings");
+    }
 
     // Handle new image upload
     if (req.file) {
+      // delete previous image if present (best-effort)
+      if (listing.image && listing.image.filename) {
+        try {
+          await cloudinary.uploader.destroy(listing.image.filename);
+        } catch (e) {
+          console.error("Cloudinary destroy (old image) warning:", e?.message || e);
+        }
+      }
       listing.image = { url: req.file.path, filename: req.file.filename };
     }
 
     // Re-geocode if location or country changed
-    if (req.body.listing.location || req.body.listing.country) {
-      const locationStr = `${req.body.listing.location}, ${req.body.listing.country}`;
+    if ((req.body.listing && req.body.listing.location) || (req.body.listing && req.body.listing.country)) {
+      const locationStr = `${req.body.listing.location || listing.location}, ${req.body.listing.country || listing.country}`;
       const geometryData = await geocodeLocation(locationStr);
       if (geometryData) listing.geometry = geometryData;
     }
@@ -149,26 +165,39 @@ module.exports.updateListing = async (req, res) => {
 // --- DELETE LISTING ---
 module.exports.deleteListing = async (req, res) => {
   const { id } = req.params;
-  const listing = await Listing.findById(id);
-  if (!listing) {
-    req.flash("error", "Listing not found!");
+  try {
+    const listing = await Listing.findById(id);
+    if (!listing) {
+      req.flash("error", "Listing not found!");
+      return res.redirect("/listings");
+    }
+
+    // Delete image from Cloudinary if exists (best-effort)
+    if (listing.image && listing.image.filename) {
+      try {
+        await cloudinary.uploader.destroy(listing.image.filename);
+      } catch (e) {
+        console.error("Cloudinary destroy warning:", e?.message || e);
+      }
+    }
+
+    // Delete all bookings for this listing
+    await Booking.deleteMany({ listing: id });
+
+    // Delete all reviews for this listing (guard if listing.reviews undefined)
+    if (Array.isArray(listing.reviews) && listing.reviews.length > 0) {
+      await Review.deleteMany({ _id: { $in: listing.reviews } });
+    }
+
+    // Delete the listing itself
+    await Listing.findByIdAndDelete(id);
+
+    req.flash("success", "Successfully deleted listing and all related bookings/reviews!");
+    return res.redirect("/listings");
+  } catch (err) {
+    console.error("Delete listing error:", err);
+    req.flash("error", "Failed to delete listing. Try again.");
     return res.redirect("/listings");
   }
-
-  // Delete image from Cloudinary if exists
-  if (listing.image && listing.image.filename) {
-    await cloudinary.uploader.destroy(listing.image.filename);
-  }
-
-  // Delete all bookings for this listing
-  await Booking.deleteMany({ listing: id });
-
-  // Delete all reviews for this listing
-  await Review.deleteMany({ _id: { $in: listing.reviews } });
-
-  // Delete the listing itself
-  await Listing.findByIdAndDelete(id);
-
-  req.flash("success", "Successfully deleted listing and all related bookings/reviews!");
-  res.redirect("/listings");
 };
+// ...existing code...
