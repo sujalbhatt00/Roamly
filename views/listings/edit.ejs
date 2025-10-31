@@ -3,7 +3,6 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-  /* --- Roamly Design System Variables --- */
   :root {
     --roamly-red: #E54D42;
     --roamly-red-rgb: 229, 77, 66;
@@ -21,8 +20,6 @@
   body {
     font-family: 'Inter', sans-serif;
     background-color: var(--roamly-light-gray);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
   }
 
   .form-page-container {
@@ -67,7 +64,6 @@
     border-top: 1px solid var(--roamly-border-gray);
   }
 
-  /* --- Modern Form Group --- */
   .form-group-modern {
     margin-bottom: 1.5rem;
   }
@@ -88,7 +84,6 @@
   }
   .form-group-modern .form-control:focus,
   .form-group-modern .form-select:focus {
-    outline: none;
     border-color: var(--roamly-red);
     box-shadow: 0 0 0 3px rgba(var(--roamly-red-rgb), 0.2);
   }
@@ -97,31 +92,47 @@
     min-height: 120px;
   }
 
-  /* Helper text */
   .form-text {
       font-size: 0.9rem;
       color: var(--roamly-text-medium);
-      display: block;
       margin-top: 0.25rem;
+      display: block;
   }
 
-  /* --- Custom File Upload --- */
+  /* Image Preview Box */
+  .current-image-preview {
+    width: 100%;
+    border: 1px solid var(--roamly-border-gray);
+    border-radius: var(--border-radius-sm);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 1rem;
+  }
+  .current-image-preview img {
+    width: 100%;
+    max-height: 220px;
+    object-fit: cover;
+  }
+
+  /* File Upload Box */
   .file-upload-label {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    text-align: center;
     border: 2px dashed var(--roamly-border-gray);
     border-radius: var(--border-radius-sm);
     padding: 2rem;
     cursor: pointer;
     transition: all 0.2s ease;
+    text-align: center;
   }
+
   .file-upload-label:hover {
     border-color: var(--roamly-red);
     background-color: var(--roamly-light-gray);
   }
+
   .file-upload-label i {
     font-size: 2.5rem;
     color: var(--roamly-text-medium);
@@ -131,210 +142,156 @@
     color: var(--roamly-text-dark);
     font-weight: 500;
   }
+
   .file-name-display {
-    margin-top: 0.75rem;
-    font-size: 0.9rem;
+    margin-top: .75rem;
+    font-size: .9rem;
     color: var(--roamly-text-medium);
     text-align: center;
-    word-break: break-all;
   }
 
-  /* --- Current Image Preview --- */
-  .current-image-preview {
-    width: 100%;
-    margin-bottom: 1rem; /* Space between preview and upload box */
-    border: 1px solid var(--roamly-border-gray);
-    border-radius: var(--border-radius-sm);
-    overflow: hidden;
-    box-shadow: var(--shadow-sm);
-  }
-  .current-image-preview img {
-    width: 100%;
-    height: 100%;
-    max-height: 220px;
-    object-fit: cover;
-  }
-
-  /* --- Submit Button --- */
   .btn-roamly {
     background-color: var(--roamly-red);
     border-color: var(--roamly-red);
     color: #fff;
     font-weight: 600;
-    padding: 0.85rem 1rem;
+    padding: .85rem 1rem;
     font-size: 1.1rem;
     border-radius: var(--border-radius-sm);
-    transition: all 0.2s ease;
-    width: 100%;
     margin-top: 1rem;
+    width: 100%;
   }
   .btn-roamly:hover {
     background-color: var(--roamly-dark-red);
     border-color: var(--roamly-dark-red);
-    color: #fff;
     transform: translateY(-2px);
     box-shadow: 0 4px 10px rgba(var(--roamly-red-rgb), 0.3);
   }
-
 </style>
 
 <div class="form-page-container">
-  <div class="col-12 mx-auto">
-    <div class="form-card">
-      <div class="form-card-body">
-        <div class="form-header">
-          <h3>
-            <i class="fa-solid fa-pen-to-square"></i>Edit Your Property
-          </h3>
-          <hr />
-        </div>
+  <div class="form-card">
+    <div class="form-card-body">
+      <div class="form-header">
+        <h3><i class="fa-solid fa-pen-to-square"></i>Edit Your Property</h3>
+        <hr />
+      </div>
 
-        <form method="POST" action="/listings/<%= listing._id %>/?_method=PUT" novalidate class="needs-validation" enctype="multipart/form-data">
+      <form method="POST" action="/listings/<%= listing._id %>/?_method=PUT" novalidate class="needs-validation" enctype="multipart/form-data">
 
-          <div class="row">
+        <div class="row">
+          <div class="col-md-6">
 
-            <div class="col-md-6">
-              <div class="form-group-modern">
-                <label for="title" class="form-label">Title</label>
-                <input name="listing[title]" id="title" type="text" required placeholder="e.g., Cozy Beachfront Cottage" class="form-control" value="<%= listing.title %>">
-                <div class="valid-feedback">Title looks good!</div>
-                <div class="invalid-feedback">Please enter a title.</div>
-              </div>
-
-              <div class="form-group-modern">
-                <label for="description" class="form-label">Description</label>
-                <textarea name="listing[description]" id="description" rows="3" required placeholder="Describe your listing..." class="form-control"><%= listing.description %></textarea>
-                <div class="invalid-feedback">Please enter a valid description.</div>
-              </div>
-
-              <div class="form-group-modern">
-                <label for="location" class="form-label">Location</label>
-                <input name="listing[location]" id="location" type="text" required placeholder="e.g., 123 Ocean Drive" class="form-control" value="<%= listing.location %>">
-                <div class="invalid-feedback">Please enter a valid location.</div>
-              </div>
-
-              <div class="form-group-modern">
-                <label for="price" class="form-label">Price (₹)</label>
-                <input name="listing[price]" id="price" type="number" required placeholder="1200" class="form-control" value="<%= listing.price %>" min="1">
-                <div class="invalid-feedback">Please enter a valid price.</div>
-              </div>
+            <div class="form-group-modern">
+              <label class="form-label">Title</label>
+              <input name="listing[title]" type="text" class="form-control" required value="<%= listing.title %>">
             </div>
 
-            <div class="col-md-6">
-              <div class="form-group-modern">
-                <label class="form-label">Current Image</label>
-                <div class="current-image-preview">
-                  <img src="<%= originalImageUrl || 'placeholder_image_url.jpg' %>" alt="Current listing image" id="currentImagePreview">
-                </div>
+            <div class="form-group-modern">
+              <label class="form-label">Description</label>
+              <textarea name="listing[description]" rows="3" class="form-control" required><%= listing.description %></textarea>
+            </div>
 
-               <div class="form-group-modern">
-  <label class="form-label">Change Property Image</label>
- 
-  <input name="listing[image]" type="file" class="form-control d-none" id="image-upload" accept="image/*">
-  <label for="image-upload" class="file-upload-label">
-    <i class="fa-solid fa-cloud-arrow-up"></i>
-    <span>Click to upload new image</span>
-  </label>
-  <div id="file-name-display" class="file-name-display"></div>
-  <div class="form-text">Image must be less than 2MB.</div>
-              </div>
+            <div class="form-group-modern">
+              <label class="form-label">Location</label>
+              <input name="listing[location]" type="text" class="form-control" required value="<%= listing.location %>">
+            </div>
 
-              <div class="form-group-modern">
-                <div class="row">
-                  <div class="col-12 mb-3">
-                    <label for="country" class="form-label">Country</label>
-                    <select id="country" name="listing[country]" class="form-select" required>
-                      <option value="">Select Country</option>
-                      <% countries.forEach(country => { %>
-                        <% if (country.name) { %>
-                          <option value="<%= country.name %>" <%= listing.country === country.name ? "selected" : "" %>><%= country.name %></option>
-                        <% } %>
-                      <% }) %>
-                    </select>
-                    <div class="invalid-feedback">Please select a country.</div>
-                  </div>
-                  <div class="col-md-6 mb-3">
-                    <label for="state" class="form-label">State</label>
-                    <select id="state" name="listing[state]" class="form-select" required>
-                      <option value="">Select State</option>
-                    </select>
-                    <div class="invalid-feedback">Please select a state.</div>
-                  </div>
-                  <div class="col-md-6 mb-3">
-                    <label for="city" class="form-label">City</label>
-                    <select id="city" name="listing[city]" class="form-select" required>
-                      <option value="">Select City</option>
-                    </select>
-                    <div class="invalid-feedback">Please select a city.</div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-group-modern">
-                <label for="category" class="form-label">Category</label>
-                <select name="listing[category]" id="category" class="form-select" required>
-                  <option value="" disabled>Select a category</option>
-                  <% ["Arctic","Mountain","Castles","Farms","Camping","Rooms","Iconic Cities","Amazing pools","Boats","Other"].forEach(c => { %>
-                    <option value="<%= c %>" <%= listing.category === c ? "selected" : "" %>><%= c %></option>
-                  <% }) %>
-                </select>
-                <div class="invalid-feedback">Please select a category.</div>
-              </div>
+            <div class="form-group-modern">
+              <label class="form-label">Price (₹)</label>
+              <input name="listing[price]" type="number" min="1" required class="form-control" value="<%= listing.price %>">
             </div>
 
           </div>
-          <button type="submit" class="btn btn-roamly">Save Changes</button>
-        </form>
-      </div>
+
+          <div class="col-md-6">
+
+            <!-- ✅ Single image preview -->
+            <div class="form-group-modern">
+              <label class="form-label">Property Image</label>
+
+              <div class="current-image-preview">
+                <img src="<%= originalImageUrl || 'placeholder_image_url.jpg' %>" id="currentImagePreview" alt="Listing Image">
+              </div>
+
+              <input name="listing[image]" type="file" class="d-none" id="image-upload" accept="image/*">
+              <label for="image-upload" class="file-upload-label">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <span>Click to upload new image</span>
+              </label>
+              <div id="file-name-display" class="file-name-display"></div>
+              <div class="form-text">Image must be less than 2MB.</div>
+            </div>
+
+            <div class="form-group-modern">
+              <label class="form-label">Country</label>
+              <select id="country" name="listing[country]" class="form-select" required>
+                <option value="">Select Country</option>
+                <% countries.forEach(country => { %>
+                  <option value="<%= country.name %>" <%= listing.country === country.name ? "selected" : "" %>><%= country.name %></option>
+                <% }) %>
+              </select>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 form-group-modern">
+                <label class="form-label">State</label>
+                <select id="state" name="listing[state]" class="form-select" required>
+                  <option value="">Select State</option>
+                </select>
+              </div>
+
+              <div class="col-md-6 form-group-modern">
+                <label class="form-label">City</label>
+                <select id="city" name="listing[city]" class="form-select" required>
+                  <option value="">Select City</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group-modern">
+              <label class="form-label">Category</label>
+              <select name="listing[category]" class="form-select" required>
+                <% ["Arctic","Mountain","Castles","Farms","Camping","Rooms","Iconic Cities","Amazing pools","Boats","Other"].forEach(c => { %>
+                  <option value="<%= c %>" <%= listing.category === c ? "selected" : "" %>><%= c %></option>
+                <% }) %>
+              </select>
+            </div>
+
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-roamly">Save Changes</button>
+      </form>
     </div>
   </div>
 </div>
 
 <script>
-  // Script for image upload: name display, size check, and preview (2MB limit)
   const fileInput = document.getElementById('image-upload');
   const fileDisplay = document.getElementById('file-name-display');
-  const preview = document.getElementById('currentImagePreview'); // Target the existing image preview
+  const preview = document.getElementById('currentImagePreview');
 
-  fileInput.addEventListener('change', function(e) {
+  fileInput.addEventListener('change', (e) => {
     const file = e.target.files[0];
-    const maxSizeMB = 2; // Max size in MB
-    const maxSizeBytes = maxSizeMB * 1024 * 1024;
+    const maxSize = 2 * 1024 * 1024; // 2MB
 
     if (file) {
-      // Check size
-      if (file.size > maxSizeBytes) {
-        alert(`Image size must be less than ${maxSizeMB}MB.`);
-        e.target.value = ""; // Clear file input
-        fileDisplay.textContent = '';
-        // Reset preview to original image if needed (optional)
-        // preview.src = "<%= originalImageUrl || 'placeholder_image_url.jpg' %>";
-        return; // Stop processing
+      if (file.size > maxSize) {
+        alert("Image size must be less than 2MB.");
+        fileInput.value = "";
+        return;
       }
 
-      // Display file name
-      fileDisplay.textContent = `Selected file: ${file.name}`;
-
-      // Update preview with the new selected image
+      fileDisplay.textContent = `Selected: ${file.name}`;
       const reader = new FileReader();
-      reader.onload = function(){
-        if (reader.readyState === 2) {
-          preview.src = reader.result; // Update the preview src
-        }
-      };
+      reader.onload = () => preview.src = reader.result;
       reader.readAsDataURL(file);
-
-    } else {
-      // If user deselects file, clear name and maybe reset preview
-      fileDisplay.textContent = '';
-      // Optionally reset preview to original:
-      // preview.src = "<%= originalImageUrl || 'placeholder_image_url.jpg' %>";
     }
   });
 </script>
 
 <script>
-  // Country, State, City Logic (no changes needed here)
   const countries = <%- JSON.stringify(countries) %>;
   const listing = <%- JSON.stringify(listing) %>;
 
@@ -344,85 +301,43 @@
     const citySelect = document.getElementById("city");
 
     function populateStates(countryName, selectedState) {
-      const selectedCountry = countries.find(c => c.name === countryName);
+      const country = countries.find(c => c.name === countryName);
       stateSelect.innerHTML = '<option value="">Select State</option>';
       citySelect.innerHTML = '<option value="">Select City</option>';
 
-      if (selectedCountry?.states?.length) {
-        selectedCountry.states.forEach(state => {
-          if (state.name) {
-            const option = document.createElement("option");
-            option.value = state.name;
-            option.textContent = state.name;
-            if (selectedState === state.name) option.selected = true;
-            stateSelect.appendChild(option);
-          }
-        });
-        stateSelect.disabled = false;
-      } else {
-        stateSelect.disabled = true;
-        citySelect.disabled = true;
-      }
+      if (!country?.states) return;
+      country.states.forEach(state => {
+        stateSelect.innerHTML += `<option value="${state.name}" ${selectedState === state.name ? "selected" : ""}>${state.name}</option>`;
+      });
     }
 
     function populateCities(countryName, stateName, selectedCity) {
-      const selectedCountry = countries.find(c => c.name === countryName);
-      const selectedStateObj = selectedCountry?.states?.find(s => s.name === stateName);
+      const country = countries.find(c => c.name === countryName);
+      const state = country?.states?.find(s => s.name === stateName);
       citySelect.innerHTML = '<option value="">Select City</option>';
 
-      if (selectedStateObj?.cities?.length) {
-        selectedStateObj.cities.forEach(city => {
-          const option = document.createElement("option");
-          option.value = city.name;
-          option.textContent = city.name;
-          if (selectedCity === city.name) option.selected = true;
-          citySelect.appendChild(option);
-        });
-        citySelect.disabled = false;
-      } else {
-        citySelect.disabled = true;
-      }
+      if (!state?.cities) return;
+      state.cities.forEach(city => {
+        citySelect.innerHTML += `<option value="${city.name}" ${selectedCity === city.name ? "selected" : ""}>${city.name}</option>`;
+      });
     }
 
-    // Prepopulate existing
-    if (listing.country) populateStates(listing.country, listing.state);
-    if (listing.country && listing.state) populateCities(listing.country, listing.state, listing.city);
+    populateStates(listing.country, listing.state);
+    populateCities(listing.country, listing.state, listing.city);
 
-    countrySelect.addEventListener("change", e => {
-      populateStates(e.target.value, null);
-      citySelect.innerHTML = '<option value="">Select City</option>';
-    });
-
-    stateSelect.addEventListener("change", e => {
-      populateCities(countrySelect.value, e.target.value, null);
-    });
+    countrySelect.addEventListener("change", e => populateStates(e.target.value));
+    stateSelect.addEventListener("change", e => populateCities(countrySelect.value, e.target.value));
   });
 </script>
 
 <script>
-  // Bootstrap validation script
   (() => {
-    'use strict';
     const forms = document.querySelectorAll('.needs-validation');
-    Array.from(forms).forEach(form => {
+    forms.forEach(form => {
       form.addEventListener('submit', event => {
-        if (!form.checkValidity()) {
-          event.preventDefault();
-          event.stopPropagation();
-        }
-        form.classList.add('was-validated');
-      }, false);
+        document.getElementById("state").disabled = false;
+        document.getElementById("city").disabled = false;
+      });
     });
   })();
-</script>
-
-<script>
-  // Script to enable disabled fields before submit
-  document.querySelectorAll('form.needs-validation').forEach(form => {
-    form.addEventListener('submit', function(e) {
-      // Enable state and city before submit so their values are sent
-      document.getElementById('state').disabled = false;
-      document.getElementById('city').disabled = false;
-    });
-  });
 </script>
