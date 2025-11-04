@@ -7,7 +7,8 @@ const Listing = require("../models/listing.js");
 const Review = require("../models/review.js");
 const reviewController = require("../controller/reviews.js");
 
-// review validation 
+// review validation
+
 
 const validateReview = (req, res, next) => {
     let { error } = reviewSchema.validate(req.body); // Use reviewSchema for validation
