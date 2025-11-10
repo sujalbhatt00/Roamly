@@ -1,184 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><%= listing.title %> · Roamly</title>
 
-  <!-- Fonts & Icons -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-  <!-- Bootstrap -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-
-  <!-- Flatpickr -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
-
-  <!-- MapLibre -->
-  <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet">
 
   <style>
     :root {
-      --roamly-red: #e54d42;
-      --roamly-red-rgb: 229, 77, 66;
-      --roamly-dark: #111315;
-      --roamly-text: #2b2f33;
-      --roamly-text-med: #636b74;
-      --roamly-border: #e6e7eb;
-      --roamly-muted: #f6f7f9;
-      --radius: 16px;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
-      --shadow-md: 0 8px 24px rgba(16, 24, 40, 0.12);
+      --red:#e54d42;
+      --dark:#111315;
+      --border:#e6e7eb;
+      --radius:16px;
     }
 
-    body { font-family: 'Inter', sans-serif; background: #fff; margin: 0; color: var(--roamly-text); }
+    body { font-family:'Inter',sans-serif; background:#fff; color:#111; }
+    .page-container { max-width:1200px; margin:auto; padding:20px; }
 
-    .page-container { max-width: 1200px; margin:0 auto; padding:20px; }
+    .listing-title { font-size:2.4rem; font-weight:700; }
+    .btn-book { background:var(--red); border:none; padding:10px 24px; border-radius:10px; color:#fff; font-weight:600; }
+    .btn-book:hover { background:#cc3e35; }
 
-    .listing-title { font-size: 2.4rem; font-weight: 700; color: var(--roamly-dark); }
-    .listing-location { display:flex; align-items:center; gap:8px; color:var(--roamly-text-med); }
-
-    .gallery { aspect-ratio:16/9; overflow:hidden; border-radius:var(--radius); box-shadow:var(--shadow-sm); }
+    .gallery { aspect-ratio:16/9; overflow:hidden; border-radius:var(--radius); margin:18px 0; }
     .gallery img { width:100%; height:100%; object-fit:cover; }
 
-    .layout { display:grid; gap:24px; margin-top:20px; }
-    @media(min-width:992px){ .layout{grid-template-columns:2fr 1fr;} .sidebar{position:sticky; top:90px;} }
+    .cardish { background:#fff; border:1px solid var(--border); border-radius:var(--radius); padding:22px; margin-bottom:20px; }
 
-    .cardish { background:#fff; border:1px solid var(--roamly-border); border-radius:var(--radius); padding:22px; box-shadow:var(--shadow-sm); }
+    .stars i { color:#f5b301; }
 
-    /* ✅ Make buttons same size on phones */
-    @media(max-width:600px){
-      .btn, .actions button, .actions a { width:100% !important; display:block; }
-      .actions { display:grid !important; grid-template-columns:1fr !important; gap:10px; }
-    }
+    /* Review star selector */
+    .star-input input { display:none; }
+    .star-input label { font-size:26px; color:#ccc; cursor:pointer; transition:0.2s; }
+    .star-input input:checked ~ label { color:#f5b301; }
+    .star-input label:hover,
+    .star-input label:hover ~ label { color:#f5b301; }
 
-    .btn-danger { background:var(--roamly-red); border-color:var(--roamly-red); color:#fff; }
-    .btn-danger:hover { background:#cc3e35; }
-
-    .price { font-size:1.6rem; font-weight:800; }
-
-    /* ✅ Review Stars fixed */
-    .stars i { color:#f5b301; margin-right:2px; font-size:1.1rem; }
-
-    #map { width:100%; height:330px; border-radius:var(--radius); border:1px solid var(--roamly-border); }
+    #map { margin-top:10px; width:100%; height:330px; border-radius:var(--radius); border:1px solid var(--border); }
   </style>
 </head>
 <body>
 
 <div class="page-container">
 
-  <header>
+  <!-- Title & Book Now -->
+  <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px;">
     <h1 class="listing-title"><%= listing.title %></h1>
-    <div class="listing-location"><i class="fa-solid fa-location-dot"></i> <%= listing.location %>, <%= listing.country %></div>
-  </header>
+
+    <button class="btn-book" data-bs-toggle="modal" data-bs-target="#bookModal">
+      <i class="fa-regular fa-calendar-days"></i> Book Now
+    </button>
+  </div>
+
+  <div class="listing-location text-muted">
+    <i class="fa-solid fa-location-dot"></i> <%= listing.location %>, <%= listing.country %>
+  </div>
 
   <div class="gallery">
     <img src="<%= listing.image?.url || 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=1600' %>">
   </div>
 
-  <!-- ✅ Removed the mobile sticky booking bar completely -->
+  <div class="cardish">
+    <div style="display:flex; gap:12px; align-items:center;">
+      <img src="<%= listing.owner?.avatar %>" style="width:60px;height:60px;border-radius:50%;object-fit:cover;">
+      <strong>Hosted by <%= listing.owner?.username %></strong>
+    </div>
+    <hr>
+    <p><%= listing.description %></p>
+  </div>
 
-  <main class="layout">
+  <h2>Reviews</h2>
 
-    <section class="content">
-
+  <% if(listing.reviews.length > 0){ %>
+    <% listing.reviews.forEach(r => { %>
       <div class="cardish">
-        <div style="display:flex; gap:12px; align-items:center;">
-          <img src="<%= listing.owner?.avatar %>" style="width:60px;height:60px;border-radius:50%;object-fit:cover;">
-          <div><strong>Hosted by <%= listing.owner?.username %></strong></div>
+        <strong><%= r.author.username %></strong>
+        <div class="stars">
+          <% for(let i=1;i<=5;i++){ %>
+            <i class="fa-solid fa-star" style="opacity:<%= i <= r.rating ? 1 : 0.3 %>"></i>
+          <% } %>
         </div>
+        <p><%= r.comment %></p>
+      </div>
+    <% }) %>
+  <% } else { %>
+    <p class="text-muted">No reviews yet. Be the first.</p>
+  <% } %>
 
-        <hr>
+  <% if(currUser){ %>
+  <div class="cardish">
+    <h3>Leave a Review</h3>
 
-        <p><%= listing.description %></p>
+    <form method="POST" action="/listings/<%= listing._id %>/reviews">
 
-        <% if(currUser && listing.owner._id.equals(currUser._id)){ %>
-        <div class="actions" style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">
-          <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark">Edit</a>
-          <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE">
-            <button class="btn btn-outline-danger">Delete</button>
-          </form>
-        </div>
+      <div class="star-input mb-2">
+        <% for(let i=5;i>=1;i--){ %>
+          <input type="radio" id="star<%= i %>" name="review[rating]" value="<%= i %>" required>
+          <label for="star<%= i %>">★</label>
         <% } %>
       </div>
 
-      <hr>
+      <textarea name="review[comment]" class="form-control" placeholder="Share your experience..." required></textarea>
+      <button class="btn btn-dark mt-2">Submit Review</button>
+    </form>
+  </div>
+  <% } %>
 
-      <h2>Reviews</h2>
-      <% if(listing.reviews.length > 0){ %>
-        <% listing.reviews.forEach(r => { %>
-          <div class="cardish" style="margin-bottom:14px;">
-            <strong><%= r.author.username %></strong>
-            <div class="stars">
-              <% for(let i=1;i<=5;i++){ %>
-                <% if(i <= r.rating){ %>
-                  <i class="fa-solid fa-star"></i>
-                <% } else { %>
-                  <i class="fa-regular fa-star"></i>
-                <% } %>
-              <% } %>
-            </div>
-            <p><%= r.comment %></p>
-          </div>
-        <% }) %>
-      <% } else { %>
-        <p class="text-muted">No reviews yet.</p>
-      <% } %>
+  <h2>Where you'll be</h2>
+  <div id="map"></div>
 
-      <hr>
-
-      <% if(currUser){ %>
-        <h3>Leave a Review</h3>
-        <form method="POST" action="/listings/<%= listing._id %>/reviews">
-          <label>Rating</label><br>
-          <% for(let i=5;i>=1;i--){ %>
-            <input type="radio" name="review[rating]" value="<%= i %>" required> <%= i %>★ &nbsp;
-          <% } %>
-          <textarea name="review[comment]" class="form-control mt-2" required></textarea>
-          <button class="btn btn-dark mt-2">Submit</button>
-        </form>
-      <% } %>
-
-      <hr>
-
-      <h2>Where you'll be</h2>
-      <div id="map"></div>
-
-    </section>
-
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="cardish">
-        <p class="price">₹<%= listing.price.toLocaleString('en-IN') %> <span style="color:gray;font-weight:400;">/ night</span></p>
-        <button class="btn btn-danger w-100 mt-2" data-bs-toggle="modal" data-bs-target="#bookModal">
-          <i class="fa-regular fa-calendar-days"></i> Book Now
-        </button>
-      </div>
-    </aside>
-
-  </main>
 </div>
 
-<!-- Booking Modal (unchanged) -->
+<!-- Booking Modal -->
 <div class="modal fade" id="bookModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <form method="POST" action="/bookings/create/<%= listing._id %>">
-        <div class="modal-header">
-          <h5>Book Your Stay</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
+        <div class="modal-header"><h5>Book Your Stay</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
         <div class="modal-body">
           <input id="dateRange" class="form-control" placeholder="Select dates" required>
           <input type="hidden" name="startDate" id="startDate">
           <input type="hidden" name="endDate" id="endDate">
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button class="btn btn-danger">Confirm Booking</button>
+          <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button class="btn-book">Confirm Booking</button>
         </div>
       </form>
     </div>
@@ -193,16 +146,8 @@
   const bookedDates = <%- JSON.stringify(activeBookedDates) %> || [];
 
   flatpickr("#dateRange", {
-    mode: "range",
-    minDate: "today",
-    dateFormat: "Y-m-d",
-    disable: bookedDates,
-    onChange: (sel) => {
-      if(sel.length === 2){
-        startDate.value = sel[0].toISOString().split("T")[0];
-        endDate.value = sel[1].toISOString().split("T")[0];
-      }
-    }
+    mode:"range", minDate:"today", dateFormat:"Y-m-d", disable:bookedDates,
+    onChange:(sel)=>{ if(sel.length===2){ startDate.value=sel[0].toISOString().split("T")[0]; endDate.value=sel[1].toISOString().split("T")[0]; } }
   });
 
   const map = new maplibregl.Map({
@@ -211,9 +156,9 @@
     center:[<%= listing.geometry.coordinates[0] %>, <%= listing.geometry.coordinates[1] %>],
     zoom:12
   });
-  map.addControl(new maplibregl.NavigationControl());
   new maplibregl.Marker().setLngLat([<%= listing.geometry.coordinates[0] %>, <%= listing.geometry.coordinates[1] %>]).addTo(map);
 </script>
 
 </body>
 </html>
+
